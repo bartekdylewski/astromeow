@@ -1,9 +1,15 @@
-/* ===== BAZA ===== */
-.sky{background:linear-gradient(180deg,#A9BBFF 0%,#CDBEFF 55%,#F6CBE6 100%);border-radius:1.8rem;padding:2.8rem .8rem 1rem;position:relative;overflow:hidden;box-shadow:0 .4rem 0 var(--lavd)}
-.sky::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 12% 22%,#fff 1px,transparent 1.8px),radial-gradient(circle at 78% 18%,#fffc 1px,transparent 1.8px),radial-gradient(circle at 60% 60%,#fff 1px,transparent 1.8px),radial-gradient(circle at 26% 70%,#fffc 1px,transparent 1.8px),radial-gradient(circle at 92% 50%,#fff 1px,transparent 1.8px)}
-.ground{transform:rotateX(32deg);transform-style:preserve-3d;display:grid;gap:.5rem;padding:.5rem;position:relative}
-.tile{position:relative;aspect-ratio:1/1;border-radius:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;border:0;cursor:pointer;transition:transform .1s;font:inherit}
-.tile:active{filter:brightness(.93)}   /* bez transform: w 3D przesunięcie gubiło kliknięcia */
-.badge{position:absolute;width:1.7rem;height:1.7rem;border-radius:99px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:.95rem;box-shadow:0 .2rem 0 #0002;z-index:3}
-.res{background:#fff;border:2px solid var(--line);border-radius:1.2rem;padding:.6rem;text-align:center}
-.res .e{font-size:1.8rem}.res b{display:block;font-size:1.15rem;font-weight:900}.res small{font-size:.7rem;font-weight:900}
+/* ===== BAZA: siatka jest bohaterem ekranu ===== */
+.sky{background:var(--orange-soft);border:.18rem solid var(--ink);border-radius:1.6rem;padding:.7rem .6rem 1rem;position:relative;box-shadow:var(--shadow)}
+.sky .cap{text-align:center;font-weight:900;font-size:.85rem;color:var(--oranged);margin-bottom:.2rem}
+.ground{transform:rotateX(28deg);transform-style:preserve-3d;display:grid;gap:.5rem;padding:.5rem;position:relative}
+.tile{position:relative;aspect-ratio:1/1;border-radius:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;border:.16rem solid var(--ink);cursor:pointer;font:inherit;color:var(--ink);background:var(--surface);box-shadow:0 .3rem 0 var(--ink)}
+.tile.empty{background:transparent;border:.16rem dashed var(--oranged);box-shadow:none}
+.tile:active{filter:brightness(.95)}   /* bez transform: w 3D przesunięcie gubiło kliknięcia */
+.tile .plus{position:absolute;font-weight:900;color:var(--oranged)}
+.badge{position:absolute;width:1.6rem;height:1.6rem;border-radius:99px;background:var(--surface);border:.12rem solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:.9rem;z-index:3}
+.resbar{display:flex;justify-content:space-between;gap:.4rem;background:var(--surface);border:.16rem solid var(--ink);border-radius:1.2rem;padding:.45rem .7rem;box-shadow:0 .2rem 0 var(--ink)}
+.resbar div{flex:1;text-align:center;line-height:1.1}
+.resbar b{font-size:1.1rem;font-weight:900}.resbar small{display:block;font-size:.68rem;font-weight:800;color:var(--muted)}
+.opt{border:.16rem solid var(--ink);background:var(--surface);border-radius:1.4rem;padding:.8rem;display:flex;flex-direction:column;align-items:center;gap:.3rem;font:inherit;color:var(--ink);cursor:pointer;box-shadow:0 .24rem 0 var(--ink)}
+.opt.lock{opacity:.5}
+.opt .ic{font-size:2.4rem}.opt small{font-weight:900;color:var(--oranged)}

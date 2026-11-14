@@ -1,15 +1,18 @@
-/* ===== QUIZ ===== */
-.heart{font-size:1.65rem;transition:transform .3s,filter .3s;display:inline-block}
-.heart.off{filter:grayscale(1) opacity(.28);transform:scale(.8)}
-.ans{width:100%;text-align:left;border-radius:1.2rem;padding:.8rem 1rem;min-height:3.7rem;display:flex;align-items:center;gap:.75rem;font:inherit;font-weight:800;font-size:1.05rem;color:var(--ink);background:#fff;border:2px solid var(--line);border-bottom-width:.25rem;cursor:pointer}
-.ans .L{width:2.1rem;height:2.1rem;border-radius:.8rem;display:flex;align-items:center;justify-content:center;font-weight:900;background:var(--lavs);color:#5B47C9;flex:none}
+/* ===== QUIZ: serca, pasek, Astruś, pytanie, odpowiedzi ===== */
+.heart{font-size:1.55rem;transition:transform .3s,filter .3s;display:inline-block}
+.heart.off{filter:grayscale(1) opacity(.35);transform:scale(.8)}
+.ans{width:100%;text-align:left;border-radius:1.2rem;padding:.8rem 1rem;min-height:3.9rem;display:flex;align-items:center;gap:.75rem;font:inherit;font-weight:800;font-size:1.08rem;color:var(--ink);background:var(--surface);border:.18rem solid var(--ink);box-shadow:0 .28rem 0 var(--ink);cursor:pointer;transition:transform .08s,box-shadow .08s,background .12s}
+.ans .L{width:2.1rem;height:2.1rem;border-radius:.8rem;display:flex;align-items:center;justify-content:center;font-weight:900;background:var(--orange-soft);border:.12rem solid var(--ink);color:var(--ink);flex:none}
+@media(hover:hover){.ans:hover:not(:disabled){background:var(--orange-soft);transform:translateY(-.06rem)}}
+.ans:active:not(:disabled){transform:translateY(.24rem);box-shadow:0 .04rem 0 var(--ink)}
 .ans:disabled{cursor:default;color:var(--ink)}
-.qtext{font-size:1.65rem;font-weight:900;line-height:1.18;margin:.2rem 0 1rem}
-.fb{border-radius:1.3rem;padding:.8rem 1rem;margin-bottom:.8rem}
-.fb b{display:block;font-size:1.15rem;font-weight:900}
-.fb p{margin:.2rem 0 0;font-weight:700;font-size:.9rem;color:#5B5578}
-.fb.ok{background:var(--mints);border:2px solid var(--mint)}.fb.ok b{color:#2D8F66}
-.fb.no{background:var(--pinks);border:2px solid var(--pink)}.fb.no b{color:#C84A6C}
-.diffchip{font-size:.7rem}
-
-.heart.gold{filter:drop-shadow(0 0 .35rem #FFD76A)}
+.ans.sel{background:var(--orange-soft);border-color:var(--orange);box-shadow:0 .28rem 0 var(--orange)}
+.ans.ok{background:var(--ok-soft);border-color:var(--ok);box-shadow:0 .28rem 0 var(--ok)}
+.ans.ok .L{background:var(--ok);border-color:var(--ok);color:#fff}
+.ans.no{background:var(--bad-soft);border-color:var(--bad);box-shadow:0 .28rem 0 var(--bad)}
+.ans.no .L{background:var(--bad);border-color:var(--bad);color:#fff}
+.ans.dim{opacity:.55}
+.ans .mark{font-size:1.4rem;font-weight:900;flex:none}
+.ans.ok .mark{color:var(--ok)}.ans.no .mark{color:var(--bad)}
+.qtext{font-size:1.55rem;font-weight:900;line-height:1.18;margin:.2rem 0 1rem}
+.heart.gold{filter:drop-shadow(0 0 .3rem var(--orange))}

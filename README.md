@@ -18,7 +18,7 @@ run.sh              build + start/restart serwera z licznikiem (bash run.sh | -d
 build.py            skleja cały projekt w jeden plik dist/astromeow.html
 counter/            licznik wejść: server.py (serwer + SQLite), live.html, counter.sh (reset/stats/test)
 css/                style, w kolejności ładowania
-  01-base           paleta, nawigacja, przyciski, karty
+  01-base           paleta (:root), nawigacja, przyciski, karty
   02-cat            kot i jego skiny
   03-quiz           ekran pytań i serca
   04-map            szlak MeowMission, planety
@@ -31,7 +31,8 @@ js/                 skrypty klasyczne (wspólny zakres, kolejność ma znaczenie
   02-layout         skalowanie (fit) pod pionowy laptop 9:16 i telefon
   03-cat            kot SVG / klatki z cat/, skiny
   04-reactions      brainrotowe reakcje na odpowiedzi
-  05-questions      MISJE I PYTANIA (tu dopisujesz treść)
+  00-data           ładowanie data/*.json (DATA)
+  05-questions      buduje MISSIONS/DIFFS z data/stages.json (treść jest w JSON, nie tu)
   06-base-data      planety, budynki, dodatki
   07-state          stan gry, zapis, ekonomia bazy
   08-ui, 09-start, 10-home, 11-trail   ekrany: start, menu, szlak misji
@@ -41,14 +42,17 @@ js/                 skrypty klasyczne (wspólny zakres, kolejność ma znaczenie
   16-base, 17-shop, 18-tutorial, 19-badges   baza, sklep, tutoriale, odznaki
   20-router, 21-start-loop   akcje kliknięć i start aplikacji
   22-counter        zgłoszenie wejścia do licznika (POST /api/hit)
+  23-facts          ekran Ciekawostki (zakładka "Ciekawostki"), style w css/09-facts.css
+  24-sound          dźwięki Web Audio (klik, dobrze/źle, wynik, miau Astrusia); wyciszenie: 🔊 na ekranie głównym lub sfxToggle()
 cat/                (opcjonalnie) klatki kota: idle_1.png … cheer_3.png albo idle.gif …
 ```
 
 ## Typowe zmiany
-- Nowe pytania / misje: `js/05-questions.js` (tablica `MISSIONS`).
+- Nowe etapy, pytania i lekcje przed etapem: `data/stages.json`, bez kodu. Instrukcja: [docs/JAK-DODAC-ETAP.md](docs/JAK-DODAC-ETAP.md). `python3 build.py` sprawdza dane i wypisze błędy po polsku.
+- `data/*.json` są wbudowywane do `dist/astromeow.html` jako `window.DATA_EMBED`; w dev (index.html z serwera) ładuje je `js/00-data.js` przez fetch. Plik otwarty z `file://` bez builda pokaże komunikat Astrusia.
 - Progi odblokowania planet i ich mnożniki: `js/06-base-data.js` (`PLANETS`).
 - Skiny i ceny: `js/03-cat.js` (`SKINS`), cena złotego życia: `GOLD_PRICE`.
-- Kolory: `css/01-base.css` (zmienne `--lav`, `--mint`…).
+- Kolory: `css/01-base.css` (blok `:root`, ograniczona paleta, patrz „Wygląd i Astruś” niżej).
 
 ## Licznik wejść
 
@@ -153,3 +157,29 @@ kto zna adres) oraz `/healthz`. Baza, skrypty i `.git` są niedostępne.
 - Wspólne Wi-Fi nie szkodzi (liczymy po cookie, nie po IP).
 - Cloudflare Web Analytics możesz włączyć równolegle jako drugie, niezależne źródło (opóźnione).
 - Przy ewentualnym przejściu na Cloudflare Pages logika zostaje ta sama (Pages Functions + D1, ten sam schemat).
+
+## Wygląd i Astruś (główny bohater)
+Kot nazywa się **Astruś** i to on prowadzi gracza: wita, komentuje odpowiedzi w quizie, tłumaczy tutoriale i podpowiada w bazie (`catSay()` = Astruś + dymek). Nazwa aplikacji zostaje „AstroMeow”.
+
+### Paleta (jasna, ograniczona; `css/01-base.css`, `:root`)
+| Zmienna | Hex | Użycie |
+|---|---|---|
+| `--bg` | `#FFF8F0` | tło aplikacji (ciepły krem) |
+| `--surface` | `#FFFFFF` | karty, okna, odpowiedzi |
+| `--ink` | `#1B1446` | tekst i obrysy (granat kombinezonu) |
+| `--orange` | `#F28A1E` | kolor główny, jedna następna akcja (przycisk `b-lav`, aktywna zakładka) |
+| `--oranged` | `#A85200` | ciemny pomarańcz: małe napisy i cienie na jasnym tle |
+| `--orange-soft` | `#FFEBD2` | tint pomarańczu: zaznaczenie, kafelki, tło planety |
+| `--muted` | `#645F7E` | tekst pomocniczy |
+| `--grey` | `#E8E1D6` | neutralna szarość: tory, zablokowane, wyłączone |
+| `--ok` / `--ok-soft` | `#167A45` / `#DDF4E6` | **tylko** dobra odpowiedź |
+| `--bad` / `--bad-soft` | `#C62E2E` / `#FBDEDE` | **tylko** zła odpowiedź |
+
+Zasady: na ekranie jest **jeden** pomarańczowy przycisk (następny krok), reszta to białe przyciski z obrysem (`b-white`) albo linki (`.link`). Zielony i czerwony nie występują nigdzie poza feedbackiem poprawne/błędne. Nowe kolory dodawaj tylko w `:root`.
+- Przyciski i karty mają gruby ciemny obrys i twardy cień. Konfetti (`confetti()`) to małe kawałki w kolorach palety.
+- Kot: `cat/idle.webp` oraz `happy/sad/think/cheer.webp` (nie zmieniać). `build.py` wbudowuje je w `dist/astromeow.html`, więc plik działa sam.
+- `cat(poza, rozmiar)` rysuje Astrusia, `catSay(poza, html)` daje „Astruś + dymek”: używaj do tłumaczenia czegokolwiek (quiz, gierki, tutorial). `confirmSheet({...})` to okno potwierdzenia z Astrusiem.
+- Dolne menu (`#nav` w `index.html`) mieści do 6 zakładek (dodaj kolejny `<button data-act="tab" data-arg="...">` i wpis w `setTab()` w `js/20-router.js`).
+
+## Ciekawostki
+Treść ekranu Ciekawostki (kategorie: Ignis, Polacy w kosmosie, POLSA, ESA, NASA) leży w `data/ciekawostki.json`. Żeby dodać ciekawostkę, dopisz obiekt (`id` unikalny, `title`, `text`, opcjonalnie `astrus` i `source`) do `facts` wybranej kategorii; kod nie wymaga zmian. Pierwsza kategoria na liście jest wyróżniona. Ekran czyta `DATA.ciekawostki` (loader z `js/00-data.js`), a przeczytane ciekawostki zapisuje w `P.facts`.

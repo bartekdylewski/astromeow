@@ -1,0 +1,12 @@
+/* ===== CIEKAWOSTKI ===== */
+.fcat{min-height:4.6rem}
+.fcat .fico{font-size:2rem;line-height:1;flex:none;width:2.6rem;text-align:center}
+.fcat .fgo{font-size:1.8rem;font-weight:900;color:var(--oranged);flex:none}
+.fcat.feat{background:var(--orange-soft);padding:1rem}
+.fcat.feat b{font-size:1.2rem}
+.fcard{padding:1.2rem 1.1rem}
+.fcard h2{font-size:1.5rem;font-weight:900;line-height:1.15;margin:0 0 .6rem}
+.fcard p{margin:0;font-size:1.08rem;line-height:1.5;font-weight:700}
+.fsrc{display:inline-block}
+.fact .foot{margin-top:.5rem}
+.fcard .fnew{float:right;margin:0 0 .3rem .5rem;font-size:.8rem}

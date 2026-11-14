@@ -9,7 +9,6 @@
    Brakujące pozy: używana jest poza idle, a bez żadnych plików rysuje się
    zastępczy kotek SVG. Zero zmian w kodzie.
    ===================================================================== */
-const NASA_KEY = 'DEMO_KEY';      // przed finałem wpisz własny klucz z api.nasa.gov
 const CAT_DIR  = 'cat/';
 const SAVE_KEY = 'astromeow-v1';
 

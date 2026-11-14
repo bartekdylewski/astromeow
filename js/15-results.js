@@ -18,39 +18,35 @@ function finishGame(key, score, passedFlag) {
 function renderResult(info) {
   cur = () => renderResult(info);
   const g = GAMES[info.key], set = GSET, mission = set.mission, final = info.passed || info.left <= 0;
-  const dots = `<div class="dots mt-s">${Array.from({ length: MAXTRY }, (_, i) => `<i class="${i < info.attempt ? (i === info.attempt - 1 && info.passed ? 'ok' : 'on') : ''}"></i>`).join('')}</div>`;
-  const title = info.passed ? '✅ Zaliczone!' : final ? 'Koniec prób' : 'Prawie! 💪';
-  const line = info.passed ? say(BR.gameHigh) : say(BR.gameLow);
+  const title = info.passed ? 'Zaliczone!' : final ? 'Koniec prób' : 'Prawie!';
   const pose = info.passed ? 'cheer' : final ? 'happy' : 'think';
+  let line = info.passed ? say(BR.gameHigh) : say(BR.gameLow);
+  if (mission && final && P.runs === 1) line = 'Pierwsza misja za nami! 🎉 Na dole pojawiło się menu: misje, baza i sklep.';
   const miss = info.key === 'pack' ? '' : (info.passed ? '' : ` · brakuje ${Math.max(0, info.goal - info.score)}`);
   let body = '', promo = '';
   if (mission && final) {
     const tierDone = P.done[S.d].length === MISSIONS.length, nt = TIERS[TIERS.indexOf(S.d) + 1];
-    body = `<div class="grid3 mt"><div class="stat"><div class="ic">⭐</div><b>+${S.quizPts + set.totPts}</b><small>punkty</small></div>
-      <div class="stat"><div class="ic">${RES[g.res].icon}</div><b>+${set.totGain}</b><small>${RES[g.res].name}</small></div>
-      <div class="stat"><div class="ic">🧠</div><b>+${S.quizKnow}</b><small>wiedza</small></div></div>
-      <p class="muted tc mt-s">Quiz: ${S.correct}/5 ${'⭐'.repeat(S.stars)}</p>`;
-    if (tierDone && nt) promo = `<div class="promo mt-s">🎉 Poziom ${DIFFS[S.d].name} ukończony!<br><span style="font-size:.85rem">W menu czeka awans: ${DIFFS[nt].icon} ${DIFFS[nt].name}</span></div>`;
-    else if (tierDone) promo = `<div class="promo mt-s">🏆 Wszystkie poziomy zaliczone! Jesteś mistrzem kosmosu!</div>`;
-    if (S.newPlanet > 0) { const i = S.newPlanet, pl = PLANETS[i]; promo += `<div class="promo mt-s">🪐 Masz już ${pl.need} ${misPl(pl.need)} na planetę ${pl.name}!<br><span style="font-size:.85rem">${pOpen(i) ? 'Zajrzyj do bazy i leć na nową planetę!' : 'Najpierw zabuduj ' + PLANETS[i - 1].name + ' w bazie.'}</span></div>`; }
+    body = `<p class="rew">⭐ +${S.quizPts + set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain} &nbsp; 🧠 +${S.quizKnow}</p><p class="muted tc" style="margin:.2rem 0 0">Quiz: ${S.correct}/${S.qs.length} ${'⭐'.repeat(S.stars)}</p>`;
+    if (tierDone && nt) promo = `<div class="note mt-s">Poziom ${DIFFS[S.d].name} ukończony! W menu czeka awans: ${DIFFS[nt].icon} ${DIFFS[nt].name}</div>`;
+    else if (tierDone) promo = `<div class="note mt-s">🏆 Wszystkie poziomy zaliczone! Jesteś mistrzem kosmosu!</div>`;
+    if (S.newPlanet > 0) { const i = S.newPlanet, pl = PLANETS[i]; promo += `<div class="note mt-s">🪐 Odblokowana planeta ${pl.name}! ${pOpen(i) ? 'Zajrzyj do Bazy.' : 'Najpierw zabuduj ' + PLANETS[i - 1].name + ' w Bazie.'}</div>`; }
   } else {
-    body = `<div class="grid3 mt"><div class="stat"><div class="ic">⭐</div><b>+${set.totPts}</b><small>punkty</small></div>
-      <div class="stat"><div class="ic">${RES[g.res].icon}</div><b>+${set.totGain}</b><small>${RES[g.res].name}</small></div>
-      <div class="stat"><div class="ic">🏅</div><b>${P.best[info.key]}</b><small>rekord</small></div></div>`;
+    body = `<p class="rew">⭐ +${set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain}</p>`;
   }
   show(`<div class="scr">
-    ${bar('<span style="width:2.6rem"></span>', `<span class="label">${mission && final ? 'Raport MeowMission' : g.name}</span>`, streakPill())}
-    <div class="tc col center mt-s">${cat(pose, 8)}
-      <h2 style="font-size:1.7rem;font-weight:900;margin-top:.5rem">${title}</h2>
-      <div class="bubble up mt-s">${line}</div>
-      <p class="muted mt-s">Wynik: ${info.score}${info.key === 'pack' ? '' : ' · cel: ' + goalText(info.key)}${miss}</p>
-      ${dots}<p class="muted" style="margin:.3rem 0 0;font-size:.85rem">Próba ${info.attempt} z ${MAXTRY}</p></div>
-    ${body}${promo}
+    <div class="grow"></div>
+    <div class="col center tc">${cat(pose, 10)}<div class="bubble up big mt tc">${line}</div>
+      <h2 class="title" style="margin-top:1.1rem">${title}</h2>
+      <p class="muted" style="margin:.3rem 0 0">Wynik: ${info.score}${info.key === 'pack' ? '' : ' · cel: ' + goalText(info.key)}${miss}</p>
+      ${final ? '' : `<p class="muted" style="margin:.2rem 0 0">Próba ${info.attempt} z ${MAXTRY}</p>`}
+      ${body}</div>
+    ${promo}
     <div class="grow"></div>
     <div class="foot col gap-s">
-      ${final ? '' : `<button class="btn b-peach" data-act="retry-game">SPRÓBUJ JESZCZE (${info.attempt + 1}/${MAXTRY}) 🎮</button>`}
-      <button class="btn ${final ? 'b-lav' : 'b-white'}" data-act="tab" data-arg="map">MENU MISJI 🗺️</button>
+      ${final ? '' : `<button class="btn b-lav nudge" data-act="retry-game">SPRÓBUJ JESZCZE (${info.attempt + 1}/${MAXTRY})</button>`}
+      <button class="btn ${final ? 'b-lav nudge' : 'b-white'}" data-act="tab" data-arg="home">${final ? 'DALEJ ›' : 'WRÓĆ'}</button>
     </div>
   </div>`);
-  confetti(info.passed ? 30 : 8);
+  if (info.passed) confetti(14);
+  window.sfx && sfx(info.passed ? 'win' : 'lose');
 }

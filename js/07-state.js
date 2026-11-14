@@ -5,9 +5,9 @@ const fresh = () => ({
   pts: 0, streak: 0, lastDay: null, diff: null, startIdx: 0, runs: 0, done: { easy: [], mid: [], hard: [] }, best: {},
   stars: { easy: {}, mid: {}, hard: {} }, seen: { easy: [], mid: [], hard: [] },
   res: { wiedza: 20, czesci: 0, meteo: 0 }, planets: PLANETS.map(() => ({ grid: {} })), planet: 0, seenPlanets: 1,
-  tut: { quiz: false, base: false, map: false, shop: false },
-  skin: 'classic', skins: ['classic'], golden: 0,
-  boostUntil: 0, lastSave: Date.now(),
+  tut: { welcome: false, quiz: false, base: false, map: false, shop: false },
+  skin: 'classic', skins: ['classic'], golden: 0, lessons: {},
+  lastSave: Date.now(),
 });
 let P = fresh();
 const today = () => new Date().toLocaleDateString('sv');
@@ -18,7 +18,7 @@ function load() {
     const raw = localStorage.getItem(SAVE_KEY); if (!raw) return;
     const s = JSON.parse(raw), f = fresh();
     P = { ...f, ...s, res: { ...f.res, ...s.res }, done: { ...f.done, ...s.done }, best: { ...s.best }, stars: { ...f.stars, ...s.stars }, seen: { ...f.seen, ...s.seen },
-          tut: { ...f.tut, ...s.tut }, skins: Array.isArray(s.skins) && s.skins.length ? s.skins : ['classic'], planets: PLANETS.map((_, i) => ({ grid: { ...(((s.planets || [])[i] || {}).grid || {}) } })) };
+          tut: { ...f.tut, ...s.tut }, lessons: { ...(s.lessons || {}) }, skins: Array.isArray(s.skins) && s.skins.length ? s.skins : ['classic'], planets: PLANETS.map((_, i) => ({ grid: { ...(((s.planets || [])[i] || {}).grid || {}) } })) };
     const away = Math.min(7200, (Date.now() - (s.lastSave || Date.now())) / 1000);
     if (away > 5) { const g = rates(); for (const k in g) P.res[k] += g[k] * away; }
   } catch (_) {}
@@ -41,9 +41,8 @@ function pReason(i) {
   return miss.join(' i ');
 }
 const tileAt = (x, y) => pGrid(P.planet)[key(x, y)] || null;
-const boostOn = () => Date.now() < P.boostUntil;
 const satLevels = i => Object.values(pGrid(i)).filter(t => t.type === 'satelita').reduce((a, t) => a + t.level, 0);
-const globalMult = i => (1 + Math.min(1, TYPES.satelita.aura * satLevels(i))) * (boostOn() ? 1.5 : 1);
+const globalMult = i => (1 + Math.min(1, TYPES.satelita.aura * satLevels(i)));
 const scaleC = (c, m) => Object.fromEntries(Object.entries(c).map(([k, v]) => [k, Math.ceil(v * m)]));
 const placeCost = (type, i) => scaleC(TYPES[type].base, PLANETS[i].cm);
 const addonCost = (id, i) => scaleC(ADDONS[id].cost, PLANETS[i].cm);
@@ -62,4 +61,4 @@ function rates() {
 const canAfford = c => Object.keys(c).every(k => P.res[k] >= c[k]);
 const pay = c => { for (const k in c) P.res[k] -= c[k]; };
 const goalFor = k => Math.max(1, ...Object.keys(TYPES).map(t => placeCost(t, P.planet)[k] || 0));
-const chips = cost => Object.keys(cost).map(k => `<span class="pill ${P.res[k] >= cost[k] ? 'gr' : 'rd'}">${RES[k].icon} ${fmt(cost[k])}</span>`).join(' ');
+const chips = cost => Object.keys(cost).map(k => `<span class="pill" style="${P.res[k] >= cost[k] ? '' : 'background:var(--grey);border-color:var(--muted);color:var(--muted)'}">${RES[k].icon} ${fmt(cost[k])}</span>`).join(' ');

@@ -4,14 +4,21 @@ const POSES = ['idle', 'happy', 'sad', 'think', 'cheer'];
 const CATX = {};            // pose -> [Image]
 let fi = 0;                 // numer klatki (wspólny zegar)
 const loadImg = u => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = u; });
+/* kot wbudowany w dist/astromeow.html (window.CAT_EMBED robi build.py), inaczej pliki z folderu cat/ */
+async function embImg(uri) {
+  try { const b = await (await fetch(uri)).blob(); const i = await loadImg(URL.createObjectURL(b)); if (i) return i; } catch (_) {}
+  return loadImg(uri);
+}
 async function probeCat() {
+  const emb = window.CAT_EMBED || {};
   for (const p of POSES) {
     let fr = [];
-    for (const ext of ['png', 'webp']) {
+    if (emb[p]) { const i = await embImg(emb[p]); if (i) fr = [i]; }
+    if (!fr.length) for (const ext of ['png', 'webp']) {
       const a = await Promise.all([1, 2, 3].map(n => loadImg(`${CAT_DIR}${p}_${n}.${ext}`)));
       if (a.every(Boolean)) { fr = a; break; }
     }
-    if (!fr.length) for (const ext of ['gif', 'png', 'webp']) { const i = await loadImg(`${CAT_DIR}${p}.${ext}`); if (i) { fr = [i]; break; } }
+    if (!fr.length) for (const ext of ['webp', 'gif', 'png']) { const i = await loadImg(`${CAT_DIR}${p}.${ext}`); if (i) { fr = [i]; break; } }
     if (fr.length) CATX[p] = fr;
   }
   if (Object.keys(CATX).length && !G && !PK && cur) cur();   // odśwież ekran z prawdziwym kotem
@@ -70,10 +77,10 @@ function catSvg(pose) {
 /* skiny kota: fx = filtr koloru, acc = dodatek na głowie */
 const SKINS = [
   { id: 'classic', n: 'Klasyczny', fx: '', acc: '', p: 0 },
-  { id: 'sakura', n: 'Różowy', fx: 'hue-rotate(75deg)', acc: '🎀', p: 80 },
-  { id: 'mint', n: 'Miętowy', fx: 'hue-rotate(-95deg)', acc: '🍃', p: 80 },
-  { id: 'sunny', n: 'Pomarańczowy', fx: 'hue-rotate(165deg) saturate(1.3)', acc: '', p: 100 },
-  { id: 'dj', n: 'DJ Kot', fx: '', acc: '🎧', p: 100 },
+  { id: 'sakura', n: 'Różowy', fx: 'hue-rotate(300deg) saturate(1.1)', acc: '🎀', p: 80 },
+  { id: 'mint', n: 'Fioletowy', fx: 'hue-rotate(240deg)', acc: '', p: 80 },
+  { id: 'sunny', n: 'Błękitny', fx: 'hue-rotate(160deg)', acc: '', p: 100 },
+  { id: 'dj', n: 'DJ Astruś', fx: '', acc: '🎧', p: 100 },
   { id: 'cowboy', n: 'Kowboj', fx: '', acc: '🤠', p: 120 },
   { id: 'gentleman', n: 'Dżentelmen', fx: '', acc: '🎩', p: 120 },
   { id: 'king', n: 'Król', fx: '', acc: '👑', p: 150 },
@@ -81,12 +88,19 @@ const SKINS = [
 ];
 const GOLD_PRICE = 50;
 const skinOf = id => SKINS.find(x => x.id === (id || (typeof P !== 'undefined' && P.skin))) || SKINS[0];
+/* dodatki mimiki (jedna grafika kota + efekt przy mordce), gdy brak osobnych klatek */
+const POSE_FX = { happy: '✨', cheer: '🎉', think: '❓' };
 function cat(pose = 'idle', size = 6, cls = '', skin) {
   const sk = skinOf(skin);
   const fr = CATX[pose] || CATX.idle;
-  const inner = fr ? `<img data-pose="${pose}" src="${fr[0].src}" alt="Kot">` : catSvg(pose);
+  const inner = fr ? `<img data-pose="${pose}" src="${fr[0].src}" alt="Astruś" draggable="false">` : catSvg(pose);
   const acc = sk.acc ? `<span class="cacc" style="font-size:${(size * .42).toFixed(2)}rem">${sk.acc}</span>` : '';
-  return `<span class="cat p-${pose} ${fr ? 'ext' : ''} ${cls}" style="width:${size}rem;height:${size}rem"><span class="cfx" style="${sk.fx ? 'filter:' + sk.fx : ''}">${inner}</span>${acc}</span>`;
+  const fx = fr && !CATX[pose] && POSE_FX[pose] ? `<span class="cpose" style="font-size:${(size * .3).toFixed(2)}rem">${POSE_FX[pose]}</span>` : '';
+  return `<span class="cat p-${pose} ${fr ? 'ext' : ''} ${cls}" style="width:${size}rem;height:${size}rem"><span class="cfx" style="${sk.fx ? 'filter:' + sk.fx : ''}">${inner}</span>${acc}${fx}</span>`;
+}
+/* kot tłumaczy: wspólny komponent "kot + dymek" do wszystkich ekranów i gier */
+function catSay(pose, html, { size = 5, cls = '', who = '' } = {}) {
+  return `<div class="say ${cls}">${cat(pose, size)}<div class="bubble line"><span>${who ? `<b class="who">${who}</b>` : ''}${html}</span></div></div>`;
 }
 const svgImgs = {};
 function catCanvasImg(pose = 'idle') {

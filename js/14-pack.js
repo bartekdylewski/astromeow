@@ -1,6 +1,6 @@
 'use strict';
 /* ===================== PAKOWANIE RAKIETY (układanie klocków) ===================== */
-const PC_COL = [['#CDBEFF', '#A18EF0'], ['#B4EBD0', '#74CBA2'], ['#FFD0A6', '#F2A867'], ['#FFC8D7', '#F597B3'], ['#C2E4FF', '#86C3F0'], ['#FFF0B3', '#EBD071']];
+const PC_COL = [['#F28A1E', '#A85200'], ['#FFFFFF', '#1B1446'], ['#645F7E', '#1B1446'], ['#FFD3A0', '#A85200'], ['#E8E1D6', '#645F7E'], ['#A85200', '#1B1446']];
 const PC_EMO = ['🔋', '🥫', '🧪', '🛰️', '🔧', '📡', '🧰', '🪴'];
 function normalize(cells) {
   const mx = Math.min(...cells.map(c => c[0])), my = Math.min(...cells.map(c => c[1]));
@@ -134,6 +134,6 @@ function endPack(win) {
   if (!PK || PK.over) return; PK.over = true;
   const placed = PK.pieces.filter(p => p.at).length;
   const score = placed * 2 + (win ? 3 + Math.ceil((PK.limit - PK.t) / 5) : 0);
-  if (win) { confetti(20, ['🚀', '✨', '📦', '⭐']); setTimeout(() => finishGame('pack', score, true), 700); }
+  if (win) { confetti(18); setTimeout(() => finishGame('pack', score, true), 700); }
   else finishGame('pack', score, false);
 }

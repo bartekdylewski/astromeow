@@ -2,9 +2,9 @@
 /* ===================== GIERKI: opisy i parametry ===================== */
 const GAMES = {
   shooter: { name: 'Obrona bazy', icon: '🚀', res: 'meteo', desc: 'Przesuwaj statek palcem. Strzelanie jest automatyczne. Zbij meteory, zanim spadną na bazę!', hint: 'Przeciągnij palcem, żeby sterować' },
-  flappy:  { name: 'Przelot przez asteroidy', icon: '🐱', res: 'meteo', desc: 'Dotknij ekranu, żeby kotek uniósł się w górę. Przeleć przez szczeliny między meteorytami.', hint: 'Gra zaczyna się po pierwszym dotknięciu · dotknij, żeby lecieć' },
+  flappy:  { name: 'Przelot przez asteroidy', icon: '🐱', res: 'meteo', desc: 'Dotknij ekranu, żeby Astruś uniósł się w górę. Przeleć przez szczeliny między meteorytami.', hint: 'Gra zaczyna się po pierwszym dotknięciu · dotknij, żeby lecieć' },
   catch:   { name: 'Łapanie próbek', icon: '🧪', res: 'wiedza', desc: 'Przesuwaj koszyk i łap probówki. Omijaj skały i meteory!', hint: 'Przeciągnij palcem, żeby sterować koszykiem' },
-  lander:  { name: 'Lądowanie na Księżycu', icon: '🛸', res: 'czesci', desc: 'Przytrzymaj ekran, żeby włączyć silnik, i przesuń palec, żeby sterować. Wyląduj łagodnie na zielonym pasie!', hint: 'Gra zaczyna się po pierwszym dotknięciu · przytrzymaj = silnik · przesuń = kierunek' },
+  lander:  { name: 'Lądowanie na Księżycu', icon: '🛸', res: 'czesci', desc: 'Przytrzymaj ekran, żeby włączyć silnik, i przesuń palec, żeby sterować. Wyląduj łagodnie na pomarańczowym pasie!', hint: 'Gra zaczyna się po pierwszym dotknięciu · przytrzymaj = silnik · przesuń = kierunek' },
   pack:    { name: 'Pakowanie rakiety', icon: '📦', res: 'czesci', desc: 'Przeciągnij klocki do ładowni rakiety. Dotknij klocka na tacy, żeby go obrócić!', hint: 'Przeciągnij klocek · dotknij na tacy = obróć · dotknij w rakiecie = zdejmij' },
 };
 const GP = {
@@ -28,27 +28,20 @@ let lastGame = '';
 
 function renderGameIntro(key) {
   if (!GSET || !GSET.mission) return renderMap();
-  stopGame(); const g = GAMES[key], set = GSET, d = DIFFS[P.diff];
+  stopGame(); const g = GAMES[key], set = GSET;
   cur = () => renderGameIntro(key);
-  const topL = set.mission ? '<span style="width:2.6rem"></span>' : '<button class="x" data-act="tab" data-arg="map">←</button>';
   show(`<div class="scr">
-    ${bar(topL, `<span class="label">${set.mission ? 'Nagroda · ' + S.correct + ' poprawnych' : 'Salon gier'}</span>`, '<span style="width:2.6rem"></span>')}
-    <div class="card tc pop mt-s" style="padding:1.3rem"><div class="bounce" style="font-size:3.8rem">${g.icon}</div>
-      <h2 style="font-size:1.6rem;font-weight:900;margin-top:.3rem">${g.name}</h2>
-      <p class="muted" style="font-size:1rem;margin:.5rem 0 0">${g.desc}</p>
-      <p style="margin:.8rem 0 .2rem"><span class="pill bt">🎯 Cel: ${goalText(key)}</span></p>
-      <p style="margin:.4rem 0 0"><span class="pill ${d.pill}">${d.icon} ${d.name}</span> <span class="pill lv">nagroda: ${RES[g.res].icon} ${RES[g.res].name}</span></p>
-      <div class="dots mt">${Array.from({ length: MAXTRY }, (_, i) => `<i class="${i < set.attempts ? 'on' : ''}"></i>`).join('')}</div>
-      <p class="muted" style="margin:.3rem 0 0;font-size:.85rem">Próba ${set.attempts + 1} z ${MAXTRY}</p></div>
-    <div class="row gap mt">${cat('cheer', 5.5)}<div class="bubble" style="flex:1">Masz ${MAXTRY} próby, żeby zaliczyć gierkę! 🎮</div></div>
     <div class="grow"></div>
-    <div class="foot"><button class="btn b-peach" data-act="play" data-arg="${key}">GRAJ 🎮</button>
-      ${set.mission ? '<button class="link w100" data-act="skipgame">pomiń gierkę i wróć na szlak</button>' : ''}</div>
+    <div class="col center tc">${cat('cheer', 10, 'float')}<div class="bubble up big mt tc"><b>${g.icon} ${g.name}</b><br>${g.desc}</div>
+      <p class="muted" style="margin:1rem 0 0">🎯 Cel: ${goalText(key)}${set.attempts ? ` · próba ${set.attempts + 1} z ${MAXTRY}` : ''}</p></div>
+    <div class="grow"></div>
+    <div class="foot"><button class="btn b-lav nudge" data-act="play" data-arg="${key}">GRAJ 🎮</button>
+      <button class="link w100" data-act="skipgame">pomiń gierkę</button></div>
   </div>`);
 }
 function gameShell(key, inner) {
   return `<div class="scr fixed">
-    ${bar('<button class="x" data-act="quitgame">✕</button>', `<span class="label">${GAMES[key].name}</span>`, '<span class="pill" style="background:#fff" id="hud">⏱️</span>')}
+    ${bar('<button class="x" data-act="quitgame">✕</button>', `<span class="label">${GAMES[key].name}</span>`, '<span class="pill" id="hud">⏱️</span>')}
     ${inner}<p class="hint">${GAMES[key].hint}</p></div>`;
 }
 function playGame(key) {
@@ -171,19 +164,20 @@ function updLander(ts, dt) {
 /* --- Rysowanie --- */
 function bg() {
   const { ctx, W, H } = G;
-  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#7C6BD6'); g.addColorStop(1, '#C9B9FF');
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#FFF8F0'); g.addColorStop(1, '#FFEBD2');
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = '#ffffffcc'; for (let i = 0; i < 40; i++) ctx.fillRect((i * 97) % W, (i * 53 + 17) % H, i % 5 ? 2 : 3, i % 5 ? 2 : 3);
+  ctx.fillStyle = '#F28A1E55'; for (let i = 0; i < 40; i++) ctx.fillRect((i * 97) % W, (i * 53 + 17) % H, i % 5 ? 2 : 3, i % 5 ? 2 : 3);
+  ctx.fillStyle = '#1B1446';
 }
 function hudText(l, r) {
-  const { ctx, W } = G; ctx.font = '900 22px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#fff'; ctx.textBaseline = 'middle';
+  const { ctx, W } = G; ctx.font = '900 22px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.textBaseline = 'middle';
   ctx.textAlign = 'left'; ctx.fillText(l, 14, 26); ctx.textAlign = 'right'; ctx.fillText(r, W - 14, 26);
 }
 function draw() {
   const { ctx, W, H } = G; bg(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   if (G.key === 'shooter') {
     ctx.font = '40px serif'; ctx.fillText('🏠', W / 2, H - 8); ctx.fillText('🚀', G.ship, H - 50);
-    ctx.fillStyle = '#FFE48A'; G.bullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x, b.y, 4.5, 0, 7); ctx.fill(); });
+    ctx.fillStyle = '#F28A1E'; G.bullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x, b.y, 4.5, 0, 7); ctx.fill(); });
     ctx.font = '34px serif'; G.enemies.forEach(e => ctx.fillText(e.e, e.x, e.y));
     hudText('💗 ' + G.lives, '⭐ ' + G.score);
   } else if (G.key === 'flappy') {
@@ -194,29 +188,29 @@ function draw() {
     ctx.restore();
     if (sk.acc) { ctx.save(); ctx.font = '36px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.translate(110, G.y + bob - 40); ctx.rotate(-.14); ctx.fillText(sk.acc, 0, 0); ctx.restore(); }
     G.pipes.forEach(pp => {
-      ctx.fillStyle = '#FFC8D7';
-      ctx.beginPath(); ctx.roundRect(pp.x - 34, -20, 68, pp.gapY - pp.gap / 2 + 20, 16); ctx.fill();
-      ctx.beginPath(); ctx.roundRect(pp.x - 34, pp.gapY + pp.gap / 2, 68, H, 16); ctx.fill();
+      ctx.fillStyle = '#F28A1E'; ctx.strokeStyle = '#1B1446'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.roundRect(pp.x - 34, -20, 68, pp.gapY - pp.gap / 2 + 20, 16); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.roundRect(pp.x - 34, pp.gapY + pp.gap / 2, 68, H, 16); ctx.fill(); ctx.stroke();
       ctx.font = '34px serif'; ctx.fillText('☄️', pp.x, pp.gapY - pp.gap / 2 - 20); ctx.fillText('🪨', pp.x, pp.gapY + pp.gap / 2 + 20);
     });
     hudText('', '⭐ ' + G.score);
-    if (!G.started) { ctx.font = '900 28px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText('👆 Dotknij, żeby zacząć!', W / 2, H / 2 + 90); }
+    if (!G.started) { ctx.font = '900 28px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.textAlign = 'center'; ctx.fillText('👆 Dotknij, żeby zacząć!', W / 2, H / 2 + 90); }
   } else if (G.key === 'catch') {
     ctx.font = '34px serif'; G.items.forEach(i => ctx.fillText(i.e, i.x, i.y));
     ctx.font = '54px serif'; ctx.fillText('🧺', G.x + (G.shakeT > 0 ? rnd(-5, 5) : 0), H - 52);
     hudText('💗 ' + G.lives, '🧪 ' + G.score);
   } else if (G.key === 'lander') {
     const gy = H - 70;
-    ctx.fillStyle = '#EDE6FF'; ctx.beginPath(); ctx.roundRect(-10, gy + 22, W + 20, H, 20); ctx.fill();
-    ctx.fillStyle = '#B4EBD0'; ctx.beginPath(); ctx.roundRect(G.pad - G.p.pad / 2, gy + 22, G.p.pad, 10, 5); ctx.fill();
+    ctx.fillStyle = '#E8E1D6'; ctx.beginPath(); ctx.roundRect(-10, gy + 22, W + 20, H, 20); ctx.fill();
+    ctx.fillStyle = '#F28A1E'; ctx.beginPath(); ctx.roundRect(G.pad - G.p.pad / 2, gy + 22, G.p.pad, 10, 5); ctx.fill();
     ctx.font = '26px serif'; ctx.fillText('🪨', 60, gy + 52); ctx.fillText('🪨', 360, gy + 58);
     ctx.font = '44px serif'; ctx.fillText('🛸', G.sx, G.sy);
     if (G.hold && G.msgT <= 0) { ctx.font = '30px serif'; ctx.fillText('🔥', G.sx, G.sy + 38); }
     const v = Math.max(0, G.svy), ok = v < G.p.safe;
-    ctx.fillStyle = '#ffffff55'; ctx.beginPath(); ctx.roundRect(W / 2 - 70, 14, 140, 12, 6); ctx.fill();
-    ctx.fillStyle = ok ? '#B4EBD0' : '#FFC8D7'; ctx.beginPath(); ctx.roundRect(W / 2 - 70, 14, Math.min(140, v / (G.p.safe * 2) * 140), 12, 6); ctx.fill();
+    ctx.fillStyle = '#E8E1D6'; ctx.beginPath(); ctx.roundRect(W / 2 - 70, 14, 140, 12, 6); ctx.fill();
+    ctx.fillStyle = ok ? '#167A45' : '#C62E2E'; ctx.beginPath(); ctx.roundRect(W / 2 - 70, 14, Math.min(140, v / (G.p.safe * 2) * 140), 12, 6); ctx.fill();
     hudText('🛬 ' + G.landings, '');
-    if (!G.started) { ctx.font = '900 26px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText('👆 Przytrzymaj, żeby zacząć!', W / 2, H / 2); }
-    if (G.msgT > 0) { ctx.font = '900 30px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#fff'; ctx.fillText(G.msg, W / 2, H / 2 - 60); }
+    if (!G.started) { ctx.font = '900 26px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.textAlign = 'center'; ctx.fillText('👆 Przytrzymaj, żeby zacząć!', W / 2, H / 2); }
+    if (G.msgT > 0) { ctx.font = '900 30px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.fillText(G.msg, W / 2, H / 2 - 60); }
   }
 }
