@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AstroMeow – na żywo</title>
+<style>
+  :root { --bg:#0d0b1f; --lav:#b9a6ff; --mint:#8ff0d0; --txt:#f3efff; --dim:#8b84b8; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: radial-gradient(ellipse at 50% 0%, #251c52 0%, var(--bg) 60%);
+    color: var(--txt); font-family: 'Nunito', system-ui, sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  }
+  h1 { margin: 0 0 .2em; font-size: clamp(1rem, 3vw, 1.6rem); font-weight: 700; color: var(--dim); letter-spacing: .12em; text-transform: uppercase; }
+  #n { font-size: clamp(7rem, 32vw, 24rem); font-weight: 900; line-height: 1; color: var(--lav);
+       text-shadow: 0 0 60px rgba(185,166,255,.45); font-variant-numeric: tabular-nums; transition: transform .25s; }
+  #n.pop { transform: scale(1.08); color: var(--mint); }
+  .sub { font-size: clamp(1rem, 2.4vw, 1.5rem); color: var(--dim); margin-top: .3em; }
+  .row { display: flex; gap: 2.5rem; margin-top: 2rem; flex-wrap: wrap; justify-content: center; }
+  .card b { display: block; font-size: clamp(1.6rem, 4vw, 3rem); color: var(--txt); }
+  .card span { color: var(--dim); font-size: .95rem; }
+  #src { margin-top: 1.5rem; color: var(--dim); font-size: 1rem; }
+  #dot { position: fixed; right: 14px; bottom: 12px; width: 10px; height: 10px; border-radius: 50%; background: #444; }
+  #dot.ok { background: var(--mint); }
+</style>
+</head>
+<body>
+  <h1>🐱 Kosmiczni gracze</h1>
+  <div id="n">–</div>
+  <div class="sub">unikalnych wejść w grę</div>
+  <div class="row">
+    <div class="card"><b id="active">–</b><span>aktywni (5 min)</span></div>
+    <div class="card"><b id="hits">–</b><span>wszystkie uruchomienia</span></div>
+    <div class="card"><b id="new1">–</b><span>nowi (ostatnia minuta)</span></div>
+  </div>
+  <div id="src"></div>
+  <div id="dot"></div>
+<script>
+  const $ = id => document.getElementById(id);
+  let shown = null, anim = null;
+  function setNumber(target) {
+    if (shown === null) { shown = target; $('n').textContent = target; return; }
+    if (target === shown) return;
+    const from = shown, t0 = performance.now(), dur = 700;
+    cancelAnimationFrame(anim);
+    $('n').classList.add('pop'); setTimeout(() => $('n').classList.remove('pop'), 300);
+    const step = now => {
+      const k = Math.min(1, (now - t0) / dur);
+      shown = Math.round(from + (target - from) * k);
+      $('n').textContent = shown;
+      if (k < 1) anim = requestAnimationFrame(step);
+    };
+    anim = requestAnimationFrame(step);
+  }
+  async function tick() {
+    try {
+      const s = await (await fetch('/api/stats', { cache: 'no-store' })).json();
+      setNumber(s.unique);
+      $('active').textContent = s.active5; $('hits').textContent = s.hits; $('new1').textContent = s.new1;
+      const parts = Object.entries(s.by_src);
+      $('src').textContent = parts.length > 1 ? parts.map(([k, v]) => k + ': ' + v).join('   ·   ') : '';
+      $('dot').className = 'ok';
+    } catch (e) { $('dot').className = ''; }
+  }
+  tick(); setInterval(tick, 2000);
+</script>
+</body>
+</html>
