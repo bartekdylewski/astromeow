@@ -12,7 +12,14 @@ document.addEventListener('click', e => {
     case 'diff':        P.diff = arg; P.startIdx = Math.max(P.startIdx, TIERS.indexOf(arg)); save(); return renderHome();
     case 'changediff':  return renderStart();
     case 'tab':         return setTab(arg);
-    case 'start-next': { useGold = P.golden > 0; const t = nextTarget(); if (t.promote) { P.diff = t.tier; save(); confetti(40, ['🎉', '⭐', '🚀', '🔥']); toast('🎉 Awans! Poziom: ' + DIFFS[t.tier].name); } return renderIntro(t.m); }
+    case 'start-next': {
+      const t = nextTarget();
+      if (!t.m) return setTab('map');
+      useGold = P.golden > 0;
+      if (P.diff !== t.tier) { P.diff = t.tier; save(); }
+      if (t.promote) { confetti(40, ['🎉', '⭐', '🚀', '🔥']); toast('🎉 Awans! Poziom: ' + DIFFS[t.tier].name); }
+      return renderIntro(t.m);
+    }
     case 'node': { const [t, id] = arg.split(':'), m = MISSIONS.find(x => x.id == id); if (!nodeOpen(t, m)) return toast('🔒 Najpierw zalicz poprzednią misję', false); P.diff = t; useGold = P.golden > 0; save(); return renderIntro(m, 'map'); }
     case 'goplanet': { const i = +arg; if (!pOpen(i)) return toast('🔒 ' + PLANETS[i].name + ': ' + pReason(i), false); P.planet = i; P.seenPlanets = Math.max(P.seenPlanets, i + 1); save(); closeSheet(); return setTab('base'); }
     case 'togold':      useGold = !useGold; return cur();

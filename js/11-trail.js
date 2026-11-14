@@ -2,11 +2,12 @@
 /* ===================== MAPA MISJI + SALON GIER ===================== */
 function nextTarget() {
   const t = P.diff || 'easy';
-  for (const tier of TIERS.slice(TIERS.indexOf(t))) {
+  const current = TIERS.indexOf(t);
+  for (const tier of [...TIERS.slice(current), ...TIERS.slice(0, current)]) {
     const m = MISSIONS.find(mission => !P.done[tier].includes(mission.id));
-    if (m) return { tier, m, promote: tier !== t };
+    if (m) return { tier, m, promote: TIERS.indexOf(tier) > current };
   }
-  return { tier: t, m: MISSIONS[0], replay: true };
+  return { tier: t, m: null, promote: false };
 }
 function nodeOpen(t, m) {
   const ti = TIERS.indexOf(t);
@@ -16,7 +17,7 @@ function nodeOpen(t, m) {
 const XS = [50, 78, 50, 22];
 function renderMap() {
   stopGame(); cur = renderMap; GSET = null;
-  const nt = nextTarget(), curId = nt.replay ? null : nt.tier + ':' + nt.m.id;
+  const nt = nextTarget(), curId = nt.m ? nt.tier + ':' + nt.m.id : null;
   /* elementy szlaku: kolonie (2×2, 3×3...), nagłówki poziomów i węzły misji */
   const items = [{ k: 'planet', pi: 0 }]; let cnt = 0;
   TIERS.forEach(t => {

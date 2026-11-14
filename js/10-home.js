@@ -5,6 +5,7 @@ function homeLine() {
   const t = nextTarget();
   if (boostOn()) return 'Słońce wystrzeliło rozbłysk! Baza ma boost ⚡';
   if (t.promote) return `Poziom zaliczony! Czas na ${DIFFS[t.tier].name} ${DIFFS[t.tier].icon}`;
+  if (!t.m) return 'Wszystkie misje zaliczone! 🏆';
   if (P.streak >= 3) return `Seria ${P.streak} dni! Aura +9999 🔥`;
   return pick(['Miau! Gotowy na misję, kadecie? 🚀', 'Sigma kot melduje gotowość 🗿', 'Dziś kosmos będzie nasz ✨']);
 }
@@ -35,12 +36,12 @@ function sunStatus() {
 }
 function renderHome() {
   stopGame(); cur = renderHome;
-  const d = DIFFS[P.diff], done = P.done[P.diff].length, t = nextTarget();
+  const d = DIFFS[P.diff], t = nextTarget();
   const sun = sunInfo && (sunInfo.strong || sunInfo.demo) ? '🌞' : '☀️';
   let cta;
   if (t.promote) cta = `<button class="btn b-peach" data-act="start-next">🎉 AWANSUJ: POZIOM ${DIFFS[t.tier].name.toUpperCase()} ${DIFFS[t.tier].icon}<small>Nowe, trudniejsze pytania i lepsze nagrody</small></button>`;
-  else if (t.replay) cta = `<button class="btn b-lav" data-act="start-next">POWTÓRKA · MISJA 1 🚀<small>Powtórki dają połowę nagród</small></button>`;
-  else cta = `<button class="btn b-lav" data-act="start-next">GRAJ · ${t.m.title.toUpperCase()} 🚀<small>${done === 0 ? 'Zacznij od pierwszej misji' : 'Następna misja na poziomie ' + d.name.toLowerCase()}</small></button>`;
+  else if (!t.m) cta = '<button class="btn b-lav" data-act="tab" data-arg="map">ZOBACZ UKOŃCZONE MISJE 🗺️</button>';
+  else cta = `<button class="btn b-lav" data-act="start-next">GRAJ · ${t.m.title.toUpperCase()} 🚀<small>Poziom ${DIFFS[t.tier].name.toLowerCase()}</small></button>`;
   show(`<div class="scr">
     ${bar(streakPill(), `<button class="pill ${d.pill}" data-act="changediff">${d.icon} ${d.name} ▾</button>`, starPill())}
     <div class="tc mt-s"><h1 class="logo"><span>Astro</span>Meow</h1></div>
@@ -51,7 +52,7 @@ function renderHome() {
     <div class="grid3 mt">${Object.keys(RES).map(k => `<div class="res"><div class="e">${RES[k].icon}</div><b id="rv-${k}">${fmt(P.res[k])}</b><small style="color:${RES[k].color}">${RES[k].name}</small></div>`).join('')}</div>
     <div class="grow"></div>
     <div class="col gap mt-l">${cta}
-      <button class="btn b-white" data-act="tab" data-arg="map">SZLAK MISJI 🗺️</button></div>
+      ${t.m ? '<button class="btn b-white" data-act="tab" data-arg="map">SZLAK MISJI 🗺️</button>' : ''}</div>
     <div class="card mt tc" style="margin-bottom:1rem">
       <div class="label">Pogoda kosmiczna · NASA DONKI</div>
       <div class="idle" style="font-size:3rem;margin:.2rem 0">${sun}</div>
