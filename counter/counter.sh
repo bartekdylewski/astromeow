@@ -5,10 +5,11 @@
 #   bash counter.sh tunnel         serwer + cloudflared + adres i QR
 #   bash counter.sh stats          podsumowanie z bazy
 #   bash counter.sh export         CSV na stdout
-#   bash counter.sh backup         kopia bazy do data/backup-<czas>.db
+#   bash counter.sh backup         kopia bazy do $BACKUP_DIR (domyślnie ~/astromeow-backup)
 #   bash counter.sh reset          kopia + wyzerowanie licznika (przed pokazem!)
 #   bash counter.sh test           test automatyczny (bez dotykania prawdziwej bazy)
 # Zmienne: PORT=8085  DB=ścieżka  SRC=scena  TUNNEL_NAME=nazwa (stały tunel Cloudflare)
+#          BACKUP_DIR=~/astromeow-backup (ten sam katalog co w run.sh)
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 HERE=$PWD
@@ -17,6 +18,7 @@ PORT=${PORT:-8085}
 DB=${DB:-$HERE/data/counter.db}
 SRC=${SRC:-scena}
 PY=${PYTHON:-python3}
+BACKUP_DIR=${BACKUP_DIR:-$HOME/astromeow-backup}
 
 say()  { printf '\033[1;35m▸ %s\033[0m\n' "$*"; }
 warn() { printf '\033[1;33m! %s\033[0m\n' "$*"; }
@@ -95,8 +97,8 @@ cmd_tunnel() {
 }
 
 cmd_backup() {
-  mkdir -p "$HERE/data"
-  srv backup --db "$DB" --out "$HERE/data/backup-$(date +%Y%m%d-%H%M%S).db"
+  mkdir -p "$BACKUP_DIR"
+  srv backup --db "$DB" --out "$BACKUP_DIR/counter-$(date +%Y%m%d-%H%M%S).db"
 }
 
 cmd_reset() {

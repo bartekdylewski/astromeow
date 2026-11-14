@@ -10,6 +10,7 @@
 # Tunel (raz, w osobnym terminalu/tmux, nie zamykaj):  cloudflared tunnel --url http://127.0.0.1:8085
 # Baza = zwykły plik SQLite counter/data/counter.db. Zostaje między restartami; przy każdym starcie robię jej kopię.
 # Zmienne: PORT=8085 (ten sam co w tunelu!)  DB=ścieżka  PYTHON=python3  KEEP=10 (ile kopii trzymać)
+#          BACKUP_DIR=~/astromeow-backup (kopie bazy poza repo; używa go też counter.sh backup/reset)
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 GAME=$PWD            # katalog aplikacji (tu leży build.py)
@@ -21,7 +22,8 @@ DB=${DB:-$DATA/counter.db}
 PIDF=$DATA/server.pid
 LOGF=$DATA/server.log
 KEEP=${KEEP:-10}
-mkdir -p "$DATA/backups"
+BACKUP_DIR=${BACKUP_DIR:-$HOME/astromeow-backup}
+mkdir -p "$BACKUP_DIR"
 
 say()  { printf '\033[1;35m▸ %s\033[0m\n' "$*"; }
 warn() { printf '\033[1;33m! %s\033[0m\n' "$*"; }
@@ -60,11 +62,12 @@ build() {
 
 backup_db() {
   [[ -s $DB ]] || return 0
-  local out="$DATA/backups/counter-$(date +%Y%m%d-%H%M%S).db"
+  local out="$BACKUP_DIR/counter-$(date +%Y%m%d-%H%M%S).db"
   srv backup --db "$DB" --out "$out" >/dev/null
-  # zostaw tylko KEEP ostatnich kopii
-  ls -1t "$DATA"/backups/counter-*.db 2>/dev/null | tail -n +"$((KEEP + 1))" | xargs -r rm -f
-  say "Kopia bazy: ${out#"$GAME"/}"
+  # zostaw tylko KEEP ostatnich kopii (kasuje wyłącznie counter-*.db; nazwy z czasem sortują się chronologicznie)
+  local old=("$BACKUP_DIR"/counter-*.db)
+  if (( ${#old[@]} > KEEP )); then rm -f -- "${old[@]:0:${#old[@]}-KEEP}"; fi
+  say "Kopia bazy: $out"
 }
 
 # ----- nadzorca: trzyma serwer przy życiu (to jest proces z pidfile) -----
