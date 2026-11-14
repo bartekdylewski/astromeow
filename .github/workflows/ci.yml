@@ -4,7 +4,7 @@ on:
     branches: [main, develop]
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, homelab]   # hosted runnery dają startup_failure na tym koncie; homelab jest darmowy
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
