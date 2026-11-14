@@ -1,10 +1,11 @@
 'use strict';
 /* ===================== MAPA MISJI + SALON GIER ===================== */
 function nextTarget() {
-  const t = P.diff || 'easy', m = MISSIONS.find(x => !P.done[t].includes(x.id));
-  if (m) return { tier: t, m };
-  const nt = TIERS[TIERS.indexOf(t) + 1];
-  if (nt) return { tier: nt, m: MISSIONS.find(x => !P.done[nt].includes(x.id)) || MISSIONS[0], promote: true };
+  const t = P.diff || 'easy';
+  for (const tier of TIERS.slice(TIERS.indexOf(t))) {
+    const m = MISSIONS.find(mission => !P.done[tier].includes(mission.id));
+    if (m) return { tier, m, promote: tier !== t };
+  }
   return { tier: t, m: MISSIONS[0], replay: true };
 }
 function nodeOpen(t, m) {

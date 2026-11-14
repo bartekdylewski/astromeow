@@ -39,7 +39,7 @@ function renderHome() {
   const sun = sunInfo && (sunInfo.strong || sunInfo.demo) ? '🌞' : '☀️';
   let cta;
   if (t.promote) cta = `<button class="btn b-peach" data-act="start-next">🎉 AWANSUJ: POZIOM ${DIFFS[t.tier].name.toUpperCase()} ${DIFFS[t.tier].icon}<small>Nowe, trudniejsze pytania i lepsze nagrody</small></button>`;
-  else if (t.replay) cta = `<button class="btn b-lav" data-act="start-next">POWTÓRKA · MISJA 1 🚀<small>Wszystko zaliczone! Powtórki dają połowę nagród</small></button>`;
+  else if (t.replay) cta = `<button class="btn b-lav" data-act="start-next">POWTÓRKA · MISJA 1 🚀<small>Powtórki dają połowę nagród</small></button>`;
   else cta = `<button class="btn b-lav" data-act="start-next">GRAJ · ${t.m.title.toUpperCase()} 🚀<small>${done === 0 ? 'Zacznij od pierwszej misji' : 'Następna misja na poziomie ' + d.name.toLowerCase()}</small></button>`;
   show(`<div class="scr">
     ${bar(streakPill(), `<button class="pill ${d.pill}" data-act="changediff">${d.icon} ${d.name} ▾</button>`, starPill())}

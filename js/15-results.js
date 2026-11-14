@@ -25,13 +25,14 @@ function renderResult(info) {
   const miss = info.key === 'pack' ? '' : (info.passed ? '' : ` · brakuje ${Math.max(0, info.goal - info.score)}`);
   let body = '', promo = '';
   if (mission && final) {
-    const tierDone = P.done[S.d].length === MISSIONS.length, nt = TIERS[TIERS.indexOf(S.d) + 1];
+    const tierDone = P.done[S.d].length === MISSIONS.length, target = nextTarget();
     body = `<div class="grid3 mt"><div class="stat"><div class="ic">⭐</div><b>+${S.quizPts + set.totPts}</b><small>punkty</small></div>
       <div class="stat"><div class="ic">${RES[g.res].icon}</div><b>+${set.totGain}</b><small>${RES[g.res].name}</small></div>
       <div class="stat"><div class="ic">🧠</div><b>+${S.quizKnow}</b><small>wiedza</small></div></div>
       <p class="muted tc mt-s">Quiz: ${S.correct}/5 ${'⭐'.repeat(S.stars)}</p>`;
-    if (tierDone && nt) promo = `<div class="promo mt-s">🎉 Poziom ${DIFFS[S.d].name} ukończony!<br><span style="font-size:.85rem">W menu czeka awans: ${DIFFS[nt].icon} ${DIFFS[nt].name}</span></div>`;
-    else if (tierDone) promo = `<div class="promo mt-s">🏆 Wszystkie poziomy zaliczone! Jesteś mistrzem kosmosu!</div>`;
+    if (tierDone && target.promote) promo = `<div class="promo mt-s">🎉 Poziom ${DIFFS[S.d].name} ukończony!<br><span style="font-size:.85rem">W menu czeka awans: ${DIFFS[target.tier].icon} ${DIFFS[target.tier].name}</span></div>`;
+    else if (tierDone && TIERS.every(t => P.done[t].length === MISSIONS.length)) promo = `<div class="promo mt-s">🏆 Wszystkie poziomy zaliczone! Jesteś mistrzem kosmosu!</div>`;
+    else if (tierDone) promo = `<div class="promo mt-s">🎉 Poziom ${DIFFS[S.d].name} ukończony!</div>`;
     if (S.newPlanet > 0) { const i = S.newPlanet, pl = PLANETS[i]; promo += `<div class="promo mt-s">🪐 Masz już ${pl.need} ${misPl(pl.need)} na planetę ${pl.name}!<br><span style="font-size:.85rem">${pOpen(i) ? 'Zajrzyj do bazy i leć na nową planetę!' : 'Najpierw zabuduj ' + PLANETS[i - 1].name + ' w bazie.'}</span></div>`; }
   } else {
     body = `<div class="grid3 mt"><div class="stat"><div class="ic">⭐</div><b>+${set.totPts}</b><small>punkty</small></div>

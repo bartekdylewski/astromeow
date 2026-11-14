@@ -761,7 +761,7 @@ function renderHome() {
   const sun = sunInfo && (sunInfo.strong || sunInfo.demo) ? '🌞' : '☀️';
   let cta;
   if (t.promote) cta = `<button class="btn b-peach" data-act="start-next">🎉 AWANSUJ: POZIOM ${DIFFS[t.tier].name.toUpperCase()} ${DIFFS[t.tier].icon}<small>Nowe, trudniejsze pytania i lepsze nagrody</small></button>`;
-  else if (t.replay) cta = `<button class="btn b-lav" data-act="start-next">POWTÓRKA · MISJA 1 🚀<small>Wszystko zaliczone! Powtórki dają połowę nagród</small></button>`;
+  else if (t.replay) cta = `<button class="btn b-lav" data-act="start-next">POWTÓRKA · MISJA 1 🚀<small>Powtórki dają połowę nagród</small></button>`;
   else cta = `<button class="btn b-lav" data-act="start-next">GRAJ · ${t.m.title.toUpperCase()} 🚀<small>${done === 0 ? 'Zacznij od pierwszej misji' : 'Następna misja na poziomie ' + d.name.toLowerCase()}</small></button>`;
   show(`<div class="scr">
     ${bar(streakPill(), `<button class="pill ${d.pill}" data-act="changediff">${d.icon} ${d.name} ▾</button>`, starPill())}
@@ -807,10 +807,11 @@ function flareBoost() { P.boostUntil = Date.now() + 60000; save(); confetti(30, 
 'use strict';
 /* ===================== MAPA MISJI + SALON GIER ===================== */
 function nextTarget() {
-  const t = P.diff || 'easy', m = MISSIONS.find(x => !P.done[t].includes(x.id));
-  if (m) return { tier: t, m };
-  const nt = TIERS[TIERS.indexOf(t) + 1];
-  if (nt) return { tier: nt, m: MISSIONS.find(x => !P.done[nt].includes(x.id)) || MISSIONS[0], promote: true };
+  const t = P.diff || 'easy';
+  for (const tier of TIERS.slice(TIERS.indexOf(t))) {
+    const m = MISSIONS.find(mission => !P.done[tier].includes(mission.id));
+    if (m) return { tier, m, promote: tier !== t };
+  }
   return { tier: t, m: MISSIONS[0], replay: true };
 }
 function nodeOpen(t, m) {
@@ -1365,13 +1366,14 @@ function renderResult(info) {
   const miss = info.key === 'pack' ? '' : (info.passed ? '' : ` · brakuje ${Math.max(0, info.goal - info.score)}`);
   let body = '', promo = '';
   if (mission && final) {
-    const tierDone = P.done[S.d].length === MISSIONS.length, nt = TIERS[TIERS.indexOf(S.d) + 1];
+    const tierDone = P.done[S.d].length === MISSIONS.length, target = nextTarget();
     body = `<div class="grid3 mt"><div class="stat"><div class="ic">⭐</div><b>+${S.quizPts + set.totPts}</b><small>punkty</small></div>
       <div class="stat"><div class="ic">${RES[g.res].icon}</div><b>+${set.totGain}</b><small>${RES[g.res].name}</small></div>
       <div class="stat"><div class="ic">🧠</div><b>+${S.quizKnow}</b><small>wiedza</small></div></div>
       <p class="muted tc mt-s">Quiz: ${S.correct}/5 ${'⭐'.repeat(S.stars)}</p>`;
-    if (tierDone && nt) promo = `<div class="promo mt-s">🎉 Poziom ${DIFFS[S.d].name} ukończony!<br><span style="font-size:.85rem">W menu czeka awans: ${DIFFS[nt].icon} ${DIFFS[nt].name}</span></div>`;
-    else if (tierDone) promo = `<div class="promo mt-s">🏆 Wszystkie poziomy zaliczone! Jesteś mistrzem kosmosu!</div>`;
+    if (tierDone && target.promote) promo = `<div class="promo mt-s">🎉 Poziom ${DIFFS[S.d].name} ukończony!<br><span style="font-size:.85rem">W menu czeka awans: ${DIFFS[target.tier].icon} ${DIFFS[target.tier].name}</span></div>`;
+    else if (tierDone && TIERS.every(t => P.done[t].length === MISSIONS.length)) promo = `<div class="promo mt-s">🏆 Wszystkie poziomy zaliczone! Jesteś mistrzem kosmosu!</div>`;
+    else if (tierDone) promo = `<div class="promo mt-s">🎉 Poziom ${DIFFS[S.d].name} ukończony!</div>`;
     if (S.newPlanet > 0) { const i = S.newPlanet, pl = PLANETS[i]; promo += `<div class="promo mt-s">🪐 Masz już ${pl.need} ${misPl(pl.need)} na planetę ${pl.name}!<br><span style="font-size:.85rem">${pOpen(i) ? 'Zajrzyj do bazy i leć na nową planetę!' : 'Najpierw zabuduj ' + PLANETS[i - 1].name + ' w bazie.'}</span></div>`; }
   } else {
     body = `<div class="grid3 mt"><div class="stat"><div class="ic">⭐</div><b>+${set.totPts}</b><small>punkty</small></div>
