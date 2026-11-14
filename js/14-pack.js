@@ -45,7 +45,8 @@ function startPack() {
       <div class="tray" id="tray"></div></div>`));
   PK = { w: p.w, h: p.h, pieces: genPuzzle(p), t: 0, limit: p.limit, drag: null, over: false, cell: 48, tc: 32 };
   PK.timer = setInterval(() => {
-    if (!PK || PK.over) return; PK.t += .25;
+    if (!PK || PK.over) return;
+    PK.t = Math.min(PK.limit, PK.t + .25 * (1 + .35 * roundPressure(PK.t, PK.limit)));
     const hud = $('#hud'); if (hud) hud.textContent = `📦 ${PK.pieces.filter(x => x.at).length}/${PK.pieces.length} · ⏱️ ${Math.max(0, Math.ceil(PK.limit - PK.t))}`;
     if (PK.t >= PK.limit) endPack(false);
   }, 250);

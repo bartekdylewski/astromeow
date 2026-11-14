@@ -10,7 +10,7 @@ const source = fs.readFileSync(path.join(__dirname, '..', 'js', '13-minigames.js
 
 function flight(y, pipeX) {
   const G = {
-    W: 430, H: 600, y, vy: 0, p: { sp: 2.2, spawn: 1800 },
+    W: 430, H: 600, y, vy: 0, t: 0, limit: 35, p: { sp: 2.2, spawn: 1800 },
     pipes: [{ x: pipeX, gapY: 300, gap: 235, passed: false }],
     score: 0, over: false, lastSpawn: 1000,
   };
