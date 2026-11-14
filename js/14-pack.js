@@ -92,41 +92,49 @@ function occGrid(skip) {
   PK.pieces.forEach(p => { if (p !== skip && p.at) p.cells.forEach(([x, y]) => g[p.at.y + y][p.at.x + x] = true); });
   return g;
 }
-function canPlace(p, gx, gy) {
+function placementError(p, gx, gy) {
+  if (gx < 0 || gy < 0 || gx + p.w > PK.w || gy + p.h > PK.h) {
+    return 'Cały klocek musi zmieścić się w ładowni.';
+  }
   const g = occGrid(p);
-  return p.cells.every(([x, y]) => { const X = gx + x, Y = gy + y; return X >= 0 && Y >= 0 && X < PK.w && Y < PK.h && !g[Y][X]; });
+  return p.cells.some(([x, y]) => g[gy + y][gx + x]) ? 'To miejsce jest już zajęte.' : '';
 }
 function pkDown(e) {
-  const el = e.target.closest('.pc'); if (!el || !PK || PK.over || PK.drag) return;
+  const el = e.target.closest('.pc'); if (!el || !PK || PK.over || PK.drag || e.button !== 0) return;
   const p = PK.pieces.find(q => q.id == el.dataset.id); if (!p) return;
   e.preventDefault();
   const r = el.getBoundingClientRect();
-  PK.drag = { p, sx: e.clientX, sy: e.clientY, u: (e.clientX - r.left) / r.width, v: (e.clientY - r.top) / r.height, moved: false, el: null, ghost: null, gx: null, gy: null };
+  PK.drag = { p, pointerId: e.pointerId, sx: e.clientX, sy: e.clientY, u: (e.clientX - r.left) / r.width, v: (e.clientY - r.top) / r.height, moved: false, el: null, ghost: null };
   addEventListener('pointermove', pkMove); addEventListener('pointerup', pkUp); addEventListener('pointercancel', pkUp);
 }
 function pkMove(e) {
-  const d = PK && PK.drag; if (!d) return;
+  const d = PK && PK.drag; if (!d || PK.over || e.pointerId !== d.pointerId) return;
   if (!d.moved) {
     if (Math.hypot(e.clientX - d.sx, e.clientY - d.sy) < 8) return;
-    d.moved = true; d.p.at = null; renderPack();
+    d.moved = true; renderPack();
     d.el = pieceEl(d.p, PK.cell); d.el.classList.add('drag'); $('#pkroot').appendChild(d.el);
     d.ghost = pieceEl(d.p, PK.cell); d.ghost.classList.add('ghost'); $('#bay').appendChild(d.ghost);
   }
   const root = $('#pkroot').getBoundingClientRect(), bay = $('#bay').getBoundingClientRect();
   const pw = d.p.w * PK.cell, ph = d.p.h * PK.cell;
-  const left = e.clientX - root.left - d.u * pw, top = e.clientY - root.top - d.v * ph - PK.cell * .7;
+  const left = e.clientX - root.left - d.u * pw, top = e.clientY - root.top - d.v * ph;
   d.el.style.left = left + 'px'; d.el.style.top = top + 'px';
   d.gx = Math.round((left - (bay.left - root.left)) / PK.cell); d.gy = Math.round((top - (bay.top - root.top)) / PK.cell);
   d.ghost.style.left = d.gx * PK.cell + 'px'; d.ghost.style.top = d.gy * PK.cell + 'px';
-  d.ghost.classList.toggle('bad', !canPlace(d.p, d.gx, d.gy));
-  d.ghost.style.display = (d.gx < -d.p.w || d.gy < -d.p.h || d.gx > PK.w || d.gy > PK.h) ? 'none' : '';
+  d.error = placementError(d.p, d.gx, d.gy);
+  d.ghost.classList.toggle('bad', Boolean(d.error));
+  d.ghost.style.display = (d.gx + d.p.w <= 0 || d.gy + d.p.h <= 0 || d.gx >= PK.w || d.gy >= PK.h) ? 'none' : '';
 }
-function pkUp() {
+function pkUp(e) {
+  const d = PK && PK.drag; if (!d || e.pointerId !== d.pointerId) return;
   removeEventListener('pointermove', pkMove); removeEventListener('pointerup', pkUp); removeEventListener('pointercancel', pkUp);
-  const d = PK && PK.drag; if (!d) return; PK.drag = null;
-  if (!d.moved) { if (d.p.at) d.p.at = null; else rotatePiece(d.p); renderPack(); return; }
+  if (d.moved && !PK.over && e.type === 'pointerup') pkMove(e);
+  PK.drag = null;
   if (d.el) d.el.remove(); if (d.ghost) d.ghost.remove();
-  if (d.gx !== null && canPlace(d.p, d.gx, d.gy)) d.p.at = { x: d.gx, y: d.gy };
+  if (PK.over || e.type === 'pointercancel') { renderPack(); return; }
+  if (!d.moved) { if (d.p.at) d.p.at = null; else rotatePiece(d.p); renderPack(); return; }
+  if (d.error) toast(d.error, false);
+  else d.p.at = { x: d.gx, y: d.gy };
   renderPack();
   if (PK.pieces.every(p => p.at)) endPack(true);
 }

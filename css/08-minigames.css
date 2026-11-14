@@ -12,9 +12,10 @@ canvas{display:block;border-radius:1.6rem;touch-action:none;box-shadow:0 .3rem 0
 .bcell{position:absolute;border:1px dashed #CBBFF2;border-radius:.3rem}
 .pc{position:relative;touch-action:none;cursor:grab}
 .pc.placed{position:absolute}
-.pc.drag{position:absolute;z-index:20;filter:drop-shadow(0 .5rem .4rem #3B345955)}
-.pc.ghost{position:absolute;opacity:.5;pointer-events:none}
-.pc.ghost.bad{filter:grayscale(1) sepia(1) hue-rotate(300deg) saturate(3)}
+.pc.drag{position:absolute;z-index:20;opacity:.55;pointer-events:none;filter:drop-shadow(0 .5rem .4rem #3B345955)}
+.pc.ghost{position:absolute;pointer-events:none}
+.pc.ghost .pcell{box-shadow:inset 0 0 0 3px #197850}
+.pc.ghost.bad .pcell{box-shadow:inset 0 0 0 3px #B52243}
 .pcell{position:absolute;border:3px solid;border-radius:.45rem;display:flex;align-items:center;justify-content:center}
 .tray{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;align-items:center;align-content:center;min-height:0;flex:1;width:100%;padding:.3rem}
 .slot{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:1rem;border:2px dashed var(--line);padding:.3rem}
