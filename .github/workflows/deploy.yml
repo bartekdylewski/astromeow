@@ -1,0 +1,41 @@
+name: Deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: deploy-homelab
+  cancel-in-progress: false   # kolejkuj, nie przerywaj trwającego deployu
+jobs:
+  deploy:
+    runs-on: [self-hosted, homelab]
+    timeout-minutes: 15
+    steps:
+      # Backup MUSI być pierwszy (przed pull/build); kolejne kroki mogą się wywalić, kopia już jest.
+      - name: Backup bazy przed deployem
+        run: |
+          set -euo pipefail
+          DB=~/astromeow/counter/data/counter.db
+          [ -s "$DB" ] || { echo "Brak bazy, pierwszy deploy - pomijam backup"; exit 0; }
+          DIR=~/astromeow-backup/pre-deploy/$(date +%Y-%m-%d_%H%M%S)-${GITHUB_SHA::7}
+          mkdir -p "$DIR"
+          python3 ~/astromeow/counter/server.py backup --db "$DB" --out "$DIR/counter.db"
+          echo "$DIR" > ~/astromeow-backup/pre-deploy/LAST
+          ls -1dt ~/astromeow-backup/pre-deploy/*/ | tail -n +31 | xargs -r rm -rf
+
+      - name: Pobierz main
+        run: |
+          cd ~/astromeow
+          git fetch origin main
+          git reset --hard origin/main
+
+      - name: Test
+        run: cd ~/astromeow && bash counter/counter.sh test
+
+      - name: Deploy
+        # Pusty RUNNER_TRACKING_ID: bez tego runner po zakończeniu joba ubija wszystkie
+        # procesy z tą zmienną w env, czyli też serwer odpalony przez `run.sh -d`.
+        run: cd ~/astromeow && RUNNER_TRACKING_ID="" bash run.sh -d
+
+      - name: Status
+        run: cd ~/astromeow && bash run.sh status
