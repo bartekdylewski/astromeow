@@ -76,6 +76,7 @@ function finishMission() {
   const nq = S.qs.length; S.stars = S.correct >= nq ? 3 : S.correct >= nq - 1 ? 2 : 1;
   P.stars[d][S.m.id] = Math.max(P.stars[d][S.m.id] || 0, S.stars);
   P.runs++; touchStreak(); save();
-  let k; do { k = pick(Object.keys(GAMES)); } while (k === lastGame && Object.keys(GAMES).length > 1);
+  const available = Object.keys(GAMES).filter(key => key !== lastGame);
+  const k = !player.played && !Object.keys(P.best).length ? 'flappy' : pick(available);
   confetti(18); window.sfx && sfx('win'); newSet(k, true); renderGameIntro(k);
 }

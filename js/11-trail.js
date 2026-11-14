@@ -74,7 +74,7 @@ function renderIntro(m, from = 'home') {
 }
 const introLine = m => `${Math.min(QUIZ_LEN, m.qs[P.diff].length)} pytań, 3 serca i gierka na koniec. Dasz radę!`;
 
-/* ===== LEKCJA przed etapem: Astruś tłumaczy temat pytań (karty z data/stages.json, pole "lesson") ===== */
+/* ===== LEKCJA przed etapem: Astruś tłumaczy temat pytań (karty z config/tutorials.json, pole "lessons") ===== */
 const lessonOf = (m, t = P.diff) => (m.lesson && m.lesson[t]) || [];
 const lessonKey = (m, t = P.diff) => t + ':' + m.id;
 /* start misji: jeśli lekcja na tym poziomie jeszcze nie była widziana, najpierw ona */

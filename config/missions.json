@@ -8,22 +8,6 @@
   "stages": [
     {
       "id": 1, "title": "MeowMission 1: Ubranie", "icon": "🧑‍🚀", "topic": "🌌",
-      "lesson": {
-        "easy": [
-          {"icon":"🧑‍🚀","title":"Skafander to mój strój","text":"Zanim astronauta wyjdzie w kosmos, zakłada skafander. Na głowie ma hełm, a na rękach rękawice."},
-          {"icon":"💻","title":"Praca na stacji","text":"Na stacji astronauci pracują na laptopach i tabletach, tam zapisują notatki i plan dnia. Mają dwie nogi jak Ty, ale w kosmosie raczej się unoszą, niż chodzą!"}
-        ],
-        "mid": [
-          {"icon":"🛡️","title":"Skafander jak mały statek","text":"W kosmosie nie ma powietrza, a temperatura skacze od bardzo zimnej do bardzo gorącej. Skafander chroni przed próżnią i temperaturą. Wyjście astronauty na zewnątrz stacji to spacer kosmiczny."},
-          {"icon":"🎈","title":"Dlaczego się unoszą?","text":"Grawitacja na stacji nadal działa! Astronauci unoszą się, bo razem ze stacją ciągle spadają wokół Ziemi i wciąż omijają jej powierzchnię."},
-          {"icon":"🏋️","title":"Ćwiczenia, sen i okruchy","text":"Astronauci ćwiczą około 2 godzin dziennie, żeby mieć silne mięśnie. Śpią w workach przypiętych do ściany. Okruchy unoszą się w powietrzu i mogą zepsuć sprzęt, więc jedzą tortille zamiast chleba."}
-        ],
-        "hard": [
-          {"icon":"📏","title":"Kosmiczny wzrost","text":"Bez nacisku grawitacji kręgosłup się rozciąga i astronauta robi się trochę wyższy. Po powrocie na Ziemię wraca do dawnego wzrostu."},
-          {"icon":"⚪","title":"Biały i chłodzony","text":"Skafander NASA jest biały, bo odbija światło Słońca, a w pełnym Słońcu w kosmosie robi się ponad 100°C. Pod spodem astronauta nosi bieliznę z cienkimi rurkami, w których krąży zimna woda."},
-          {"icon":"⏱️","title":"Spacer to maraton","text":"Jeden spacer kosmiczny może trwać nawet około 7 godzin. Astronauta pije z woreczka z wodą w skafandrze (około litra), a pod spodem ma bieliznę MAG, która chłonie podczas długiej pracy."}
-        ]
-      },
       "questions": {
         "easy": [
           {"q":"Co astronauta zakłada, zanim wyjdzie w kosmos?","a":"Skafander","w":["Klapki","Kapelusz","Piżamę"]},
@@ -53,22 +37,6 @@
     },
     {
       "id": 2, "title": "MeowMission 2: Tlen i Słońce", "icon": "🛰️", "topic": "☀️",
-      "lesson": {
-        "easy": [
-          {"icon":"🫧","title":"Tlen, woda i światło","text":"Astronauci oddychają tlenem i piją wodę. Rośliny do wzrostu potrzebują światła, tak samo jak te na Twoim parapecie."},
-          {"icon":"☀️","title":"Prąd w kosmosie","text":"Panel słoneczny zamienia światło w prąd. Kiedy jest ciemno, prąd daje bateria. A przed promieniowaniem chroni osłona."}
-        ],
-        "mid": [
-          {"icon":"🔋","title":"Prąd i tlen na ISS","text":"Stacja ISS bierze prąd z ogromnych paneli słonecznych. Tlen do oddychania powstaje z rozkładania wody prądem (to elektroliza). Stacja okrąża Ziemię około 16 razy dziennie."},
-          {"icon":"♻️","title":"Nic się nie marnuje","text":"Zużyta woda, nawet z potu, jest oczyszczana i pita ponownie. Za powietrze i wodę odpowiada system podtrzymywania życia, w skrócie ECLSS."},
-          {"icon":"🌞","title":"Rozbłyski Słońca","text":"Na Słońcu zdarzają się rozbłyski. Duży rozbłysk może zakłócić łączność i satelity, dlatego NASA cały czas go obserwuje."}
-        ],
-        "hard": [
-          {"icon":"🔥","title":"Słoneczna elektrownia","text":"Słońce świeci, bo jego atomy wodoru łączą się w hel. To synteza jądrowa. Światło leci stąd do nas około 8 minut."},
-          {"icon":"💥","title":"Burze na Słońcu","text":"Koronalny wyrzut masy (CME) to chmura naładowanych cząstek wyrzucona ze Słońca. Rozbłyski mają klasy A, B, C, M i X, a każda jest 10 razy silniejsza od poprzedniej. X to najsilniejsze."},
-          {"icon":"🧲","title":"Tarcza Ziemi","text":"Atmosfera pochłania i osłabia większość promieniowania z kosmosu. Wiatr słoneczny zatrzymuje pole magnetyczne Ziemi, dlatego zorze widać blisko biegunów."}
-        ]
-      },
       "questions": {
         "easy": [
           {"q":"Czym astronauta oddycha?","a":"Tlenem","w":["Cukierkiem","Piaskiem","Sokiem"]},
@@ -98,22 +66,6 @@
     },
     {
       "id": 3, "title": "MeowMission 3: Mars i Ziemia", "icon": "🪐", "topic": "🔭",
-      "lesson": {
-        "easy": [
-          {"icon":"🔴","title":"Czerwona Planeta","text":"Mars jest czerwony. Gdyby ludzie zbudowali tam dom, czyli kolonię, rośliny rosłyby w szklarni."},
-          {"icon":"🌍","title":"Nasz dom","text":"Ziemia to planeta w kształcie kuli. Najbliżej Ziemi jest Księżyc."}
-        ],
-        "mid": [
-          {"icon":"🚀","title":"Długa droga na Marsa","text":"Lot na Marsa trwa około 7 miesięcy, a dobry moment na start przypada mniej więcej co 26 miesięcy. Wiadomość radiowa leci stamtąd kilka do kilkunastu minut. Po Marsie jeździ łazik Perseverance."},
-          {"icon":"🧱","title":"Rdza i lekkość","text":"Mars jest czerwony, bo w jego gruncie jest dużo rdzy. Ma słabszą grawitację niż Ziemia: ważyłbyś tam około 38% tego, co tu."},
-          {"icon":"☀️","title":"Kto jest bliżej Słońca?","text":"Bliżej Słońca niż Ziemia są Merkury i Wenus. Ziemia jest trzecią planetą od Słońca."}
-        ],
-        "hard": [
-          {"icon":"⏱️","title":"Doba i rok na Marsie","text":"Doba na Marsie to sol i trwa około 24 godzin i 40 minut. Rok na Marsie jest prawie dwa razy dłuższy niż ziemski."},
-          {"icon":"🌫️","title":"Rzadkie powietrze","text":"Atmosfera Marsa składa się głównie z dwutlenku węgla i jest bardzo rzadka. Ludzie nie mogliby nią oddychać."},
-          {"icon":"🌋","title":"Rekordy Marsa","text":"Na Marsie stoi Olympus Mons, największy wulkan Układu Słonecznego, ma około 22 km. Mars ma dwa małe księżyce, Fobosa i Deimosa. Helikopter Ingenuity jako pierwszy latał na innej planecie. Okno startowe to czas, gdy Ziemia i Mars są ustawione korzystnie do lotu."}
-        ]
-      },
       "questions": {
         "easy": [
           {"q":"Jaki kolor ma Mars?","a":"Czerwony","w":["Zielony","Różowy","Fioletowy"]},
@@ -143,22 +95,6 @@
     },
     {
       "id": 4, "title": "MeowMission 4: Księżyc", "icon": "🌙", "topic": "🌙",
-      "lesson": {
-        "easy": [
-          {"icon":"🌙","title":"Nasz sąsiad","text":"Ziemia ma jeden Księżyc i krąży on wokół niej. Jest kulą pokrytą kraterami, skałami i pyłem. Żadnego sera tam nie ma!"},
-          {"icon":"👨‍🚀","title":"Pierwszy na Księżycu","text":"Jako pierwszy człowiek stanął na Księżycu Neil Armstrong, w 1969 roku."}
-        ],
-        "mid": [
-          {"icon":"🚀","title":"Apollo i Artemis","text":"Armstronga zawiozła na Księżyc misja Apollo 11 w 1969 roku. Teraz NASA przygotowuje powrót w programie Artemis. Artemida to w mitologii siostra bliźniaczka Apolla."},
-          {"icon":"🌗","title":"Fazy Księżyca","text":"Księżyc sam nie świeci, tylko odbija światło Słońca. Fazy powstają, bo widzimy jego oświetloną część pod różnymi kątami. Jedno okrążenie Ziemi trwa około 27 dni."},
-          {"icon":"🔄","title":"Ciągle ten sam bok","text":"Księżyc obraca się raz w czasie jednego okrążenia Ziemi, dlatego widzimy zawsze ten sam bok. Drugi też jest oświetlany przez Słońce."}
-        ],
-        "hard": [
-          {"icon":"🪶","title":"Lekki skok","text":"Grawitacja na Księżycu jest około 6 razy słabsza niż na Ziemi, więc astronauci robili tam wielkie skoki. Powierzchnię pokrywa regolit, czyli warstwa pyłu i odłamków skał."},
-          {"icon":"🌊","title":"Księżyc zmienia Ziemię","text":"Przyciąganie Księżyca powoduje przypływy i odpływy mórz. Gdy Księżyc przejdzie między Ziemią a Słońcem, mamy zaćmienie Słońca."},
-          {"icon":"📏","title":"Jak daleko?","text":"Księżyc jest około 384 tysięcy km od Ziemi. Rakieta Apollo leciała tam mniej więcej 3 dni."}
-        ]
-      },
       "questions": {
         "easy": [
           {"q":"Co krąży wokół Ziemi?","a":"Księżyc","w":["Słońce","Mars","Jowisz"]},
@@ -188,21 +124,6 @@
     },
     {
       "id": 5, "title": "MeowMission 5: Planety", "icon": "🪐", "topic": "🪐",
-      "lesson": {
-        "easy": [
-          {"icon":"☀️","title":"Układ Słoneczny","text":"Układ Słoneczny ma osiem planet i wszystkie krążą wokół Słońca. Jedną z nich jest Ziemia, nasz dom."},
-          {"icon":"🪐","title":"Znane planety","text":"Największa jest Jowisz. Mars to Czerwona Planeta. Saturn ma duże, widoczne pierścienie."}
-        ],
-        "mid": [
-          {"icon":"📍","title":"Kolejność od Słońca","text":"Najbliżej Słońca jest Merkury, najdalej Neptun. Najgorętsza jest jednak Wenus, bo jej gęsta atmosfera zatrzymuje ciepło (ponad 450°C). Za Neptunem krąży planeta karłowata Pluton."},
-          {"icon":"🪨","title":"Skaliste planety","text":"Planetami skalistymi są Merkury, Wenus, Ziemia i Mars. Rok na Ziemi trwa około 365 dni, tyle, ile Ziemia potrzebuje na okrążenie Słońca."}
-        ],
-        "hard": [
-          {"icon":"🌪️","title":"Gazowy olbrzym","text":"Jowisz składa się głównie z wodoru i helu. Ma Wielką Czerwoną Plamę, czyli ogromną burzę, która trwa od setek lat."},
-          {"icon":"🌕","title":"Księżyce planet","text":"Największy księżyc w Układzie Słonecznym to Ganimedes, krąży wokół Jowisza. Tytan, księżyc Saturna, ma gęstą atmosferę."},
-          {"icon":"🔄","title":"Dziwne obroty i długie lata","text":"Uran obraca się jakby leżał na boku. Rok na Marsie trwa prawie 2 ziemskie lata."}
-        ]
-      },
       "questions": {
         "easy": [
           {"q":"Ile planet ma Układ Słoneczny?","a":"Osiem","w":["Dwanaście","Pięć","Trzy"]},
@@ -232,21 +153,6 @@
     },
     {
       "id": 6, "title": "MeowMission 6: Rakiety", "icon": "🚀", "topic": "🚀",
-      "lesson": {
-        "easy": [
-          {"icon":"🚀","title":"Jak startuje rakieta?","text":"Rakiety startują z kosmodromu. Przed startem odliczamy wstecz: 3, 2, 1... Z rakiety wydobywa się ogień i gaz."},
-          {"icon":"🛰️","title":"Dokąd lecą rakiety?","text":"Rakiety lecą w kosmos. Wynoszą tam satelity i astronautów, którzy do kosmosu lecą właśnie rakietą."}
-        ],
-        "mid": [
-          {"icon":"🔥","title":"Jak działa rakieta?","text":"Spalane paliwo wyrzuca gaz w dół, a rakieta leci w górę. To zasada akcji i reakcji. Rakieta ma kilka stopni: puste zbiorniki odpadają i robi się lżejsza."},
-          {"icon":"🏆","title":"Pierwsi w kosmosie","text":"Pierwszy sztuczny satelita, Sputnik 1, poleciał w 1957 roku. Pierwszym człowiekiem w kosmosie był Jurij Gagarin w 1961. Rakiety często startują blisko równika, bo obrót Ziemi daje im dodatkową prędkość."}
-        ],
-        "hard": [
-          {"icon":"🛰️","title":"Czym jest orbita?","text":"Orbita to droga jednego ciała wokół drugiego. Żeby wejść na niską orbitę Ziemi, trzeba lecieć z prędkością około 7,8 km/s."},
-          {"icon":"🌡️","title":"Przeciążenie i powrót","text":"Przy przyspieszaniu rakiety czujemy przeciążenie, jakbyśmy ważyli więcej. Kapsuła wracająca na Ziemię ma osłonę termiczną, bo tarcie o atmosferę bardzo ją rozgrzewa."},
-          {"icon":"♻️","title":"Wielki Saturn i rakiety z odzysku","text":"Astronautów Apollo na Księżyc wyniosła rakieta Saturn V. Rakiety wielokrotnego użytku mają pierwszy stopień, który wraca i może polecieć ponownie."}
-        ]
-      },
       "questions": {
         "easy": [
           {"q":"Co wydobywa się z rakiety przy starcie?","a":"Ogień i gaz","w":["Woda","Konfetti","Śnieg"]},

@@ -31,8 +31,8 @@ js/                 skrypty klasyczne (wspólny zakres, kolejność ma znaczenie
   02-layout         skalowanie (fit) pod pionowy laptop 9:16 i telefon
   03-cat            kot SVG / klatki z cat/, skiny
   04-reactions      brainrotowe reakcje na odpowiedzi
-  00-data           ładowanie data/*.json (DATA)
-  05-questions      buduje MISSIONS/DIFFS z data/stages.json (treść jest w JSON, nie tu)
+  00-data           ładowanie config/*.json (DATA)
+  05-questions      buduje MISSIONS/DIFFS z config/missions.json (treść jest w JSON, nie tu)
   06-base-data      planety, budynki, dodatki
   07-state          stan gry, zapis, ekonomia bazy
   08-ui, 09-start, 10-home, 11-trail   ekrany: start, menu, szlak misji
@@ -48,8 +48,8 @@ cat/                (opcjonalnie) klatki kota: idle_1.png … cheer_3.png albo i
 ```
 
 ## Typowe zmiany
-- Nowe etapy, pytania i lekcje przed etapem: `data/stages.json`, bez kodu. Instrukcja: [docs/JAK-DODAC-ETAP.md](docs/JAK-DODAC-ETAP.md). `python3 build.py` sprawdza dane i wypisze błędy po polsku.
-- `data/*.json` są wbudowywane do `dist/astromeow.html` jako `window.DATA_EMBED`; w dev (index.html z serwera) ładuje je `js/00-data.js` przez fetch. Plik otwarty z `file://` bez builda pokaże komunikat Astrusia.
+- Nowe etapy i pytania: `config/missions.json`. Lekcje i samouczki: `config/tutorials.json`, bez kodu. Instrukcja: [docs/JAK-DODAC-ETAP.md](docs/JAK-DODAC-ETAP.md). `python3 build.py` sprawdza dane i wypisze błędy po polsku.
+- `config/*.json` są wbudowywane do `dist/astromeow.html` jako `window.DATA_EMBED`; w dev (index.html z serwera) ładuje je `js/00-data.js` przez fetch. Plik otwarty z `file://` bez builda pokaże komunikat Astrusia.
 - Progi odblokowania planet i ich mnożniki: `js/06-base-data.js` (`PLANETS`).
 - Skiny i ceny: `js/03-cat.js` (`SKINS`), cena złotego życia: `GOLD_PRICE`.
 - Kolory: `css/01-base.css` (blok `:root`, ograniczona paleta, patrz „Wygląd i Astruś” niżej).
@@ -182,4 +182,11 @@ Zasady: na ekranie jest **jeden** pomarańczowy przycisk (następny krok), reszt
 - Dolne menu (`#nav` w `index.html`) mieści do 6 zakładek (dodaj kolejny `<button data-act="tab" data-arg="...">` i wpis w `setTab()` w `js/20-router.js`).
 
 ## Ciekawostki
-Treść ekranu Ciekawostki (kategorie: Ignis, Polacy w kosmosie, POLSA, ESA, NASA) leży w `data/ciekawostki.json`. Żeby dodać ciekawostkę, dopisz obiekt (`id` unikalny, `title`, `text`, opcjonalnie `astrus` i `source`) do `facts` wybranej kategorii; kod nie wymaga zmian. Pierwsza kategoria na liście jest wyróżniona. Ekran czyta `DATA.ciekawostki` (loader z `js/00-data.js`), a przeczytane ciekawostki zapisuje w `P.facts`.
+Treść ekranu Ciekawostki (kategorie: Ignis, Polacy w kosmosie, POLSA, ESA, NASA) leży w `config/ciekawostki.json`. Żeby dodać ciekawostkę, dopisz obiekt (`id` unikalny, `title`, `text`, opcjonalnie `astrus` i `source`) do `facts` wybranej kategorii; kod nie wymaga zmian. Pierwsza kategoria na liście jest wyróżniona. Ekran czyta `DATA.ciekawostki` (loader z `js/00-data.js`), a przeczytane ciekawostki zapisuje w `P.facts`.
+
+### Profile i ranking
+
+Uruchom grę przez `python3 build.py` i `python3 counter/server.py serve`.
+Serwer trzyma nicki, głos, sesje i rekordy minigier w istniejącym pliku SQLite.
+Skopiowany samodzielny HTML działa offline z lokalnym profilem. Ranking wymaga tego serwera.
+Listy blokowanych nazw są w `config/blocked-words.pl.txt` oraz `config/blocked-words.en.txt`.

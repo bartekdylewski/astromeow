@@ -1,18 +1,16 @@
 # Jak dodać etap, pytania i lekcję (bez programowania)
 
-Cała treść gry z misjami leży w jednym pliku: **`data/stages.json`**. Nie musisz ruszać żadnego kodu.
+Misje i pytania są w **`config/missions.json`**, a lekcje w **`config/tutorials.json`**. Nie musisz ruszać żadnego kodu.
 Nowy etap pojawi się sam na szlaku misji, w odznakach i w quizie.
 
 ## Jak to jest zbudowane
 
 ```
-data/stages.json
+config/missions.json
 ├── difficulties   poziomy trudności (Łatwy, Średni, Trudny), zwykle nie zmieniasz
 └── stages         lista etapów, tu dopisujesz nowe
     └── etap
         ├── id, title, icon, topic   numer, nazwa, ikona na mapie, ikona tematu
-        ├── lesson                   LEKCJA pokazywana PRZED etapem (karty Astrusia)
-        │   └── easy / mid / hard    2–4 karty na każdy poziom
         └── questions                PYTANIA
             └── easy / mid / hard    lista pytań na każdy poziom
 ```
@@ -24,11 +22,11 @@ data/stages.json
 - W misji jest 5 pytań losowanych z puli. Daj **co najmniej 5 pytań na poziom** (im więcej, tym mniej powtórek).
   Gdy dasz mniej, gra użyje tylu, ile jest.
 - Lekcję pokazujemy automatycznie raz (dla danego poziomu), potem jest link „📖 Lekcja” na ekranie startu misji.
-  Jeśli wolisz jedną lekcję na wszystkie poziomy, wpisz `"lesson": [ {karta}, {karta} ]` zamiast `easy/mid/hard`.
+  W `config/tutorials.json` dodaj kartę pod `lessons`, używając identyfikatora misji jako klucza. Wartością może być lista wspólnych kart albo obiekt z listami `easy/mid/hard`.
 
 ## Jak dodać nowy etap (krok po kroku)
 
-1. Otwórz `data/stages.json` w dowolnym edytorze (np. VS Code, Notatnik).
+1. Otwórz `config/missions.json` w dowolnym edytorze (np. VS Code, Notatnik).
 2. Przewiń na sam dół listy `stages`, do końca ostatniego etapu (nawias `}`).
 3. Po ostatnim `}` wstaw **przecinek**, a potem wklej cały blok z przykładu niżej.
 4. Zmień `id` na kolejny numer (nie powtarzaj istniejących, **nie zmieniaj** numerów starych etapów, bo ich
@@ -47,20 +45,6 @@ Uwagi: JSON jest wymagający. Teksty w **podwójnych** cudzysłowach `"..."`, el
 ,
     {
       "id": 7, "title": "MeowMission 7: Gwiazdy", "icon": "⭐", "topic": "🌟",
-      "lesson": {
-        "easy": [
-          {"icon": "⭐", "title": "Gwiazdy świecą same", "text": "Gwiazda to ogromna kula gorącego gazu. Słońce to też gwiazda, najbliższa Ziemi!"},
-          {"icon": "🌌", "title": "Dużo gwiazd", "text": "Na niebie w nocy widać tysiące gwiazd. Wyglądają jak malutkie kropki, bo są bardzo daleko."}
-        ],
-        "mid": [
-          {"icon": "🔭", "title": "Gwiazdozbiory", "text": "Ludzie łączą gwiazdy w obrazki, które nazywamy gwiazdozbiorami. Na przykład Wielki Wóz."},
-          {"icon": "🧭", "title": "Gwiazda Polarna", "text": "Gwiazda Polarna prawie się nie rusza na niebie, dlatego pokazuje północ."}
-        ],
-        "hard": [
-          {"icon": "💡", "title": "Rok świetlny", "text": "Rok świetlny to odległość, jaką światło pokonuje w rok. To jednostka długości, a nie czasu!"},
-          {"icon": "💥", "title": "Życie gwiazd", "text": "Gwiazdy rodzą się w chmurach gazu i po miliardach lat gasną. Największe kończą jako wybuchy zwane supernowymi."}
-        ]
-      },
       "questions": {
         "easy": [
           {"q": "Co to jest Słońce?", "a": "Gwiazda", "w": ["Planeta", "Księżyc", "Kometa"]},
@@ -89,8 +73,6 @@ Uwagi: JSON jest wymagający. Teksty w **podwójnych** cudzysłowach `"..."`, el
 
 (Przykład jest tylko wzorem. Tego etapu nie ma w grze, dopóki go sam nie wkleisz.)
 
-## Inne rzeczy w folderze `data/`
+## Inne rzeczy w folderze `config/`
 
-- `data/ciekawostki.json`: ekran „Ciekawostki”.
-- Każdy nowy plik `data/nazwa.json` jest przy `python3 build.py` automatycznie wbudowany do gry jako `DATA.nazwa`
-  (a w trybie developerskim wczytywany z listy `DATA_NAMES` w `js/00-data.js`).
+- `config/ciekawostki.json`: ekran „Ciekawostki”.

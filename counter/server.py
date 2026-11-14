@@ -14,6 +14,8 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlparse
 
+import players
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS visits (
@@ -34,9 +36,10 @@ BOT_RE = re.compile(r"bot|crawler|spider|preview|facebookexternalhit|slurp|whats
 def connect(path):
     os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
     conn = sqlite3.connect(path, check_same_thread=False, timeout=10)
+    conn.execute("PRAGMA foreign_keys=ON")
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA synchronous=NORMAL")
-    conn.executescript(SCHEMA)
+    conn.executescript(SCHEMA + players.SCHEMA)
     return conn
 
 
@@ -125,6 +128,13 @@ class Handler(BaseHTTPRequestHandler):
     # ---------- POST /api/hit ----------
     def do_POST(self):
         parsed = urlparse(self.path)
+        routes = {
+            "/api/session": "session", "/api/profile": "profile",
+            "/api/run/start": "run/start", "/api/run/finish": "run/finish",
+            "/api/leaderboard": "leaderboard",
+        }
+        if parsed.path in routes:
+            return self._player_request(routes[parsed.path])
         length = int(self.headers.get("Content-Length") or 0)
         if length:
             self.rfile.read(min(length, 65536))
@@ -150,12 +160,52 @@ class Handler(BaseHTTPRequestHandler):
         self._json({"ok": True, "counted": True, "new": is_new}, headers=headers)
 
 
+    def _player_request(self, route):
+        if self.headers.get_content_type() != "application/json":
+            self.close_connection = True
+            return self._json({"error": "Wymagany JSON."}, 415)
+        try:
+            size = int(self.headers.get("Content-Length", "0"))
+            if not 0 < size <= 4096:
+                self.close_connection = True
+                return self._json({"error": "Nieprawidłowy rozmiar żądania."}, 400)
+            data = json.loads(self.rfile.read(size))
+            if not isinstance(data, dict):
+                raise ValueError()
+        except (ValueError, UnicodeError):
+            return self._json({"error": "Nieprawidłowy JSON."}, 400)
+        jar = SimpleCookie(self.headers.get("Cookie", ""))
+        token = jar["astro_session"].value if "astro_session" in jar else ""
+        try:
+            with self.server.lock, self.server.conn:
+                if token and route == "run/finish":
+                    minute = int(time.monotonic() / 60)
+                    if minute != self.server.score_rate_minute:
+                        self.server.score_rate_minute = minute
+                        self.server.score_requests.clear()
+                    count = self.server.score_requests.get(token, 0)
+                    if count >= 30:
+                        raise players.ApiError(429, "Za dużo zgłoszeń wyniku. Spróbuj za chwilę.")
+                    self.server.score_requests[token] = count + 1
+                result, token = players.player_api(self.server.conn, route, data, token)
+        except players.ApiError as exc:
+            return self._json({"error": exc.message}, exc.status)
+        headers = {}
+        if token:
+            secure = self.headers.get("X-Forwarded-Proto") == "https"
+            headers["Set-Cookie"] = ("astro_session=%s; Max-Age=31536000; Path=/; SameSite=Lax; HttpOnly%s"
+                                     % (token, "; Secure" if secure else ""))
+        return self._json(result, headers=headers)
+
+
 # ---------- komendy ----------
 def cmd_serve(a):
     srv = ThreadingHTTPServer((a.host, a.port), Handler)
     srv.daemon_threads = True
     srv.conn = connect(a.db)
     srv.lock = threading.Lock()
+    srv.score_rate_minute = None
+    srv.score_requests = {}
     srv.root = os.path.realpath(a.root)
     srv.live = os.path.abspath(a.live)
     srv.verbose = a.verbose

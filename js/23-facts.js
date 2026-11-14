@@ -1,5 +1,5 @@
 'use strict';
-/* ===================== CIEKAWOSTKI: kosmos po polsku (dane: data/ciekawostki.json -> DATA.ciekawostki) ===================== */
+/* ===================== CIEKAWOSTKI: kosmos po polsku (dane: config/ciekawostki.json -> DATA.ciekawostki) ===================== */
 let FACT = { cat: null, i: 0 };
 const factEsc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const factCats = () => { const d = typeof DATA !== 'undefined' && DATA && DATA.ciekawostki; return d && Array.isArray(d.categories) && d.categories.length ? d.categories : null; };
