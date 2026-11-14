@@ -224,6 +224,11 @@ input { user-select: text; -webkit-user-select: text; font: inherit; }
 .lcard .licon{font-size:2.6rem;line-height:1.1}
 .lcard h3{font-size:1.4rem;font-weight:900;margin:.3rem 0 .2rem}
 .lcard p{font-weight:700;color:var(--muted);margin:.2rem 0 0;font-size:1.06rem;line-height:1.4}
+
+/* Poziomy gest zmienia scenę, pionowy przewija dłuższą treść. */
+.scene-swipe{touch-action:pan-y}
+.scene-dots{margin-top:.8rem}
+.tutcard.scene-swipe{max-height:100%;overflow-y:auto}
 </style>
 <style>
 /* ===== EFEKTY ===== */
@@ -702,14 +707,15 @@ const WELCOME = [
 function renderWelcome(i = 0) {
   stopGame(); cur = () => renderWelcome(i);
   const w = WELCOME[i];
-  show(`<div class="scr">
+  show(`<div class="scr scene-swipe">
     <div class="tc mt">${i === 0 ? '<h1 class="logo sm"><span>Astro</span>Meow</h1>' : ''}</div>
     <div class="grow"></div>
     <div class="col center tc">${cat(w.pose, 13, 'float')}<div class="bubble up big mt tc"><b>${w.t}</b><br>${w.d}</div></div>
-    <div class="dots mt">${WELCOME.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>
     <div class="grow"></div>
-    <div class="foot"><button class="btn b-lav nudge" data-act="welcome-next" data-arg="${i}">${w.b}</button></div>
+    <div class="foot"><button class="btn b-lav nudge" data-act="welcome-next" data-arg="${i}">${w.b}</button>
+      ${sceneDots(WELCOME.length, i)}</div>
   </div>`);
+  bindSceneSwipe($('.scene-swipe'), i, WELCOME.length, renderWelcome);
 }
 </script>
 <script>
@@ -829,16 +835,17 @@ function beginMission(id) {
 function renderLesson(m, i, auto) {
   stopGame(); cur = () => renderLesson(m, i, auto);
   const cards = lessonOf(m), c = cards[i], last = i === cards.length - 1;
-  show(`<div class="scr">
+  show(`<div class="scr scene-swipe">
     ${bar('<span style="width:2.8rem"></span>', `<span class="label">📖 Lekcja · ${m.title.replace(/^MeowMission \d+: /, '')}</span>`, '<span style="width:2.8rem"></span>')}
     <div class="grow"></div>
     <div class="col center tc">${cat(last ? 'cheer' : (i % 2 ? 'think' : 'happy'), 9, 'float')}
       <div class="lcard mt"><div class="licon">${c.icon || '💡'}</div><h3>${c.title}</h3><p>${c.text}</p></div></div>
-    <div class="dots mt">${cards.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>
     <div class="grow"></div>
     <div class="foot"><button class="btn b-lav nudge" data-act="lesson" data-arg="${m.id}:${i + 1}:${auto ? 1 : 0}">${last ? (auto ? 'DO PYTAŃ 🚀' : 'GOTOWE') : 'DALEJ ›'}</button>
-      ${last ? '' : `<button class="link w100" data-act="lesson-end" data-arg="${m.id}:${auto ? 1 : 0}">pomiń</button>`}</div>
+      ${last ? '' : `<button class="link w100" data-act="lesson-end" data-arg="${m.id}:${auto ? 1 : 0}">pomiń</button>`}
+      ${sceneDots(cards.length, i)}</div>
   </div>`);
+  bindSceneSwipe($('.scene-swipe'), i, cards.length, next => renderLesson(m, next, auto));
 }
 /* arg "id:indeks:auto" (auto=1: po lekcji startuje quiz) */
 function lessonStep(arg) {
@@ -1505,11 +1512,12 @@ function renderTut() {
   const old = $('#tut'); if (old) old.remove();
   const list = DATA.tutorials[TUT.k], st = list[TUT.i], last = TUT.i === list.length - 1;
   const o = document.createElement('div'); o.id = 'tut'; o.className = 'tutov';
-  o.innerHTML = `<div class="tutcard">${cat(last ? 'cheer' : 'idle', 6)}<div class="tutstep">${st.e}</div><h3>${st.t}</h3><p>${st.d}</p>
-    <div class="dots mb">${list.map((_, i) => `<i class="${i === TUT.i ? 'on' : ''}"></i>`).join('')}</div>
+  o.innerHTML = `<div class="tutcard scene-swipe">${cat(last ? 'cheer' : 'idle', 6)}<div class="tutstep">${st.e}</div><h3>${st.t}</h3><p>${st.d}</p>
     <button class="btn b-lav" data-act="tut-next">${last ? 'ROZUMIEM' : 'DALEJ ›'}</button>
-    ${last ? '' : '<button class="link w100" data-act="tut-skip">pomiń</button>'}</div>`;
+    ${last ? '' : '<button class="link w100" data-act="tut-skip">pomiń</button>'}
+    ${sceneDots(list.length, TUT.i)}</div>`;
   device.appendChild(o);
+  bindSceneSwipe(o.querySelector('.scene-swipe'), TUT.i, list.length, next => { TUT.i = next; renderTut(); });
 }
 function closeTut() { const o = $('#tut'); if (o) o.remove(); if (TUT) { P.tut[TUT.k] = true; save(); } TUT = null; }
 </script>
@@ -1829,6 +1837,46 @@ document.addEventListener('keydown', event => {
 });
 for (const name of ['gesturestart', 'gesturechange']) {
   document.addEventListener(name, event => event.preventDefault(), { passive: false });
+}
+</script>
+<script>
+'use strict';
+
+function sceneDots(count, current) {
+  const dots = Array.from({ length: count }, (_, index) => `<i class="${index === current ? 'on' : ''}"></i>`).join('');
+  return `<div class="dots scene-dots" role="img" aria-label="Scena ${current + 1} z ${count}">${dots}</div>`;
+}
+
+function bindSceneSwipe(surface, current, count, render) {
+  let start = null;
+  let suppressClick = false;
+  surface.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.button !== 0) return;
+    suppressClick = false;
+    if (event.target.closest('button, a, input, select, textarea')) return;
+    start = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  });
+  surface.addEventListener('pointercancel', event => {
+    if (event.pointerId === start?.id) start = null;
+  });
+  surface.addEventListener('pointerleave', event => {
+    if (event.pointerType === 'mouse' && event.pointerId === start?.id) start = null;
+  });
+  surface.addEventListener('pointerup', event => {
+    if (event.pointerId !== start?.id) return;
+    const dx = event.clientX - start.x, dy = event.clientY - start.y;
+    start = null;
+    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.35) return;
+    suppressClick = true;
+    const next = current + (dx < 0 ? 1 : -1);
+    if (next >= 0 && next < count) render(next);
+  });
+  surface.addEventListener('click', event => {
+    if (!suppressClick || !event.detail) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    suppressClick = false;
+  }, true);
 }
 </script>
 <script>
