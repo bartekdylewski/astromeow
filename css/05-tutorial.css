@@ -1,0 +1,4 @@
+/* ===== TUTORIAL ===== */
+.tutov{position:absolute;inset:0;z-index:80;background:rgba(59,52,89,.6);display:flex;align-items:center;justify-content:center;padding:1.2rem}
+.tutcard{width:100%;max-width:28rem;background:#fff;border-radius:2rem;padding:1.3rem 1.3rem 1.1rem;text-align:center;animation:pop .4s cubic-bezier(.3,1.6,.5,1)}
+.tutcard h3{font-size:1.5rem;font-weight:900;margin:.2rem 0}.tutcard p{font-weight:700;color:#5B5578;margin:.3rem 0 .9rem;font-size:1.02rem;line-height:1.3}
