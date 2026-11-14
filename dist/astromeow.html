@@ -615,8 +615,13 @@ function load() {
     const s = JSON.parse(raw), f = fresh();
     P = { ...f, ...s, res: { ...f.res, ...s.res }, done: { ...f.done, ...s.done }, best: { ...s.best }, stars: { ...f.stars, ...s.stars }, seen: { ...f.seen, ...s.seen },
           tut: { ...f.tut, ...s.tut }, skins: Array.isArray(s.skins) && s.skins.length ? s.skins : ['classic'], planets: PLANETS.map((_, i) => ({ grid: { ...(((s.planets || [])[i] || {}).grid || {}) } })) };
-    const away = Math.min(7200, (Date.now() - (s.lastSave || Date.now())) / 1000);
-    if (away > 5) { const g = rates(); for (const k in g) P.res[k] += g[k] * away; }
+    const now = Date.now(), savedAt = s.lastSave || now;
+    const away = Math.min(7200, (now - savedAt) / 1000);
+    if (away > 5) {
+      const boosted = Math.max(0, Math.min(away, (P.boostUntil - savedAt) / 1000));
+      const g = rates(false);
+      for (const k in g) P.res[k] += g[k] * (away + boosted * (BOOST_MULT - 1));
+    }
   } catch (_) {}
 }
 function touchStreak() {
@@ -637,22 +642,23 @@ function pReason(i) {
   return miss.join(' i ');
 }
 const tileAt = (x, y) => pGrid(P.planet)[key(x, y)] || null;
+const BOOST_MULT = 1.5;
 const boostOn = () => Date.now() < P.boostUntil;
 const satLevels = i => Object.values(pGrid(i)).filter(t => t.type === 'satelita').reduce((a, t) => a + t.level, 0);
-const globalMult = i => (1 + Math.min(1, TYPES.satelita.aura * satLevels(i))) * (boostOn() ? 1.5 : 1);
+const globalMult = (i, boosted) => (1 + Math.min(1, TYPES.satelita.aura * satLevels(i))) * (boosted ? BOOST_MULT : 1);
 const scaleC = (c, m) => Object.fromEntries(Object.entries(c).map(([k, v]) => [k, Math.ceil(v * m)]));
 const placeCost = (type, i) => scaleC(TYPES[type].base, PLANETS[i].cm);
 const addonCost = (id, i) => scaleC(ADDONS[id].cost, PLANETS[i].cm);
 function upgradeCost(t, i) { const out = {}, def = TYPES[t.type]; for (const k in def.base) out[k] = Math.ceil(def.base[k] * (t.level + 1) * 1.5 * PLANETS[i].cm); return out; }
-function buildingRates(t, i) {
+function buildingRates(t, i, boosted = boostOn()) {
   const out = {}, def = TYPES[t.type]; if (!def || !def.prod) return out;
   const am = 1 + t.addons.reduce((a, id) => a + ADDONS[id].mult, 0);
-  for (const k in def.prod) out[k] = def.prod[k] * t.level * am * globalMult(i) * PLANETS[i].pm;
+  for (const k in def.prod) out[k] = def.prod[k] * t.level * am * globalMult(i, boosted) * PLANETS[i].pm;
   return out;
 }
-function rates() {
+function rates(boosted = boostOn()) {
   const r = { wiedza: 0, czesci: 0, meteo: 0 };
-  PLANETS.forEach((_, i) => { for (const t of Object.values(pGrid(i))) { const b = buildingRates(t, i); for (const k in b) r[k] += b[k]; } });
+  PLANETS.forEach((_, i) => { for (const t of Object.values(pGrid(i))) { const b = buildingRates(t, i, boosted); for (const k in b) r[k] += b[k]; } });
   return r;
 }
 const canAfford = c => Object.keys(c).every(k => P.res[k] >= c[k]);
