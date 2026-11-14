@@ -1101,16 +1101,20 @@ function updShooter(ts, dt) {
 /* --- Przelot z kotem --- */
 function updFlappy(ts, dt) {
   const { W, H, p } = G, k = dt * 60;
+  const catX = 110, collisionRange = 42;
   G.vy += .42 * k; G.y += G.vy * k;
+  if (G.y < 10 || G.y > H - 10) { G.over = true; return; }
   if (ts - G.lastSpawn > p.spawn) { G.pipes.push({ x: W + 40, gapY: rnd(170, H - 170), gap: Math.max(p.gap - 40, p.gap - G.score * 4), passed: false }); G.lastSpawn = ts; }
   const sp = (p.sp + G.score * .08) * k;
-  G.pipes.forEach(pp => {
+  for (const pp of G.pipes) {
     pp.x -= sp;
-    if (!pp.passed && pp.x < 110) { pp.passed = true; G.score++; }
-    if (Math.abs(pp.x - 110) < 42) { const top = pp.gapY - pp.gap / 2, bot = pp.gapY + pp.gap / 2; if (G.y - 22 < top || G.y + 22 > bot) G.over = true; }
-  });
+    if (Math.abs(pp.x - catX) < collisionRange) {
+      const top = pp.gapY - pp.gap / 2, bot = pp.gapY + pp.gap / 2;
+      if (G.y - 22 < top || G.y + 22 > bot) { G.over = true; return; }
+    }
+    if (!pp.passed && pp.x <= catX - collisionRange) { pp.passed = true; G.score++; }
+  }
   G.pipes = G.pipes.filter(pp => pp.x > -60);
-  if (G.y < 10 || G.y > H - 10) G.over = true;
 }
 /* --- Łapanie próbek --- */
 function updCatch(ts, dt) {
