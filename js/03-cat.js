@@ -92,12 +92,27 @@ const skinOf = id => SKINS.find(x => x.id === (id || (typeof P !== 'undefined' &
 /* dodatki mimiki (jedna grafika kota + efekt przy mordce), gdy brak osobnych klatek */
 const POSE_FX = { happy: '✨', cheer: '🎉', think: '❓' };
 const CAT_K = 1.7;    // globalny mnożnik rozmiaru kota (#21); .cat ma max 78vw w CSS
+/* #20: mimika narysowanych skinów. Oczy leżą w tym samym miejscu na każdej grafice (420×420), więc jedna nakładka SVG
+   zakrywa je kolorem pyszczka i rysuje minę dla pozy; idle mruga. Elegant ma monokl na prawym oku: mruga tylko lewym. */
+const ART_EYES = [[77, 137], [136, 136]], FACE = '#D09A5A', INK = '#3D3A2C';
+function artFace(pose, art) {
+  const eyes = art === 'gentleman' ? ART_EYES.slice(0, 1) : ART_EYES;
+  const lid = ([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="12" ry="18" fill="${FACE}"/>`;
+  const ln = d => `<path d="${d}" stroke="${INK}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`;
+  let g = '';
+  if (pose === 'happy' || pose === 'cheer') g = eyes.map(e => lid(e) + ln(`M${e[0] - 11} ${e[1] + 6} Q${e[0]} ${e[1] - 10} ${e[0] + 11} ${e[1] + 6}`)).join('')
+    + (pose === 'cheer' ? `<path d="M96 171 Q105 187 114 171Z" fill="#E9738C" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>` : '');
+  else if (pose === 'sad') g = ln('M64 120 L88 112') + ln('M125 112 L149 120') + `<path class="tear" d="M70 158 q-6 11 0 15 q6 -4 0 -15z" fill="#8FD0FF"/>`;
+  else if (pose === 'think') g = ln('M124 110 L149 103');
+  else g = `<g class="lid">${eyes.map(e => lid(e) + ln(`M${e[0] - 10} ${e[1] + 2} Q${e[0]} ${e[1] + 7} ${e[0] + 10} ${e[1] + 2}`)).join('')}</g>`;
+  return `<svg class="face" viewBox="0 0 420 420" aria-hidden="true">${g}</svg>`;
+}
 function cat(pose = 'idle', size = 6, cls = '', skin) {
   size = +(size * CAT_K).toFixed(2);
   const sk = skinOf(skin);
   const fr = CATX[pose] || CATX.idle;
-  const inner = sk.art ? `<img src="${assetSrc('assets/skins/' + sk.art + '.webp')}" alt="Astruś" draggable="false">` : fr ? `<img data-pose="${pose}" src="${fr[0].src}" alt="Astruś" draggable="false">` : catSvg(pose);
-  const fx = !sk.art && fr && !CATX[pose] && POSE_FX[pose] ? `<span class="cpose" style="font-size:${(size * .3).toFixed(2)}rem">${POSE_FX[pose]}</span>` : '';
+  const inner = sk.art ? `<img src="${assetSrc('assets/skins/' + sk.art + '.webp')}" alt="Astruś" draggable="false">${artFace(pose, sk.art)}` : fr ? `<img data-pose="${pose}" src="${fr[0].src}" alt="Astruś" draggable="false">` : catSvg(pose);
+  const fx = (sk.art || fr && !CATX[pose]) && POSE_FX[pose] ? `<span class="cpose" style="font-size:${(size * .3).toFixed(2)}rem">${POSE_FX[pose]}</span>` : '';
   return `<span class="cat p-${pose} ${fr ? 'ext' : ''} ${sk.art ? 'art' : ''} ${cls}" style="width:${size}rem;height:${size}rem"><span class="cfx" style="${sk.fx ? 'filter:' + sk.fx : ''}">${inner}</span>${fx}</span>`;
 }
 /* kot tłumaczy: wspólny komponent "kot + dymek" do wszystkich ekranów i gier */
