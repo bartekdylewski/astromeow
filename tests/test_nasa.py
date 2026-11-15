@@ -48,6 +48,29 @@ class NasaTests(unittest.TestCase):
         self.assertEqual(data['apod']['title'], 'T')
         self.assertNotIn('errors', data)
 
+    def test_skip_leaves_a_source_untouched(self):
+        calls = []
+        data = nasa.build('K', lambda path, key, **p: calls.append(path) or [], skip=('apod',))
+        self.assertNotIn('/planetary/apod', calls)
+        self.assertIsNone(data['apod'])
+
+    def test_apod_is_fetched_hourly_but_donki_every_run(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = nasa.Cache('K', str(Path(tmp) / 'c.json'))
+            seen = []
+            def fake(key, fetch=None, today=None, skip=()):
+                seen.append(skip)
+                return {'updated': 1, 'flare': None, 'storm': {'kp': 5}, 'cme': None, 'apod': {'title': 'T'}}
+            with patch.object(nasa, 'build', fake):
+                cache.refresh()   # pierwszy raz pobiera APOD
+                cache.refresh()   # tuż potem pomija APOD, DONKI dalej pobiera
+            self.assertEqual(seen, [(), ('apod',)])
+            self.assertEqual(cache.get()['apod'], {'title': 'T'})   # zostaje z poprzedniego odświeżenia
+
+    def test_interval_depends_on_key(self):
+        self.assertEqual(nasa.EVERY, 300)
+        self.assertGreater(nasa.EVERY_DEMO, nasa.EVERY)
+
     def test_cache_keeps_last_good_data_and_hides_errors(self):
         with tempfile.TemporaryDirectory() as tmp:
             cache = nasa.Cache('K', str(Path(tmp) / 'c.json'))
