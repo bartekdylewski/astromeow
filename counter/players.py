@@ -24,11 +24,12 @@ CREATE TABLE IF NOT EXISTS scores (
 CREATE INDEX IF NOT EXISTS game_scores ON scores(game, score DESC);
 """
 
-GAMES = {'flappy': (60, 1.5), 'shooter': (120, 1), 'catch': (300, 1),
-         'lander': (100, 2), 'pack': (45, 1)}
-RUN_TTL = 300
+# gra: (maks. punktów na sekundę gry, minimalny czas próby w s); gry nie mają limitu czasu, więc limit rośnie z czasem
+GAMES = {'flappy': (2, 1.5), 'shooter': (4, 1), 'catch': (8, 1), 'lander': (2, 2), 'pack': (2, 1)}
+SCORE_BASE = 20
+RUN_TTL = 3600
 CONFIG = Path(__file__).resolve().parent.parent / 'config'
-LEET = str.maketrans('01345789ł', 'oieastbgl')
+LEET = str.maketrans('01345789łv', 'oieastbglw')   # v→w: "cvel" = "cwel"
 
 
 def normalize_name(name):
@@ -46,7 +47,24 @@ def load_blocklist():
     return re.compile(r'(?<!\w)(?:' + '|'.join(patterns) + r')(?!\w)')
 
 
+def squash(name):
+    """Nick bez odstępów, ch→h, bez powtórzeń liter: "C w_e e l" → "cwel", "chuuj" → "huj"."""
+    name = re.sub(r'[^a-z0-9]', '', normalize_name(name)).replace('ch', 'h')
+    return re.sub(r'(.)\1+', r'\1', name)
+
+
+def load_roots():
+    roots = (CONFIG / 'blocked-roots.txt').read_text(encoding='utf-8').splitlines()
+    return [squash(r) for r in roots if r.strip() and not r.startswith('#')]
+
+
 BLOCKED = load_blocklist()
+BLOCKED_ROOTS = load_roots()
+
+
+def nickname_blocked(nickname):
+    name = normalize_name(nickname)
+    return bool(BLOCKED.search(name)) or any(root in squash(nickname) for root in BLOCKED_ROOTS)
 
 
 class ApiError(Exception):
@@ -86,7 +104,7 @@ def player_api(conn, route, data, token):
         if not isinstance(nickname, str) or not 1 <= len(nickname) <= 32 or any(
                 not (c.isalpha() or c.isdecimal() or c in ' _') for c in nickname):
             raise ApiError(400, 'Nick musi mieć 1–32 znaki: litery, cyfry, spacje lub _.')
-        if BLOCKED.search(normalize_name(nickname)):
+        if nickname_blocked(nickname):
             raise ApiError(400, 'Ten nick zawiera niedozwolone słowo.')
         key = nickname.casefold()
         old_key, tag = conn.execute('SELECT name_key, tag FROM players WHERE id=?', (player,)).fetchone()
@@ -123,13 +141,15 @@ def player_api(conn, route, data, token):
         return {'runId': run_id}, None
 
     score, run_id = data.get('score'), data.get('runId')
-    cap, minimum = GAMES[game]
-    if type(score) is not int or not 0 <= score <= cap or not isinstance(run_id, str):
+    rate, minimum = GAMES[game]
+    if type(score) is not int or score < 0 or not isinstance(run_id, str):
         raise ApiError(400, 'Nieprawidłowy wynik.')
     run = conn.execute('SELECT started FROM runs WHERE id=? AND player=? AND game=? AND closed=0',
                        (run_id, player, game)).fetchone()
     if not run or not minimum <= now - run[0] <= RUN_TTL:
         raise ApiError(409, 'Ta próba jest zamknięta albo trwała zbyt krótko.')
+    if score > SCORE_BASE + rate * (now - run[0]):
+        raise ApiError(400, 'Nieprawidłowy wynik.')
     conn.execute('UPDATE runs SET closed=1 WHERE id=?', (run_id,))
     conn.execute('INSERT INTO scores VALUES(?,?,?) ON CONFLICT(player,game) DO UPDATE '
                  'SET score=MAX(scores.score,excluded.score)', (player, game, score))

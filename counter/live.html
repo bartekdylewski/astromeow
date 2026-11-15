@@ -34,6 +34,8 @@
     <div class="card"><b id="active">–</b><span>aktywni (5 min)</span></div>
     <div class="card"><b id="hits">–</b><span>wszystkie uruchomienia</span></div>
     <div class="card"><b id="new1">–</b><span>nowi (ostatnia minuta)</span></div>
+    <div class="card"><b id="active60">–</b><span>aktywni (ostatnia godzina)</span></div>
+    <div class="card"><b id="new60">–</b><span>nowi (ostatnia godzina)</span></div>
   </div>
   <div id="src"></div>
   <div id="dot"></div>
@@ -59,6 +61,7 @@
       const s = await (await fetch('/api/stats', { cache: 'no-store' })).json();
       setNumber(s.unique);
       $('active').textContent = s.active5; $('hits').textContent = s.hits; $('new1').textContent = s.new1;
+      $('active60').textContent = s.active60; $('new60').textContent = s.new60;
       const parts = Object.entries(s.by_src);
       $('src').textContent = parts.length > 1 ? parts.map(([k, v]) => k + ': ' + v).join('   ·   ') : '';
       $('dot').className = 'ok';

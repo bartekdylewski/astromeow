@@ -36,7 +36,7 @@ async function initPlayer() {
 
 function nicknameAllowed(nickname) {
   const normalize = value => value.toLowerCase().normalize('NFKD').replace(/\p{M}/gu, '')
-    .replace(/[01345789ł]/g, c => 'oieastbgl'['01345789ł'.indexOf(c)])
+    .replace(/[01345789łv]/g, c => 'oieastbglw'['01345789łv'.indexOf(c)])
     .replace(/[ _]+/g, ' ').trim();
   const words = normalize(nickname).split(' ');
   return ![...DATA['blocked-words.pl'], ...DATA['blocked-words.en']].some(entry => {

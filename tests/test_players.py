@@ -44,11 +44,12 @@ class PlayerTests(unittest.TestCase):
 
     def test_blocklist_handles_leetspeak_phrases_and_whole_words(self):
         _, token = self.api('session')
-        for name in ('KURW4', 'Zabij_się', 'p13rdolony', 'nice_sh1t'):
+        for name in ('KURW4', 'Zabij_się', 'p13rdolony', 'nice_sh1t', 'cvel', 'C_v3eel', 'k u r w a', 'chuuuj', 'xXkurwiszonXx'):
             with self.subTest(name=name):
                 self.rejects(400, 'profile', token, nickname=name, pitch=0)
-        profile, _ = self.api('profile', token, nickname='Klasyczny Cass', pitch=0)
-        self.assertEqual(profile['nickname'], 'Klasyczny Cass')
+        for name in ('Klasyczny Cass', 'Kanał', 'Fuksja', 'Ciotka', 'Szymon'):
+            profile, _ = self.api('profile', token, nickname=name, pitch=0)
+            self.assertEqual(profile['nickname'], name)
 
     def test_rank_gap_ties_best_score_and_game_isolation(self):
         _, top = self.player('Zosia')
@@ -86,6 +87,13 @@ class PlayerTests(unittest.TestCase):
                 self.api('run/start', token, game='flappy')
             self.rejects(429, 'run/start', token, game='flappy')
             self.api('run/start', other, game='flappy')
+
+    def test_score_cap_grows_with_game_time(self):
+        _, token = self.player('Ola')
+        self.assertEqual(self.score(token, 127, game='shooter', duration=120)['you']['score'], 127)
+        with self.assertRaises(players.ApiError):
+            self.score(token, 127, game='shooter', duration=10)
+        self.assertEqual(self.score(token, 900, game='flappy', duration=1200)['you']['score'], 900)
 
 
 if __name__ == '__main__':

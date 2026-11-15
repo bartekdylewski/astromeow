@@ -59,9 +59,12 @@ def get_stats(conn, lock):
         unique, hits = conn.execute("SELECT COUNT(*), COALESCE(SUM(hits),0) FROM visits").fetchone()
         active5 = conn.execute("SELECT COUNT(*) FROM visits WHERE last_seen >= ?", (now - 300,)).fetchone()[0]
         new1 = conn.execute("SELECT COUNT(*) FROM visits WHERE first_seen >= ?", (now - 60,)).fetchone()[0]
+        active60 = conn.execute("SELECT COUNT(*) FROM visits WHERE last_seen >= ?", (now - 3600,)).fetchone()[0]
+        new60 = conn.execute("SELECT COUNT(*) FROM visits WHERE first_seen >= ?", (now - 3600,)).fetchone()[0]
         by_src = conn.execute("SELECT src, COUNT(*) FROM visits GROUP BY src ORDER BY 2 DESC").fetchall()
     return {
         "unique": unique, "hits": hits, "active5": active5, "new1": new1,
+        "active60": active60, "new60": new60,
         "by_src": {(s or "(brak)"): n for s, n in by_src}, "ts": now,
     }
 
@@ -228,6 +231,8 @@ def cmd_stats(a):
     print("Wszystkie wejścia:   %d" % s["hits"])
     print("Aktywni (5 min):     %d" % s["active5"])
     print("Nowi (ostatnia min): %d" % s["new1"])
+    print("Aktywni (1 h):       %d" % s["active60"])
+    print("Nowi (1 h):          %d" % s["new60"])
     for src, n in s["by_src"].items():
         print("  src=%-12s %d" % (src, n))
 
