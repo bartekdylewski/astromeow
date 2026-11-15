@@ -12,3 +12,8 @@
 .fsrc{display:inline-block}
 .fact .foot{margin-top:.5rem}
 .fcard .fnew{float:right;margin:0 0 .3rem .5rem;font-size:.8rem}
+.fact-photo{clear:both;margin:.75rem 0 .9rem}
+.fact-photo img{display:block;width:100%;aspect-ratio:16/10;object-fit:contain;background:#201a33;border-radius:.85rem}
+.fact-photo figcaption{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:.55rem;color:var(--muted);font-size:.78rem;line-height:1.35}
+.fact-photo figcaption span{padding-top:.35rem}
+.fact-photo figcaption a{display:inline-flex;align-items:center;min-height:44px;color:inherit;overflow-wrap:anywhere}

@@ -12,61 +12,129 @@
           "title": "Ignis znaczy ogień",
           "text": "Ignis to po łacinie „ogień”. Nazwa ma przypominać iskrę, która rozpala nową erę polskich badań kosmicznych. Drugie „i” w napisie narysowano jak Międzynarodową Stację Kosmiczną.",
           "astrus": "Ogień? Wolę ciepłe miejsce na parapecie!",
-          "source": "https://www.esa.int/ESA_Multimedia/Videos/2024/12/Ignis_mission_name_and_patch_explained?rand=771654"
+          "source": "https://www.esa.int/ESA_Multimedia/Videos/2024/12/Ignis_mission_name_and_patch_explained?rand=771654",
+          "image": {
+            "file": "ignis-1.webp",
+            "alt": "Sławosz Uznański-Wiśniewski obok oficjalnej naszywki Ignis z biało-czerwonym orłem",
+            "source": "https://www.esa.int/ESA_Multimedia/Images/2024/11/Ignis_mission_patch_explained3",
+            "credit": "ESA",
+            "license": "ESA Standard Licence"
+          }
         },
         {
           "id": "ignis-2",
           "title": "Orzeł na naszywce",
           "text": "Na naszywce misji jest biało-czerwony orzeł. Jego skrzydła powtarzają kształt grani Orlej Perci w Tatrach, a ogon wygląda jak płomień. Gwiazdy układają się w gwiazdozbiór Tarczy Sobieskiego.",
           "astrus": "Orzeł? Ja jestem orzeł... kot!",
-          "source": "https://www.national-geographic.pl/kosmos/pierwsza-polska-misja-naukowo-technologiczna-na-stacje-kosmiczna-ma-juz-nazwe-i-oficjalna-naszywke/"
+          "source": "https://www.national-geographic.pl/kosmos/pierwsza-polska-misja-naukowo-technologiczna-na-stacje-kosmiczna-ma-juz-nazwe-i-oficjalna-naszywke/",
+          "image": {
+            "file": "ignis-2.webp",
+            "alt": "Grań Orlej Perci w Tatrach, której kształt zainspirował skrzydła orła na naszywce Ignis",
+            "source": "https://commons.wikimedia.org/wiki/File:Orla_Per%C4%87-panorama.JPG",
+            "credit": "Paweł Opioła",
+            "license": "CC BY-SA 4.0"
+          }
         },
         {
           "id": "ignis-3",
           "title": "Start rakiety Falcon 9",
           "text": "Misja poleciała w ramach lotu Axiom Mission 4. Start odbył się 25 czerwca 2025 roku rakietą Falcon 9 z Florydy. Załoga leciała w kapsule Crew Dragon o imieniu „Grace”.",
           "astrus": "Trzy, dwa, jeden... miau!",
-          "source": "https://en.wikipedia.org/wiki/Axiom_Mission_4"
+          "source": "https://en.wikipedia.org/wiki/Axiom_Mission_4",
+          "image": {
+            "file": "ignis-3.webp",
+            "alt": "Rakieta Falcon 9 startuje z misją Axiom 4 z Centrum Kosmicznego Kennedy’ego",
+            "source": "https://commons.wikimedia.org/wiki/File:Axiom_4_Launches_from_Kennedy_Space_Center_%289131463%29.jpg",
+            "credit": "U.S. Space Force photo by DeAnna Murano",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "ignis-4",
           "title": "Załoga czterech krajów",
           "text": "Razem z naszym astronautą leciała Peggy Whitson z USA, Shubhanshu Shukla z Indii i Tibor Kapu z Węgier. Sławosz Uznański-Wiśniewski był pierwszym Polakiem na Międzynarodowej Stacji Kosmicznej.",
           "astrus": "Międzynarodowa załoga, jak w moim kocim klubie!",
-          "source": "https://polsa.gov.pl/?p=25009"
+          "source": "https://polsa.gov.pl/?p=25009",
+          "image": {
+            "file": "ignis-4.webp",
+            "alt": "Załoga misji Axiom 4 po dołączeniu do astronautów na Międzynarodowej Stacji Kosmicznej",
+            "source": "https://commons.wikimedia.org/wiki/File:Axiom_Mission_4_and_Expedition_73_crews.jpg",
+            "credit": "NASA",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "ignis-5",
           "title": "13 polskich eksperymentów",
           "text": "Podczas misji Ignis wykonano 13 polskich eksperymentów z dziedzin takich jak medycyna, biologia, nowe materiały i technologia. Przygotowali je polscy naukowcy i firmy razem z ESA.",
-          "source": "https://www.esa.int/Newsroom/Press_Releases/Ignis_First_Polish_space_mission_with_ESA_s_Slawosz_Uznanski-Wisniewski_begins"
+          "source": "https://www.esa.int/Newsroom/Press_Releases/Ignis_First_Polish_space_mission_with_ESA_s_Slawosz_Uznanski-Wisniewski_begins",
+          "image": {
+            "file": "ignis-5.webp",
+            "alt": "Sławosz Uznański-Wiśniewski i Peggy Whitson na pokładzie stacji podczas misji Axiom 4",
+            "source": "https://commons.wikimedia.org/wiki/File:Axiom_Mission_4_crew_members_Peggy_Whitson_and_S%C5%82awosz_Uzna%C5%84ski-Wi%C5%9Bniewsk_%28iss073e0251619%29.jpg",
+            "credit": "NASA Johnson Space Center / AXIOM SPACE",
+            "license": "Domena publiczna",
+            "caption": "Sławosz Uznański-Wiśniewski i Peggy Whitson podczas pracy na ISS."
+          }
         },
         {
           "id": "ignis-6",
           "title": "Co badano w kosmosie?",
           "text": "Wśród eksperymentów były m.in. badania nowoczesnych nanomateriałów MXene, wpływu samotności w kosmosie na samopoczucie astronautów oraz tego, jak lot wpływa na mięśnie i tkanki miękkie.",
           "astrus": "Mój eksperyment: ile drzemek się zmieści w dobie?",
-          "source": "https://www.radiokrakow.pl/aktualnosci/naukowcy-o-eksperymentach-z-misji-ignis-nadchodzi-najbardziej-ekscytujaca-czesc"
+          "source": "https://www.radiokrakow.pl/aktualnosci/naukowcy-o-eksperymentach-z-misji-ignis-nadchodzi-najbardziej-ekscytujaca-czesc",
+          "image": {
+            "file": "ignis-6.webp",
+            "alt": "Astronauta Kōichi Wakata pokazuje sprzęt ultrasonograficzny na ISS, przykład badania organizmu na orbicie",
+            "source": "https://commons.wikimedia.org/wiki/File:ISS-38_Koichi_Wakata_wears_ultrasound_gear.jpg",
+            "credit": "NASA",
+            "license": "Domena publiczna",
+            "caption": "Sprzęt do badania organizmu na ISS. Zdjęcie z misji Expedition 38."
+          }
         },
         {
           "id": "ignis-7",
           "title": "Pierogi na orbicie",
           "text": "Na stację zabrano liofilizowane, czyli suszone na zimno pierogi z kapustą i grzybami. Do menu należały też zupa pomidorowa z makaronem i leczo z kaszą gryczaną.",
           "astrus": "Pierogi? A rybki w menu są?",
-          "source": "https://www.esa.int/Space_in_Member_States/Poland/Pierogi_w_kosmosie"
+          "source": "https://www.esa.int/Space_in_Member_States/Poland/Pierogi_w_kosmosie",
+          "image": {
+            "file": "ignis-7.webp",
+            "alt": "Pierogi nadziewane kapustą i grzybami, takie jak te z menu misji Ignis",
+            "source": "https://commons.wikimedia.org/wiki/File:Pierogi_z_kapust%C4%85_i_grzybami_-_grudzie%C5%84_2022.jpg",
+            "credit": "Koefbac",
+            "license": "CC BY-SA 4.0",
+            "caption": "Pierogi z kapustą i grzybami, takie jak te z menu Ignis."
+          }
         },
         {
           "id": "ignis-8",
           "title": "Flaga z 1978 roku",
           "text": "Sławosz zabrał na pokład biało-czerwoną flagę, która w 1978 roku poleciała w kosmos z Mirosławem Hermaszewskim. Tak połączono dwa polskie loty w kosmos.",
-          "source": "https://en.wikipedia.org/wiki/Sławosz_Uznański-Wiśniewski"
+          "source": "https://en.wikipedia.org/wiki/Sławosz_Uznański-Wiśniewski",
+          "image": {
+            "file": "ignis-8.webp",
+            "alt": "Kapsuła Sojuz 30, którą w 1978 roku poleciał Mirosław Hermaszewski, pokazana w muzeum",
+            "source": "https://commons.wikimedia.org/wiki/File:Soyuz_30_capsule_%2810996474813%29.jpg",
+            "credit": "Alan Wilson",
+            "license": "CC BY-SA 2.0",
+            "caption": "Kapsuła Sojuz 30 z lotu Hermaszewskiego w 1978 roku."
+          }
         },
         {
           "id": "ignis-9",
           "title": "Powrót na Ziemię",
           "text": "Kapsuła z załogą wodowała w Oceanie Spokojnym przy Kalifornii 15 lipca 2025 roku. Na stacji astronauci spędzili około 18 dni.",
           "astrus": "Szczęśliwe lądowanie, a nie na cztery łapy!",
-          "source": "https://en.wikipedia.org/wiki/Axiom_Mission_4"
+          "source": "https://en.wikipedia.org/wiki/Axiom_Mission_4",
+          "image": {
+            "file": "ignis-9.webp",
+            "alt": "Kapsuła Dragon z załogą Axiom 4 zadokowana do modułu Harmony na ISS",
+            "source": "https://www.nasa.gov/blogs/spacestation/2025/07/14/ax-4-undocks-from-station-inside-dragon-for-earth-return/",
+            "credit": "NASA+",
+            "license": "Domena publiczna (NASA)",
+            "caption": "Kapsuła Grace przy stacji, przed powrotem na Ziemię."
+          }
         }
       ]
     },
@@ -81,56 +149,115 @@
           "title": "Pierwszy Polak w kosmosie",
           "text": "Mirosław Hermaszewski poleciał w kosmos 27 czerwca 1978 roku statkiem Sojuz 30. Pracował na stacji Salut 6 i wrócił na Ziemię po prawie ośmiu dniach.",
           "astrus": "Pionier! Prawie jak pierwszy kot na dachu.",
-          "source": "https://en.wikipedia.org/wiki/Mirosław_Hermaszewski"
+          "source": "https://en.wikipedia.org/wiki/Mirosław_Hermaszewski",
+          "image": {
+            "file": "polska-1.webp",
+            "alt": "Mirosław Hermaszewski, pierwszy Polak w kosmosie",
+            "source": "https://commons.wikimedia.org/wiki/File:Miroslaw_H.jpg",
+            "credit": "Autor nieznany",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "polska-2",
           "title": "Kopernik poruszył Ziemię",
           "text": "Mikołaj Kopernik urodził się w Toruniu. W książce wydanej w 1543 roku napisał, że w centrum jest Słońce, a Ziemia krąży wokół niego.",
           "astrus": "Ziemia kręci się wokół Słońca, nie wokół miski!",
-          "source": "https://en.wikipedia.org/wiki/Nicolaus_Copernicus"
+          "source": "https://en.wikipedia.org/wiki/Nicolaus_Copernicus",
+          "image": {
+            "file": "polska-2.webp",
+            "alt": "Rysunek z dzieła Kopernika przedstawiający Słońce w środku i orbity wokół niego",
+            "source": "https://commons.wikimedia.org/wiki/File:Copernican_heliocentrism_diagram.jpg",
+            "credit": "Mikołaj Kopernik",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "polska-3",
           "title": "Heweliusz z Gdańska",
           "text": "Jan Heweliusz z Gdańska narysował mapę Księżyca i opisał nowe gwiazdozbiory, między innymi Tarczę Sobieskiego i Rysia. Księżyc obserwował przez własnoręcznie zbudowany teleskop.",
           "astrus": "Ryś? To prawie kot!",
-          "source": "https://en.wikipedia.org/wiki/Jan_Heweliusz"
+          "source": "https://en.wikipedia.org/wiki/Jan_Heweliusz",
+          "image": {
+            "file": "polska-3.webp",
+            "alt": "Mapa powierzchni Księżyca z dzieła Selenographia Jana Heweliusza",
+            "source": "https://commons.wikimedia.org/wiki/File:Selenographia_map_of_moon.jpg",
+            "credit": "Jan Heweliusz",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "polska-4",
           "title": "PW-Sat, kostka w kosmosie",
           "text": "PW-Sat był pierwszym polskim satelitą. Zbudowali go studenci Politechniki Warszawskiej. Miał rozmiar kostki o boku 10 cm i poleciał w kosmos 13 lutego 2012 roku.",
           "astrus": "Taki malutki, a już na orbicie!",
-          "source": "https://en.wikipedia.org/wiki/PW-Sat"
+          "source": "https://en.wikipedia.org/wiki/PW-Sat",
+          "image": {
+            "file": "polska-4.webp",
+            "alt": "Pierwszy polski satelita PW-Sat podczas testów w Centrum Badań Kosmicznych PAN",
+            "source": "https://commons.wikimedia.org/wiki/File:PW-Sat-testy-CBK.jpg",
+            "credit": "Andrzej Kotarba",
+            "license": "CC BY-SA 4.0"
+          }
         },
         {
           "id": "polska-5",
           "title": "Żagiel na sprzątanie",
           "text": "Satelita PW-Sat2 miał żagiel o wymiarach 2 na 2 metry. Pomógł mu szybciej spaść z orbity, zamiast zostać w kosmosie jako śmieć. Skrócił jego życie na orbicie z około 25 lat do około 2.",
           "astrus": "Sprzątanie to cenna umiejętność, miau.",
-          "source": "https://en.wikipedia.org/wiki/PW-Sat"
+          "source": "https://en.wikipedia.org/wiki/PW-Sat",
+          "image": {
+            "file": "polska-5.webp",
+            "alt": "Rozłożony żagiel deorbitacyjny satelity PW-Sat2",
+            "source": "https://commons.wikimedia.org/wiki/File:Pw-sat2-sail-after-deployment.jpg",
+            "credit": "PW-Sat2",
+            "license": "CC BY-SA 2.0",
+            "caption": "Zdjęcie rozłożonego żagla z kamery satelity PW-Sat2."
+          }
         },
         {
           "id": "polska-6",
           "title": "Lem i Heweliusz",
           "text": "21 listopada 2013 roku wystartowały pierwsze polskie satelity naukowe, Lem i Heweliusz. Lem obserwował jasne gwiazdy i zebrał około 6 milionów pomiarów z ponad 200 gwiazd.",
           "astrus": "Satelita nazwany jak pisarz!",
-          "source": "https://www.national-geographic.pl/kosmos/10-lat-lema-na-orbicie-pierwszy-polski-satelita-naukowy-wciaz-dziala-231121013348/"
+          "source": "https://www.national-geographic.pl/kosmos/10-lat-lema-na-orbicie-pierwszy-polski-satelita-naukowy-wciaz-dziala-231121013348/",
+          "image": {
+            "file": "polska-6.webp",
+            "alt": "Model polskiego satelity naukowego Heweliusz",
+            "source": "https://commons.wikimedia.org/wiki/File:Polish_satellite_BRITE_Heweliusz_model_in_Gdansk_19.8.2014.jpg",
+            "credit": "LukaszKatlewa",
+            "license": "CC BY-SA 4.0"
+          }
         },
         {
           "id": "polska-7",
           "title": "Polski młotek na komecie",
           "text": "Polskie Centrum Badań Kosmicznych PAN zbudowało przyrząd MUPUS, który leciał na lądowniku Philae. Miał wbijać się w grunt komety i zbadać jej powierzchnię.",
           "astrus": "Kometa to taka wielka kula... kłębka?",
-          "source": "https://www.national-geographic.pl/nauka/jaka-jest-rola-polakow-w-misji-rosetty/"
+          "source": "https://www.national-geographic.pl/nauka/jaka-jest-rola-polakow-w-misji-rosetty/",
+          "image": {
+            "file": "polska-7.webp",
+            "alt": "Model lądownika Philae, który zabrał polski instrument MUPUS na kometę 67P",
+            "source": "https://commons.wikimedia.org/wiki/File:Model_of_Philae_on_Comet_67P.jpg",
+            "credit": "Tine",
+            "license": "CC BY-SA 4.0",
+            "caption": "Model Philae na makiecie komety 67P."
+          }
         },
         {
           "id": "polska-8",
           "title": "Polski łazik mistrzem świata",
           "text": "W 2019 roku studenci Politechniki Świętokrzyskiej z Kielc z łazikiem Impuls wygrali w USA zawody University Rover Challenge. Startowało 36 drużyn z 10 krajów.",
           "astrus": "Ja też chcę łazika z kocim fotelem!",
-          "source": "https://scienceinpoland.pl/en/news/news%2C77451%2Cstudents-kielce-win-mars-rovers-competition-us.html"
+          "source": "https://scienceinpoland.pl/en/news/news%2C77451%2Cstudents-kielce-win-mars-rovers-competition-us.html",
+          "image": {
+            "file": "polska-8.webp",
+            "alt": "Łazik zespołu Impuls z Kielc podczas zawodów European Rover Challenge 2015",
+            "source": "https://commons.wikimedia.org/wiki/File:ERC_2015_Impuls_Team_rover%2C_Assistance_Task_7.JPG",
+            "credit": "Aegis Maelstrom",
+            "license": "CC BY-SA 4.0",
+            "caption": "Łazik zespołu Impuls podczas wcześniejszych zawodów, ERC 2015."
+          }
         }
       ]
     },
@@ -144,39 +271,84 @@
           "id": "polsa-1",
           "title": "Co znaczy POLSA?",
           "text": "POLSA to skrót od Polish Space Agency, czyli Polskiej Agencji Kosmicznej. To instytucja, która dba o to, by Polska rozwijała się w kosmosie.",
-          "source": "https://en.wikipedia.org/wiki/Polish_Space_Agency"
+          "source": "https://en.wikipedia.org/wiki/Polish_Space_Agency",
+          "image": {
+            "file": "polsa-1.webp",
+            "alt": "Gdański Park Naukowo-Technologiczny, adres Polskiej Agencji Kosmicznej",
+            "source": "https://commons.wikimedia.org/wiki/File:Gda%C5%84sk_%E2%80%93_Gda%C5%84ski_Park_Naukowo-Technologiczny.JPG",
+            "credit": "Artur Andrzej",
+            "license": "CC0",
+            "caption": "Gdański Park Naukowo-Technologiczny, adres POLSA."
+          }
         },
         {
           "id": "polsa-2",
           "title": "Urodziny w 2014",
           "text": "Sejm uchwalił ustawę o utworzeniu Polskiej Agencji Kosmicznej 26 września 2014 roku. Pełną parą agencja zaczęła działać pod koniec 2015 roku.",
-          "source": "https://en.wikipedia.org/wiki/Polish_Space_Agency"
+          "source": "https://en.wikipedia.org/wiki/Polish_Space_Agency",
+          "image": {
+            "file": "polsa-2.webp",
+            "alt": "Sala posiedzeń Sejmu, który uchwalił ustawę o utworzeniu POLSA",
+            "source": "https://commons.wikimedia.org/wiki/File:Sejm_Sala_Plenarna_AB.jpg",
+            "credit": "Andrzej Barabasz (Chepry)",
+            "license": "CC BY-SA 4.0"
+          }
         },
         {
           "id": "polsa-3",
           "title": "Siedziba w Gdańsku",
           "text": "Główna siedziba Polskiej Agencji Kosmicznej jest w Gdańsku, nad Bałtykiem.",
           "astrus": "Morze i kosmos? Nieźle!",
-          "source": "https://en.wikipedia.org/wiki/Polish_Space_Agency"
+          "source": "https://en.wikipedia.org/wiki/Polish_Space_Agency",
+          "image": {
+            "file": "polsa-3.webp",
+            "alt": "Gdańsk nad Motławą, miasto będące siedzibą POLSA",
+            "source": "https://commons.wikimedia.org/wiki/File:%C5%BBuraw_Gda%C5%84ski_nad_Mot%C5%82aw%C4%85.jpg",
+            "credit": "Bartłomiej1919",
+            "license": "CC BY 4.0"
+          }
         },
         {
           "id": "polsa-4",
           "title": "Czym się zajmuje?",
           "text": "POLSA rozwija w Polsce technologie kosmiczne i sieci satelitarne. Bierze też udział w międzynarodowych programach, na przykład w śledzeniu kosmicznych śmieci.",
-          "source": "https://en.wikipedia.org/wiki/Polish_Space_Agency"
+          "source": "https://en.wikipedia.org/wiki/Polish_Space_Agency",
+          "image": {
+            "file": "polsa-4.webp",
+            "alt": "Ślady uderzeń w element Teleskopu Hubble’a, przykład zagrożenia ze strony odłamków na orbicie",
+            "source": "https://commons.wikimedia.org/wiki/File:HST_Orbital_Debris_Damage_%28impacts-hubble-eva-88af6e%29.jpg",
+            "credit": "NASA",
+            "license": "Domena publiczna",
+            "caption": "Przykład uszkodzeń od kosmicznych odłamków. Na zdjęciu element teleskopu Hubble’a."
+          }
         },
         {
           "id": "polsa-5",
           "title": "Satelita EagleEye",
           "text": "EagleEye to satelita obserwujący Ziemię, pierwszy rozwijany przez POLSA. Wystartował 15 sierpnia 2024 roku i robi zdjęcia, na których jeden piksel to około metra.",
           "astrus": "Orle oko? Moje oko też jest orle!",
-          "source": "https://en.wikipedia.org/wiki/EagleEye_(satellite)"
+          "source": "https://en.wikipedia.org/wiki/EagleEye_(satellite)",
+          "image": {
+            "file": "polsa-5.webp",
+            "alt": "Widok Warszawy z satelity Sentinel-2 pokazuje, jak wyglądają zdjęcia Ziemi z orbity",
+            "source": "https://commons.wikimedia.org/wiki/File:Warsaw_by_Sentinel-2%2C_2020-06-01.jpg",
+            "credit": "Copernicus Sentinel-2, ESA",
+            "license": "CC BY-SA 3.0 IGO",
+            "caption": "Przykład obserwacji Ziemi. Warszawę sfotografował satelita Sentinel-2."
+          }
         },
         {
           "id": "polsa-6",
           "title": "Ignis z POLSA",
           "text": "Misja Ignis była wspólnym przedsięwzięciem POLSA i ESA. Dzięki niej na stację poleciało 13 polskich eksperymentów.",
-          "source": "https://polsa.gov.pl/?p=25009"
+          "source": "https://polsa.gov.pl/?p=25009",
+          "image": {
+            "file": "polsa-6.webp",
+            "alt": "Prywatna załoga Axiom 4, w tym polski astronauta, wewnątrz Międzynarodowej Stacji Kosmicznej",
+            "source": "https://commons.wikimedia.org/wiki/File:The_Axiom_Mission_4_private_astronauts_gather_inside_the_International_Space_Station_%28iss073e0249239%29.jpg",
+            "credit": "NASA Johnson Space Center",
+            "license": "Domena publiczna"
+          }
         }
       ]
     },
@@ -190,46 +362,95 @@
           "id": "esa-1",
           "title": "Europa razem w kosmosie",
           "text": "ESA, czyli Europejska Agencja Kosmiczna, powstała w 1975 roku. Jej siedziba jest w Paryżu, a członkami jest 23 państwa.",
-          "source": "https://en.wikipedia.org/wiki/European_Space_Agency"
+          "source": "https://en.wikipedia.org/wiki/European_Space_Agency",
+          "image": {
+            "file": "esa-1.webp",
+            "alt": "Budynek siedziby Europejskiej Agencji Kosmicznej w Paryżu",
+            "source": "https://commons.wikimedia.org/wiki/File:ESA_Headquarters_in_Paris.jpg",
+            "credit": "ESA/P. Sebirot",
+            "license": "CC BY-SA 3.0 IGO"
+          }
         },
         {
           "id": "esa-2",
           "title": "Polska w ESA od 2012",
           "text": "Polska przystąpiła do Europejskiej Agencji Kosmicznej w 2012 roku, jako jej 20. państwo członkowskie.",
           "astrus": "Hurra, jesteśmy w drużynie!",
-          "source": "https://www.esa.int/Newsroom/Press_Releases/Poland_accedes_to_ESA_Convention"
+          "source": "https://www.esa.int/Newsroom/Press_Releases/Poland_accedes_to_ESA_Convention",
+          "image": {
+            "file": "esa-2.webp",
+            "alt": "Podpisanie umowy o przystąpieniu Polski do Europejskiej Agencji Kosmicznej",
+            "source": "https://commons.wikimedia.org/wiki/File:Podpisanie_umowy_o_przyst%C4%85pieniu_Polski_do_ESA.jpg",
+            "credit": "Ministerstwo Gospodarki RP",
+            "license": "CC BY-SA 3.0"
+          }
         },
         {
           "id": "esa-3",
           "title": "Rosetta i kometa",
           "text": "Sonda Rosetta od ESA dotarła do komety 67P w 2014 roku. Jej lądownik Philae wylądował na komecie jako pierwszy w historii.",
           "astrus": "Lądowanie na komecie, miau!",
-          "source": "https://en.wikipedia.org/wiki/European_Space_Agency"
+          "source": "https://en.wikipedia.org/wiki/European_Space_Agency",
+          "image": {
+            "file": "esa-3.webp",
+            "alt": "Kometa 67P sfotografowana przez kamerę nawigacyjną sondy Rosetta",
+            "source": "https://commons.wikimedia.org/wiki/File:Comet_67P_on_14_September_2014_NavCam_mosaic.jpg",
+            "credit": "ESA/Rosetta/NAVCAM",
+            "license": "CC BY-SA 3.0 IGO"
+          }
         },
         {
           "id": "esa-4",
           "title": "Sonda Huygens",
           "text": "Europejska sonda Huygens poleciała z misją Cassini i w 2005 roku wylądowała na Tytanie, księżycu Saturna.",
-          "source": "https://en.wikipedia.org/wiki/European_Space_Agency"
+          "source": "https://en.wikipedia.org/wiki/European_Space_Agency",
+          "image": {
+            "file": "esa-4.webp",
+            "alt": "Pierwszy kolorowy widok powierzchni Tytana przesłany przez sondę Huygens",
+            "source": "https://commons.wikimedia.org/wiki/File:Titan_Surface_-_1st_color_image.jpg",
+            "credit": "ESA/NASA/JPL/University of Arizona",
+            "license": "Brak znanych ograniczeń (NASA on The Commons)"
+          }
         },
         {
           "id": "esa-5",
           "title": "Astronauci z Kolonii",
           "text": "Europejskich astronautów szkoli się w Europejskim Centrum Astronautów w Kolonii w Niemczech.",
-          "source": "https://en.wikipedia.org/wiki/European_Astronaut_Corps"
+          "source": "https://en.wikipedia.org/wiki/European_Astronaut_Corps",
+          "image": {
+            "file": "esa-5.webp",
+            "alt": "Europejskie Centrum Astronautów w Kolonii",
+            "source": "https://commons.wikimedia.org/wiki/File:ESA_European_Astronaut_Centre.jpg",
+            "credit": "M. Trovatello",
+            "license": "CC BY-SA 3.0 IGO"
+          }
         },
         {
           "id": "esa-6",
           "title": "Nasz astronauta ESA",
           "text": "Sławosz Uznański-Wiśniewski został w 2022 roku jednym z 11 astronautów rezerwowych ESA, wybranych spośród ponad 22 500 chętnych. Później jako astronauta projektowy poleciał na misję Ignis.",
           "astrus": "Dumny kot-astronauta macha łapką!",
-          "source": "https://en.wikipedia.org/wiki/Sławosz_Uznański-Wiśniewski"
+          "source": "https://en.wikipedia.org/wiki/Sławosz_Uznański-Wiśniewski",
+          "image": {
+            "file": "esa-6.webp",
+            "alt": "Sławosz Uznański-Wiśniewski na Międzynarodowej Stacji Kosmicznej",
+            "source": "https://commons.wikimedia.org/wiki/File:Axiom_Mission_4_Mission_Specialist_S%C5%82awosz_Uzna%C5%84ski-Wi%C5%9Bniewski_%28iss073e0251660%29.jpg",
+            "credit": "NASA Johnson Space Center / AXIOM SPACE",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "esa-7",
           "title": "Teleskop Webba",
           "text": "Teleskop Jamesa Webba to wspólne dzieło NASA, ESA i kanadyjskiej agencji CSA. ESA pomogła w jego stworzeniu.",
-          "source": "https://science.nasa.gov/mission/webb/"
+          "source": "https://science.nasa.gov/mission/webb/",
+          "image": {
+            "file": "esa-7.webp",
+            "alt": "Kontrola segmentów głównego zwierciadła Teleskopu Jamesa Webba",
+            "source": "https://commons.wikimedia.org/wiki/File:James_Webb_Space_Telescope_flight_mirror_inspection_%289563515441%29.jpg",
+            "credit": "NASA/Chris Gunn",
+            "license": "CC BY 2.0"
+          }
         }
       ]
     },
@@ -244,48 +465,97 @@
           "title": "Apollo 11 na Księżycu",
           "text": "20 lipca 1969 roku lądownik Apollo 11 usiadł na Księżycu. Neil Armstrong i Buzz Aldrin spędzili tam około 22 godzin, a Michael Collins czekał na orbicie.",
           "astrus": "Mały krok dla człowieka, wielki skok dla kotów!",
-          "source": "https://www.nasa.gov/mission/apollo-11/"
+          "source": "https://www.nasa.gov/mission/apollo-11/",
+          "image": {
+            "file": "nasa-1.webp",
+            "alt": "Buzz Aldrin na powierzchni Księżyca podczas misji Apollo 11",
+            "source": "https://commons.wikimedia.org/wiki/File:AS11-40-5903_-_Buzz_Aldrin_by_Neil_Armstrong_%28full_frame%29.jpg",
+            "credit": "NASA/Neil Armstrong",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "nasa-2",
           "title": "Dom na orbicie",
           "text": "Międzynarodowa Stacja Kosmiczna jest zamieszkana nieprzerwanie od listopada 2000 roku. Okrąża Ziemię 16 razy na dobę, więc załoga widzi 16 wschodów Słońca.",
           "astrus": "Szesnaście poranków! Szesnaście śniadań!",
-          "source": "https://www.nasa.gov/international-space-station/space-station-facts-and-figures/"
+          "source": "https://www.nasa.gov/international-space-station/space-station-facts-and-figures/",
+          "image": {
+            "file": "nasa-2.webp",
+            "alt": "Międzynarodowa Stacja Kosmiczna nad Ziemią, widziana po odłączeniu wahadłowca",
+            "source": "https://commons.wikimedia.org/wiki/File:STS-133_International_Space_Station_after_undocking.jpg",
+            "credit": "NASA",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "nasa-3",
           "title": "Artemis II wokół Księżyca",
           "text": "Artemis II wystartowała 1 kwietnia 2026 roku z czteroosobową załogą i po prawie 10 dniach wróciła na Ziemię. Astronauci oddalili się od Ziemi dalej niż kiedykolwiek ludzie wcześniej.",
           "astrus": "Księżyc, czekaj na mnie!",
-          "source": "https://www.nasa.gov/news-release/nasa-welcomes-record-setting-artemis-ii-moonfarers-back-to-earth/"
+          "source": "https://www.nasa.gov/news-release/nasa-welcomes-record-setting-artemis-ii-moonfarers-back-to-earth/",
+          "image": {
+            "file": "nasa-3.webp",
+            "alt": "Ziemia zachodząca za horyzontem Księżyca na zdjęciu z kapsuły Orion podczas Artemis II",
+            "source": "https://commons.wikimedia.org/wiki/File:A_Breathtaking_Earthset_from_Orion_%28art002e021278%29.jpg",
+            "credit": "NASA",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "nasa-4",
           "title": "Łazik Perseverance",
           "text": "Łazik Perseverance wylądował na Marsie 18 lutego 2021 roku w kraterze Jezero. Szuka śladów dawnego życia i zbiera próbki skał.",
           "astrus": "Marsjańskie myszy? Poproszę!",
-          "source": "https://science.nasa.gov/mission/mars-2020-perseverance/"
+          "source": "https://science.nasa.gov/mission/mars-2020-perseverance/",
+          "image": {
+            "file": "nasa-4.webp",
+            "alt": "Autoportret łazika Perseverance obok skały Rochette w kraterze Jezero",
+            "source": "https://commons.wikimedia.org/wiki/File:PIA24836_Perseverance%27s_Selfie_at_Rochette.jpg",
+            "credit": "NASA/JPL-Caltech/MSSS",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "nasa-5",
           "title": "Helikopter Ingenuity",
           "text": "Do Marsa poleciał z łazikiem mały helikopter Ingenuity. Wykonał 72 loty i był pierwszym statkiem latającym z napędem na innej planecie.",
           "astrus": "Latam jak helikopter, ale głównie po kanapie.",
-          "source": "https://science.nasa.gov/mission/mars-2020-perseverance/"
+          "source": "https://science.nasa.gov/mission/mars-2020-perseverance/",
+          "image": {
+            "file": "nasa-5.webp",
+            "alt": "Helikopter Ingenuity na powierzchni Marsa sfotografowany przez łazika Perseverance",
+            "source": "https://commons.wikimedia.org/wiki/File:Ingenuity_helicopter%2C_cropped_from_Perseverance_selfie_%28PIA24542%29.jpg",
+            "credit": "NASA/JPL-Caltech/MSSS",
+            "license": "Domena publiczna"
+          }
         },
         {
           "id": "nasa-6",
           "title": "Teleskop Webba",
           "text": "Teleskop Jamesa Webba wystartował 25 grudnia 2021 roku i krąży w odległości około 1,5 miliona kilometrów od Ziemi. Patrzy w kosmos w podczerwieni i jest składany jak origami.",
-          "source": "https://science.nasa.gov/mission/webb/"
+          "source": "https://science.nasa.gov/mission/webb/",
+          "image": {
+            "file": "nasa-6.webp",
+            "alt": "Start rakiety Ariane 5 z Teleskopem Jamesa Webba na pokładzie",
+            "source": "https://commons.wikimedia.org/wiki/File:James_Webb_Space_Telescope_Launch.jpg",
+            "credit": "NASA",
+            "license": "CC BY 2.0"
+          }
         },
         {
           "id": "nasa-7",
           "title": "Krater Kopernika",
           "text": "Na Księżycu jest duży krater o nazwie Kopernik, o średnicy około 93 km. Nazwano go na cześć polskiego astronoma. Przez lornetkę da się go zobaczyć!",
           "astrus": "Polska nazwa na Księżycu. Miau!",
-          "source": "https://en.wikipedia.org/wiki/Copernicus_(lunar_crater)"
+          "source": "https://en.wikipedia.org/wiki/Copernicus_(lunar_crater)",
+          "image": {
+            "file": "nasa-7.webp",
+            "alt": "Księżycowy krater Kopernika widziany z orbity",
+            "source": "https://commons.wikimedia.org/wiki/File:Copernicus_%28lunar_crater%29.jpg",
+            "credit": "Michael L. Umbricht / Ladd Observatory",
+            "license": "CC BY-SA 4.0"
+          }
         }
       ]
     }

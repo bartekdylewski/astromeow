@@ -93,6 +93,22 @@ def load_data():
             errors.append(f'brak pliku config/{required}.json')
     for c in (data.get('ciekawostki') or {}).get('categories', []) if isinstance(data.get('ciekawostki'), dict) else []:
         if not os.path.exists(os.path.join(here, 'assets', 'facts', str(c.get('icon')) if '.' in str(c.get('icon')) else '%s.svg' % c.get('icon'))): errors.append('config/ciekawostki.json: kategoria "%s": brak pliku assets/facts/ dla icon "%s" (bez rozszerzenia = .svg)' % (c.get('id'), c.get('icon')))
+        for fact in c.get('facts', []):
+            where = 'config/ciekawostki.json: ciekawostka "%s"' % fact.get('id')
+            image = fact.get('image')
+            if not isinstance(image, dict):
+                errors.append(where + ': brakuje pola image')
+                continue
+            filename = image.get('file')
+            if not isinstance(filename, str) or not re.fullmatch(r'[a-z0-9-]+\.webp', filename) or not os.path.isfile(
+                os.path.join(here, 'assets', 'facts', 'photos', filename)
+            ):
+                errors.append(where + ': brakuje zdjęcia w assets/facts/photos/')
+            for field in ('alt', 'credit', 'license'):
+                if not isinstance(image.get(field), str) or not image[field].strip():
+                    errors.append(where + ': brakuje pola image.' + field)
+            if not isinstance(image.get('source'), str) or not image['source'].startswith('https://'):
+                errors.append(where + ': image.source powinno wskazywać adres HTTPS')
     for lang in ('pl', 'en'):
         with open(os.path.join(here, 'config', f'blocked-words.{lang}.txt'), encoding='utf-8') as f:
             data[f'blocked-words.{lang}'] = f.read().splitlines()

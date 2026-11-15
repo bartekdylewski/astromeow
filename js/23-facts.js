@@ -8,6 +8,17 @@ const factFile = c => /\./.test(c.icon) ? c.icon : c.icon + '.svg'; // icon z ro
 const factIcon = c => `<img class="fimg" src="${assetSrc('assets/facts/' + factFile(c))}" alt="">`;
 const factCount = c => c.facts.filter(f => factRead()[f.id]).length;
 
+function factPhoto(image) {
+  const src = assetSrc('assets/facts/photos/' + image.file);
+  return `<figure class="fact-photo">
+    <img src="${factEsc(src)}" alt="${factEsc(image.alt)}" decoding="async">
+    <figcaption>
+      ${image.caption ? `<span>${factEsc(image.caption)}</span>` : ''}
+      <a href="${factEsc(image.source)}" target="_blank" rel="noopener">Ilustracja: ${factEsc(image.credit)} ↗</a>
+    </figcaption>
+  </figure>`;
+}
+
 function renderFacts() {
   stopGame(); cur = renderFacts; FACT = { cat: null, i: 0 };
   const cats = factCats();
@@ -40,7 +51,9 @@ function renderFact() {
     ${bar('<button class="x" data-act="fact-list">←</button>', `<span class="label">${factIcon(c)} ${factEsc(c.title)}</span>`, `<span class="pill soft">${i + 1}/${n}</span>`)}
     <div class="meter mb"><i style="width:${Math.round((i + 1) / n * 100)}%"></i></div>
     <div class="mb">${catSay(first ? 'happy' : 'idle', factEsc(say), { size: 4.4 })}</div>
-    <div class="card fcard">${first ? '<span class="pill soft fnew pop">+2 ⭐ nowa!</span>' : ''}<h2>${factEsc(f.title)}</h2><p>${factEsc(f.text)}</p></div>
+    <div class="card fcard">${first ? '<span class="pill soft fnew pop">+2 ⭐ nowa!</span>' : ''}<h2>${factEsc(f.title)}</h2>
+      ${factPhoto(f.image)}
+      <p>${factEsc(f.text)}</p></div>
     ${f.source ? `<div class="tc"><a class="link fsrc" href="${factEsc(f.source)}" target="_blank" rel="noopener">Źródło ↗</a></div>` : ''}
     <div class="grow"></div>
     <div class="foot row gap">${i > 0 ? '<button class="btn b-white" style="width:5rem" data-act="fact-prev" aria-label="Poprzednia">←</button>' : ''}
