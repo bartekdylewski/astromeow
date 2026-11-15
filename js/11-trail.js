@@ -55,10 +55,10 @@ function renderMap() {
     ${mapMsg ? `<div class="mt" id="mapmsg">${mapMsg}</div>` : ''}
     <div class="pathbox" style="height:${total}rem;margin-bottom:1.5rem"><svg viewBox="0 0 100 ${total}" preserveAspectRatio="none"><path d="${dp}" fill="none" style="stroke:var(--grey)" stroke-width="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>${paws}${catEl}${html}</div>
   </div>`, { nav: true, tab: 'map' });
-  const c = mapMsg ? $('#mapmsg') : $('#curnode'), blk = mapMsg ? 'start' : 'center'; mapMsg = '';
-  if (mapRank && $('#leaderboard')) loadLeaderboard(mapRank.key, $('#leaderboard'), mapRank.submission);
-  mapRank = null;
-  if (c && c.scrollIntoView) c.scrollIntoView({ block: blk });
+  const current = $('#curnode');
+  const target = current || $('#mapmsg');
+  mapMsg = '';
+  target?.scrollIntoView({ block: current ? 'center' : 'start' });
   if (!P.tut.map) openTut('map');
 }
 let useGold = false;
