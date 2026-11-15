@@ -56,7 +56,7 @@ cat/                (opcjonalnie) klatki kota: idle_1.png … cheer_3.png albo i
 - **Reset starych baz:** podbij `BASE_VER` w `js/01-config.js`. Każdy gracz dostanie czystą bazę przy następnym wejściu, a postęp misji, gwiazdki i skiny zostają.
 - **Reset całego zapisu na urządzeniu:** dopisz `?reset=1` do adresu strony i potwierdź.
 
-- **Konto deweloperskie:** gracze z pseudonimem z `DEV_NICKS` (domyślnie `Dylu`, `run.sh` przekazuje `--dev-nick`) dostają tryb dev (`?dev=`, `?demo=1`, wszystkie planety odblokowane) także na serwerze bez `--dev`. Uwaga: dopasowanie jest po pseudonimie, więc każdy, kto wybierze `Dylu`, też je dostanie. Zawęź do jednego konta przez `DEV_NICKS="Dylu#8054"`. Wyłączenie: `DEV_NICKS=""`.
+- **Konto deweloperskie:** gracze z pseudonimem podanym w `--dev-nick` dostają tryb dev (`?dev=`, `?demo=1`, wszystkie planety odblokowane) także na serwerze bez `--dev`. Uwaga: dopasowanie jest po pseudonimie, więc każdy, kto wybierze `Dylu`, też je dostanie. Domyślnie nikt go nie ma. Podanie: `python3 counter/server.py serve --dev-nick Dylu` (można kilka razy) albo `DEV_NICKS="Dylu" bash run.sh`. Zawęź do jednego konta przez `Dylu#8054`.
 - **Demo do nagrania:** na serwerze z `--dev` (`DEV_MODE=1 bash run.sh`) otwórz `/?demo=1`: wczytuje przykładowy stan (zaliczone misje, zasoby, zabudowane planety, wszystkie odblokowane). Odświeżenie bez `?demo=1` zostawia ten stan. Pierwszy raz trzeba jeszcze podać pseudonim.
 - **Modele 3D budynków** (`js/29-models3d.js`, three.js r177 w `vendor/three.min.js`, licencja MIT): każdy budynek ma własną bryłę, renderowaną raz do PNG we wspólnym kontekście WebGL. Bez WebGL pokazuje się zwykła ikona. Pytanie A/B ma limit 1 na 45 s (`SAFE_COOLDOWN` w `js/16-base.js`).
 
