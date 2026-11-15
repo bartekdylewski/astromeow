@@ -12,7 +12,7 @@ const fresh = () => ({
 let P = fresh();
 const today = () => new Date().toLocaleDateString('sv');
 const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return d.toLocaleDateString('sv'); };
-function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify({ ...P, lastSave: Date.now() })); } catch (_) {} }
+function save() { if (DEV) return; try { localStorage.setItem(SAVE_KEY, JSON.stringify({ ...P, lastSave: Date.now() })); } catch (_) {} }
 function load() {
   try {
     const raw = localStorage.getItem(SAVE_KEY); if (!raw) return;

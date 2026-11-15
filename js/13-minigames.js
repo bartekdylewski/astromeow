@@ -27,7 +27,7 @@ function newSet(key, mission) { GSET = { key, mission, attempts: 0, best: 0, pas
 let lastGame = '';
 
 function renderGameIntro(key) {
-  if (!GSET || !GSET.mission) return renderMap();
+  if (!GSET || !GSET.mission && !DEV) return renderMap();
   stopGame(); const g = GAMES[key], set = GSET;
   cur = () => renderGameIntro(key);
   show(`<div class="scr">
@@ -49,7 +49,7 @@ function gameShell(key, inner) {
     ${inner}<p class="hint">${GAMES[key].hint}</p></div>`;
 }
 function playGame(key) {
-  if (!GSET || !GSET.mission) return renderMap();
+  if (!GSET || !GSET.mission && !DEV) return renderMap();
   stopGame(); lastGame = key; cur = null;
   launchRankedRun(key);
   if (key === 'pack') return startPack();

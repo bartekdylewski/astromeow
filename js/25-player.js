@@ -106,6 +106,7 @@ function renderProfile(first = false) {
 }
 
 function launchRankedRun(game) {
+  if (DEV) return;
   player.played = true;
   storePlayer();
   scoreRun = profileOnline && player.nickname
@@ -114,6 +115,7 @@ function launchRankedRun(game) {
 }
 
 function submitRankedScore(game, score) {
+  if (DEV) return;
   const run = scoreRun;
   scoreRun = null;
   if (!run) return;
