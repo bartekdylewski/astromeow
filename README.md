@@ -87,7 +87,9 @@ bash counter/counter.sh test
 python3 -m unittest tests/test_nasa.py tests/test_players.py
 ```
 
-Developer notes: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) · adding a stage: [docs/ADDING-A-STAGE.md](docs/ADDING-A-STAGE.md) · deploy: [docs/deploy.md](docs/deploy.md)
+- Developer notes: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
+- Adding a stage: [docs/JAK-DODAC-ETAP.md](docs/JAK-DODAC-ETAP.md)
+- Deploy: [docs/deploy.md](docs/deploy.md)
 
 ## Roadmap
 
@@ -107,5 +109,5 @@ AstroMeow is an independent hackathon project and is not affiliated with or endo
 
 <div align="center">
 Made in Stalowa Wola · NASA Space Apps Challenge 2026<br>
-<a href="https://github.com/bartekdylewski">@bartekdylewski</a> <a href="https://github.com/Hurtekk">@Hurtekk</a> <a href="juls-s05">@Juls-s05</a>
+<a href="https://github.com/bartekdylewski">@bartekdylewski</a> <a href="https://github.com/Hurtekk">@Hurtekk</a> <a href="https://github.com/juls-s05">@Juls-s05</a>
 </div>
