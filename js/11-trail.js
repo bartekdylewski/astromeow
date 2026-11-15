@@ -52,9 +52,11 @@ function renderMap() {
   }).join('');
   show(`<div class="scr">
     ${bar('<span style="width:2.8rem"></span>', '<span class="label">Szlak misji</span>', '<button class="x" data-act="tut" data-arg="map">?</button>')}
+    ${mapMsg ? `<div class="mt" id="mapmsg">${mapMsg}</div>` : ''}
     <div class="pathbox" style="height:${total}rem;margin-bottom:1.5rem"><svg viewBox="0 0 100 ${total}" preserveAspectRatio="none"><path d="${dp}" fill="none" style="stroke:var(--grey)" stroke-width="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>${paws}${catEl}${html}</div>
   </div>`, { nav: true, tab: 'map' });
-  const c = $('#curnode'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'center' });
+  const c = mapMsg ? $('#mapmsg') : $('#curnode'), blk = mapMsg ? 'start' : 'center'; mapMsg = '';
+  if (c && c.scrollIntoView) c.scrollIntoView({ block: blk });
   if (!P.tut.map) openTut('map');
 }
 let useGold = false;

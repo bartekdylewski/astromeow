@@ -40,7 +40,7 @@ document.addEventListener('click', e => {
     case 'check':       return check();
     case 'cont':        return cont();
     case 'play':        return playGame(arg);
-    case 'retry-game':  return renderGameIntro(GSET.key);
+    case 'retry-game':  mapMsg = ''; return renderGameIntro(GSET.key);
     case 'skipgame':    stopGame(); return renderMap();
     case 'quitgame':    stopGame(); return renderMap();
     case 'tile': { const [x, y] = arg.split(',').map(Number), t = tileAt(x, y); if (!t) openBuildMenu(x, y); else openBuilding(x, y); return; }
