@@ -121,7 +121,7 @@ function updShooter(ts, dt) {
 /* --- Przelot z kotem --- */
 function updFlappy(ts, dt) {
   const { W, H, p } = G, k = dt * 60;
-  const catX = 110, hitH = 30, collisionRange = 39;   // kot 108 px (CAT_K); hitbox mniejszy od sprite'a: pion ±30, poziom ~11 + połowa słupa (trzon ~25, czapka 34, bierzemy 28)
+  const catX = 110, hitH = 30, collisionRange = 39;   // kot 108 px (patrz draw); hitbox mniejszy od sprite'a: pion ±30, poziom ~11 + połowa słupa (trzon ~25, czapka 34, bierzemy 28)
   G.vy += .42 * k; G.y += G.vy * k;
   if (G.y < 10 || G.y > H - 10) { G.over = true; return; }
   if (ts - G.lastSpawn > p.spawn) { G.pipes.push({ x: W + 40, gapY: rnd(170, H - 170), gap: Math.max(p.gap - 20, p.gap - G.score * 4), passed: false }); G.lastSpawn = ts; }
@@ -201,7 +201,7 @@ function draw() {
     });
     const im = catCanvasImg(G.vy < 0 ? 'cheer' : 'idle'), sk = skinOf();
     ctx.save(); if (sk.fx) ctx.filter = sk.fx;
-    if (im && im.complete && im.naturalWidth) ctx.drawImage(im, 110 - CAT_K * 40, G.y + bob - CAT_K * 40, CAT_K * 80, CAT_K * 80);
+    if (im && im.complete && im.naturalWidth) ctx.drawImage(im, 110 - 54, G.y + bob - 54, 108, 108);   // stałe 108 px: hitbox i szczeliny są dostrojone do tego rozmiaru, nie do CAT_K
     ctx.restore();
     hudText('', 'Wynik: ' + G.score);
     if (!G.started) { ctx.font = '900 28px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.textAlign = 'center'; ctx.fillText('Dotknij, żeby zacząć!', W / 2, H / 2 + 90); }
