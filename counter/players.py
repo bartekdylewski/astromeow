@@ -24,9 +24,8 @@ CREATE TABLE IF NOT EXISTS scores (
 CREATE INDEX IF NOT EXISTS game_scores ON scores(game, score DESC);
 """
 
-# gra: (maks. punktów na sekundę gry, minimalny czas próby w s); gry nie mają limitu czasu, więc limit rośnie z czasem
-GAMES = {'flappy': (2, 1.5), 'shooter': (4, 1), 'catch': (8, 1), 'lander': (2, 2), 'pack': (2, 1)}
-SCORE_BASE = 20
+# gra: minimalny czas próby w s (wynik bez górnego limitu, liczy się ważny bilet runId)
+GAMES = {'flappy': 1.5, 'shooter': 1, 'catch': 1, 'lander': 2, 'pack': 1}
 RUN_TTL = 3600
 CONFIG = Path(__file__).resolve().parent.parent / 'config'
 LEET = str.maketrans('01345789łv', 'oieastbglw')   # v→w: "cvel" = "cwel"
@@ -62,9 +61,16 @@ BLOCKED = load_blocklist()
 BLOCKED_ROOTS = load_roots()
 
 
-def nickname_blocked(nickname):
+def nickname_problem(nickname):
+    """Komunikat dla dziecka, gdy nick łamie zasady, inaczej None."""
+    if not 1 <= len(nickname) <= 16:
+        return 'Nick musi mieć od 1 do 16 znaków.'
+    if not re.fullmatch(r'[^\W\d_]+(?:[ _][^\W\d_]+)?\d{0,4}', nickname):
+        return 'Nick to litery (najwyżej 2 słowa), cyfry tylko na końcu, np. Kuba7 albo Kosmiczny Kot.'
     name = normalize_name(nickname)
-    return bool(BLOCKED.search(name)) or any(root in squash(nickname) for root in BLOCKED_ROOTS)
+    if BLOCKED.search(name) or any(root in squash(nickname) for root in BLOCKED_ROOTS):
+        return 'Ten nick zawiera niedozwolone słowo.'
+    return None
 
 
 class ApiError(Exception):
@@ -101,11 +107,11 @@ def player_api(conn, route, data, token):
             raise ApiError(400, 'Wybierz prawidłową wysokość głosu.')
         if isinstance(nickname, str):
             nickname = unicodedata.normalize('NFC', nickname.strip())
-        if not isinstance(nickname, str) or not 1 <= len(nickname) <= 32 or any(
-                not (c.isalpha() or c.isdecimal() or c in ' _') for c in nickname):
-            raise ApiError(400, 'Nick musi mieć 1–32 znaki: litery, cyfry, spacje lub _.')
-        if nickname_blocked(nickname):
-            raise ApiError(400, 'Ten nick zawiera niedozwolone słowo.')
+        if not isinstance(nickname, str):
+            raise ApiError(400, 'Nick musi mieć od 1 do 16 znaków.')
+        problem = nickname_problem(nickname)
+        if problem:
+            raise ApiError(400, problem)
         key = nickname.casefold()
         old_key, tag = conn.execute('SELECT name_key, tag FROM players WHERE id=?', (player,)).fetchone()
         if key != old_key:
@@ -141,15 +147,13 @@ def player_api(conn, route, data, token):
         return {'runId': run_id}, None
 
     score, run_id = data.get('score'), data.get('runId')
-    rate, minimum = GAMES[game]
+    minimum = GAMES[game]
     if type(score) is not int or score < 0 or not isinstance(run_id, str):
         raise ApiError(400, 'Nieprawidłowy wynik.')
     run = conn.execute('SELECT started FROM runs WHERE id=? AND player=? AND game=? AND closed=0',
                        (run_id, player, game)).fetchone()
     if not run or not minimum <= now - run[0] <= RUN_TTL:
         raise ApiError(409, 'Ta próba jest zamknięta albo trwała zbyt krótko.')
-    if score > SCORE_BASE + rate * (now - run[0]):
-        raise ApiError(400, 'Nieprawidłowy wynik.')
     conn.execute('UPDATE runs SET closed=1 WHERE id=?', (run_id,))
     conn.execute('INSERT INTO scores VALUES(?,?,?) ON CONFLICT(player,game) DO UPDATE '
                  'SET score=MAX(scores.score,excluded.score)', (player, game, score))

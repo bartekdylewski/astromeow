@@ -74,7 +74,7 @@ class PlayerTests(unittest.TestCase):
         with patch.object(players.time, 'time', return_value=1005):
             self.rejects(409, 'run/finish', t2, game='flappy', score=2, **ticket)
             self.rejects(409, 'run/finish', t1, game='pack', score=2, **ticket)
-            self.rejects(400, 'run/finish', t1, game='flappy', score=1000, **ticket)
+            self.rejects(400, 'run/finish', t1, game='flappy', score=-1, **ticket)
             self.api('run/finish', t1, game='flappy', score=2, **ticket)
             self.rejects(409, 'run/finish', t1, game='flappy', score=2, **ticket)
         self.assertFalse(self.api('session', t1)[0]['firstGame'])
@@ -88,13 +88,17 @@ class PlayerTests(unittest.TestCase):
             self.rejects(429, 'run/start', token, game='flappy')
             self.api('run/start', other, game='flappy')
 
-    def test_score_cap_grows_with_game_time(self):
+    def test_score_has_no_upper_limit(self):
         _, token = self.player('Ola')
-        self.assertEqual(self.score(token, 127, game='shooter', duration=120)['you']['score'], 127)
-        with self.assertRaises(players.ApiError):
-            self.score(token, 127, game='shooter', duration=10)
-        self.assertEqual(self.score(token, 900, game='flappy', duration=1200)['you']['score'], 900)
+        self.assertEqual(self.score(token, 5000, game='shooter', duration=10)['you']['score'], 5000)
 
+    def test_strict_nickname_rules(self):
+        _, token = self.api('session')
+        for name in ('Kosmiczny Kot Astrus', 'Cv3l', 'Papieros', 'a b c', '7Kuba', 'Bardzo Dlugi Nick Kota'):
+            with self.subTest(name=name):
+                self.rejects(400, 'profile', token, nickname=name, pitch=0)
+        for name in ('Kuba7', 'Kosmiczny Kot', 'Zuza_Kot', 'Michał', 'y', 'michalllll', 'Smyrdack'):
+            self.assertEqual(self.api('profile', token, nickname=name, pitch=0)[0]['nickname'], name)
 
 if __name__ == '__main__':
     unittest.main()
