@@ -10,6 +10,9 @@ document.addEventListener('click', e => {
   const a = el.dataset.act, arg = el.dataset.arg;
   switch (a) {
     case 'diff':        P.diff = arg; P.startIdx = Math.max(P.startIdx, TIERS.indexOf(arg)); save(); return renderHome();
+    case 'profile':      return renderProfile();
+    case 'profile-back': return setTab(profileTab);
+    case 'profile-badges': return renderBadges();
     case 'changediff':  return renderStart();
     case 'tab':         return setTab(arg);
     case 'fact-cat':    FACT = { cat: arg, i: 0 }; return renderFact();
@@ -28,7 +31,7 @@ document.addEventListener('click', e => {
     case 'quit-quiz':   return confirmSheet({ pose: 'sad', title: 'Wyjść z misji?', text: 'Postęp w tej misji przepadnie, ale zaliczone wcześniej zostają.', yes: 'WYJDŹ NA SZLAK', yesAct: 'quit-yes' });
     case 'quit-yes':    closeSheet(); return P.runs ? renderMap() : renderHome();
     case 'tut':         return openTut(arg);
-    case 'tut-next':    if (TUT && TUT.i < TUTS[TUT.k].length - 1) { TUT.i++; return renderTut(); } return closeTut();
+    case 'tut-next':    if (TUT && TUT.i < DATA.tutorials[TUT.k].length - 1) { TUT.i++; return renderTut(); } return closeTut();
     case 'tut-skip':    return closeTut();
     case 'start-mission': return beginMission(+arg);
     case 'lesson':      return lessonStep(arg);

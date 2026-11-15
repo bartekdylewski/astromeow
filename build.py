@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Skleja cały projekt w jeden plik dist/astromeow.html (do hostowania / wysłania komuś).
 Kot (cat/*.webp) jest wbudowany w ten plik, więc dist/astromeow.html działa sam, bez folderu cat/.
-Dane z data/*.json (etapy, pytania, lekcje, ciekawostki) są sprawdzane i wbudowane jako window.DATA_EMBED.
+Dane z config/*.json (etapy, pytania, lekcje, ciekawostki) są sprawdzane i wbudowane jako window.DATA_EMBED.
 Uruchom:  python3 build.py"""
 import re, os, glob, base64, json, sys
 here = os.path.dirname(os.path.abspath(__file__))
@@ -10,13 +10,13 @@ def css(m): return '<style>\n' + open(os.path.join(here, m.group(1)), encoding='
 def js(m):  return '<script>\n' + open(os.path.join(here, m.group(1)), encoding='utf-8').read() + '</script>'
 html = re.sub(r'<link rel="stylesheet" href="(css/[^"]+)">', css, html)
 html = re.sub(r'<script src="(js/[^"]+)"></script>', js, html)
-# ---------- dane z data/*.json: wczytanie + walidacja ----------
+# ---------- dane z config/*.json: wczytanie + walidacja ----------
 def check_stages(d):
-    """Zwraca (bledy, ostrzezenia) po polsku dla data/stages.json."""
+    """Zwraca (bledy, ostrzezenia) po polsku dla config/missions.json."""
     E, W = [], []
-    if not isinstance(d, dict): return ['stages.json: na górze musi być obiekt { "difficulties": [...], "stages": [...] }'], W
+    if not isinstance(d, dict): return ['missions.json: na górze musi być obiekt { "difficulties": [...], "stages": [...] }'], W
     diffs = d.get('difficulties')
-    if not isinstance(diffs, list) or not diffs: return ['stages.json: brak listy "difficulties" (poziomy trudności)'], W
+    if not isinstance(diffs, list) or not diffs: return ['missions.json: brak listy "difficulties" (poziomy trudności)'], W
     tiers, seen_t = [], set()
     for i, t in enumerate(diffs, 1):
         if not isinstance(t, dict): E.append('poziom nr %d: powinien być obiektem {...}' % i); continue
@@ -26,7 +26,7 @@ def check_stages(d):
         if t.get('id') in seen_t: E.append('poziom "%s" występuje dwa razy' % t.get('id'))
         seen_t.add(t.get('id')); tiers.append(t.get('id'))
     stages = d.get('stages')
-    if not isinstance(stages, list) or not stages: return E + ['stages.json: brak listy "stages" (etapy)'], W
+    if not isinstance(stages, list) or not stages: return E + ['missions.json: brak listy "stages" (etapy)'], W
     ids = set()
     for n, s in enumerate(stages, 1):
         if not isinstance(s, dict): E.append('etap nr %d: powinien być obiektem {...}' % n); continue
@@ -74,17 +74,26 @@ def check_stages(d):
 
 def load_data():
     data, errors, warns = {}, [], []
-    for p in sorted(glob.glob(os.path.join(here, 'data', '*.json'))):
+    for p in sorted(glob.glob(os.path.join(here, 'config', '*.json'))):
         name = os.path.splitext(os.path.basename(p))[0]
         try:
             data[name] = json.load(open(p, encoding='utf-8'))
         except ValueError as e:
-            errors.append('data/%s.json: niepoprawny JSON (%s). Najczęściej brakuje przecinka albo cudzysłowu.' % (name, e))
+            errors.append('config/%s.json: niepoprawny JSON (%s). Najczęściej brakuje przecinka albo cudzysłowu.' % (name, e))
             continue
-        if name == 'stages':
-            e, w = check_stages(data[name])
-            errors += ['data/stages.json: ' + x for x in e]; warns += ['data/stages.json: ' + x for x in w]
-    if 'stages' not in data and not any(x.startswith('data/stages.json') for x in errors): errors.append('brak pliku data/stages.json')
+    if 'missions' in data and 'tutorials' in data:
+        missions = data['missions']
+        if isinstance(missions, dict) and isinstance(missions.get('stages'), list):
+            lessons = data['tutorials'].get('lessons', {})
+            missions = {**missions, 'stages': [{**stage, **({'lesson': lessons[str(stage.get('id'))]} if str(stage.get('id')) in lessons else {})} if isinstance(stage, dict) else stage for stage in missions['stages']]}
+        e, w = check_stages(missions)
+        errors += ['config/missions.json: ' + x for x in e]; warns += ['config/missions.json: ' + x for x in w]
+    for required in ('missions', 'tutorials', 'ciekawostki'):
+        if required not in data and not any(x.startswith(f'config/{required}.json') for x in errors):
+            errors.append(f'brak pliku config/{required}.json')
+    for lang in ('pl', 'en'):
+        with open(os.path.join(here, 'config', f'blocked-words.{lang}.txt'), encoding='utf-8') as f:
+            data[f'blocked-words.{lang}'] = f.read().splitlines()
     for w in warns: print('UWAGA', w)
     if errors:
         print('\nBŁĘDY w danych (%d), popraw i uruchom ponownie:' % len(errors))
@@ -99,9 +108,14 @@ for p in sorted(glob.glob(os.path.join(here, 'cat', '*.webp'))):
     if name in ('idle', 'happy', 'sad', 'think', 'cheer'):
         emb[name] = 'data:image/webp;base64,' + base64.b64encode(open(p, 'rb').read()).decode()
 data = load_data()
-tags = ''
+icons = {}
+for path in sorted(glob.glob(os.path.join(here, 'assets', 'icons', '*.svg'))):
+    with open(path, 'rb') as source:
+        icons[os.path.splitext(os.path.basename(path))[0]] = 'data:image/svg+xml;base64,' + base64.b64encode(source.read()).decode()
+html = re.sub(r'src="assets/icons/([a-z]+)\.svg"', lambda m: 'src="' + icons[m.group(1)] + '"', html)
+tags = '<script>window.ICON_EMBED=' + json.dumps(icons) + ';</script>\n'
 if emb: tags += '<script>window.CAT_EMBED=' + json.dumps(emb) + ';</script>\n'
-# wszystkie data/*.json wbudowane jako DATA_EMBED = { nazwa_pliku: zawartość }
+# wszystkie config/*.json wbudowane jako DATA_EMBED = { nazwa_pliku: zawartość }
 blob = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029')
 tags += '<script>window.DATA_EMBED=' + blob + ';</script>\n'
 html = html.replace('<script>', tags + '<script>', 1)

@@ -12,8 +12,9 @@ function finishGame(key, score, passedFlag) {
   if (passed && !set.passed) pts += Math.round(20 * rm);                                  // bonus za zaliczenie
   set.passed = set.passed || passed; set.totGain += gain; set.totPts += pts;
   P.res[g.res] += gain; P.pts += pts; P.best[key] = Math.max(P.best[key] || 0, score); save();
+  const submission = submitRankedScore(key, score);
   stopGame();
-  renderResult({ key, score, goal, passed, gain, pts, attempt: set.attempts, left: MAXTRY - set.attempts });
+  renderResult({ key, score, goal, passed, gain, pts, attempt: set.attempts, left: MAXTRY - set.attempts, submission });
 }
 function renderResult(info) {
   cur = () => renderResult(info);
@@ -34,6 +35,7 @@ function renderResult(info) {
     body = `<p class="rew">⭐ +${set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain}</p>`;
   }
   show(`<div class="scr">
+    <section class="card mt" aria-label="Ranking minigry"><h3>Ranking</h3><div id="leaderboard">Ładowanie…</div></section>
     <div class="grow"></div>
     <div class="col center tc">${cat(pose, 10)}<div class="bubble up big mt tc">${line}</div>
       <h2 class="title" style="margin-top:1.1rem">${title}</h2>
@@ -47,6 +49,7 @@ function renderResult(info) {
       <button class="btn ${final ? 'b-lav nudge' : 'b-white'}" data-act="tab" data-arg="home">${final ? 'DALEJ ›' : 'WRÓĆ'}</button>
     </div>
   </div>`);
+  loadLeaderboard(info.key, $('#leaderboard'), info.submission);
   if (info.passed) confetti(14);
   window.sfx && sfx(info.passed ? 'win' : 'lose');
 }

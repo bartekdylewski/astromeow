@@ -31,6 +31,7 @@ function renderGameIntro(key) {
   stopGame(); const g = GAMES[key], set = GSET;
   cur = () => renderGameIntro(key);
   show(`<div class="scr">
+    <section class="card mt" aria-label="Ranking minigry"><h3>Ranking</h3><div id="leaderboard">Ładowanie…</div></section>
     <div class="grow"></div>
     <div class="col center tc">${cat('cheer', 10, 'float')}<div class="bubble up big mt tc"><b>${g.icon} ${g.name}</b><br>${g.desc}</div>
       <p class="muted" style="margin:1rem 0 0">🎯 Cel: ${goalText(key)}${set.attempts ? ` · próba ${set.attempts + 1} z ${MAXTRY}` : ''}</p></div>
@@ -38,6 +39,7 @@ function renderGameIntro(key) {
     <div class="foot"><button class="btn b-lav nudge" data-act="play" data-arg="${key}">GRAJ 🎮</button>
       <button class="link w100" data-act="skipgame">pomiń gierkę</button></div>
   </div>`);
+  loadLeaderboard(key, $('#leaderboard'));
 }
 function gameShell(key, inner) {
   return `<div class="scr fixed">
@@ -47,6 +49,7 @@ function gameShell(key, inner) {
 function playGame(key) {
   if (!GSET || !GSET.mission) return renderMap();
   stopGame(); lastGame = key; cur = null;
+  launchRankedRun(key);
   if (key === 'pack') return startPack();
   const p = GP[P.diff][key];
   show(gameShell(key, '<div class="cvbox" id="cvbox"><canvas id="cv"></canvas></div>'));
@@ -156,8 +159,8 @@ function updLander(ts, dt) {
   if (G.sy < 30) { G.sy = 30; G.svy = Math.max(0, G.svy); }
   if (G.sy >= ground) {
     G.sy = ground;
-    if (Math.abs(G.sx - G.pad) < p.pad / 2 && G.svy < p.safe) { G.landings++; G.msg = G.svy < p.safe / 2 ? 'Mięciutko! 🌟' : 'Lądowanie! ✅'; }
-    else G.msg = Math.abs(G.sx - G.pad) >= p.pad / 2 ? 'Obok pasa! 😅' : 'Za szybko! 💥';
+    if (Math.abs(G.sx - G.pad) < p.pad / 2 && G.svy < p.safe) { G.landings++; G.msg = G.svy < p.safe / 2 ? 'Mięciutko!' : 'Lądowanie!'; }
+    else G.msg = Math.abs(G.sx - G.pad) >= p.pad / 2 ? 'Obok pasa!' : 'Za szybko!';
     G.msgT = 1.2; G.svy = 0;
   }
 }
@@ -176,41 +179,40 @@ function hudText(l, r) {
 function draw() {
   const { ctx, W, H } = G; bg(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   if (G.key === 'shooter') {
-    ctx.font = '40px serif'; ctx.fillText('🏠', W / 2, H - 8); ctx.fillText('🚀', G.ship, H - 50);
+    ctx.font = '40px serif'; drawGameIcon(ctx, '🏠', W / 2, H - 16, 36); drawGameIcon(ctx, '🚀', G.ship, H - 50, 40);
     ctx.fillStyle = '#F28A1E'; G.bullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x, b.y, 4.5, 0, 7); ctx.fill(); });
-    ctx.font = '34px serif'; G.enemies.forEach(e => ctx.fillText(e.e, e.x, e.y));
-    hudText('💗 ' + G.lives, '⭐ ' + G.score);
+    ctx.font = '34px serif'; G.enemies.forEach(e => drawGameIcon(ctx, e.e, e.x, e.y, 34));
+    hudText('Życia: ' + G.lives, 'Wynik: ' + G.score);
   } else if (G.key === 'flappy') {
     const bob = G.started ? 0 : Math.sin(performance.now() / 280) * 9;
     const im = catCanvasImg(G.vy < 0 ? 'cheer' : 'idle'), sk = skinOf();
     ctx.save(); if (sk.fx) ctx.filter = sk.fx;
     if (im && im.complete && im.naturalWidth) ctx.drawImage(im, 110 - 40, G.y + bob - 40, 80, 80);
     ctx.restore();
-    if (sk.acc) { ctx.save(); ctx.font = '36px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.translate(110, G.y + bob - 40); ctx.rotate(-.14); ctx.fillText(sk.acc, 0, 0); ctx.restore(); }
+    if (sk.acc) { ctx.save(); ctx.font = '36px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.translate(110, G.y + bob - 40); ctx.rotate(-.14); drawGameIcon(ctx, sk.acc, 0, 0, 36); ctx.restore(); }
     G.pipes.forEach(pp => {
       ctx.fillStyle = '#F28A1E'; ctx.strokeStyle = '#1B1446'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.roundRect(pp.x - 34, -20, 68, pp.gapY - pp.gap / 2 + 20, 16); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.roundRect(pp.x - 34, pp.gapY + pp.gap / 2, 68, H, 16); ctx.fill(); ctx.stroke();
-      ctx.font = '34px serif'; ctx.fillText('☄️', pp.x, pp.gapY - pp.gap / 2 - 20); ctx.fillText('🪨', pp.x, pp.gapY + pp.gap / 2 + 20);
     });
-    hudText('', '⭐ ' + G.score);
-    if (!G.started) { ctx.font = '900 28px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.textAlign = 'center'; ctx.fillText('👆 Dotknij, żeby zacząć!', W / 2, H / 2 + 90); }
+    hudText('', 'Wynik: ' + G.score);
+    if (!G.started) { ctx.font = '900 28px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.textAlign = 'center'; ctx.fillText('Dotknij, żeby zacząć!', W / 2, H / 2 + 90); }
   } else if (G.key === 'catch') {
-    ctx.font = '34px serif'; G.items.forEach(i => ctx.fillText(i.e, i.x, i.y));
-    ctx.font = '54px serif'; ctx.fillText('🧺', G.x + (G.shakeT > 0 ? rnd(-5, 5) : 0), H - 52);
-    hudText('💗 ' + G.lives, '🧪 ' + G.score);
+    ctx.font = '34px serif'; G.items.forEach(i => drawGameIcon(ctx, i.e, i.x, i.y, 34));
+    ctx.font = '54px serif'; drawGameIcon(ctx, '🧺', G.x + (G.shakeT > 0 ? rnd(-5, 5) : 0), H - 52, 54);
+    hudText('Życia: ' + G.lives, 'Próbki: ' + G.score);
   } else if (G.key === 'lander') {
     const gy = H - 70;
     ctx.fillStyle = '#E8E1D6'; ctx.beginPath(); ctx.roundRect(-10, gy + 22, W + 20, H, 20); ctx.fill();
     ctx.fillStyle = '#F28A1E'; ctx.beginPath(); ctx.roundRect(G.pad - G.p.pad / 2, gy + 22, G.p.pad, 10, 5); ctx.fill();
-    ctx.font = '26px serif'; ctx.fillText('🪨', 60, gy + 52); ctx.fillText('🪨', 360, gy + 58);
-    ctx.font = '44px serif'; ctx.fillText('🛸', G.sx, G.sy);
-    if (G.hold && G.msgT <= 0) { ctx.font = '30px serif'; ctx.fillText('🔥', G.sx, G.sy + 38); }
+    ctx.font = '26px serif'; drawGameIcon(ctx, '🪨', 60, gy + 52, 26); drawGameIcon(ctx, '🪨', 360, gy + 58, 26);
+    ctx.font = '44px serif'; drawGameIcon(ctx, '🛸', G.sx, G.sy, 44);
+    if (G.hold && G.msgT <= 0) { ctx.font = '30px serif'; drawGameIcon(ctx, '🔥', G.sx, G.sy + 38, 30); }
     const v = Math.max(0, G.svy), ok = v < G.p.safe;
     ctx.fillStyle = '#E8E1D6'; ctx.beginPath(); ctx.roundRect(W / 2 - 70, 14, 140, 12, 6); ctx.fill();
     ctx.fillStyle = ok ? '#167A45' : '#C62E2E'; ctx.beginPath(); ctx.roundRect(W / 2 - 70, 14, Math.min(140, v / (G.p.safe * 2) * 140), 12, 6); ctx.fill();
-    hudText('🛬 ' + G.landings, '');
-    if (!G.started) { ctx.font = '900 26px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.textAlign = 'center'; ctx.fillText('👆 Przytrzymaj, żeby zacząć!', W / 2, H / 2); }
+    hudText('Lądowania: ' + G.landings, '');
+    if (!G.started) { ctx.font = '900 26px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.textAlign = 'center'; ctx.fillText('Przytrzymaj, żeby zacząć!', W / 2, H / 2); }
     if (G.msgT > 0) { ctx.font = '900 30px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.fillText(G.msg, W / 2, H / 2 - 60); }
   }
 }

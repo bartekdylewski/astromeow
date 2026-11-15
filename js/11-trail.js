@@ -74,7 +74,7 @@ function renderIntro(m, from = 'home') {
 }
 const introLine = m => `${Math.min(QUIZ_LEN, m.qs[P.diff].length)} pytań, 3 serca i gierka na koniec. Dasz radę!`;
 
-/* ===== LEKCJA przed etapem: Astruś tłumaczy temat pytań (karty z data/stages.json, pole "lesson") ===== */
+/* ===== LEKCJA przed etapem: Astruś tłumaczy temat pytań (karty z config/tutorials.json, pole "lessons") ===== */
 const lessonOf = (m, t = P.diff) => (m.lesson && m.lesson[t]) || [];
 const lessonKey = (m, t = P.diff) => t + ':' + m.id;
 /* start misji: jeśli lekcja na tym poziomie jeszcze nie była widziana, najpierw ona */
@@ -86,16 +86,17 @@ function beginMission(id) {
 function renderLesson(m, i, auto) {
   stopGame(); cur = () => renderLesson(m, i, auto);
   const cards = lessonOf(m), c = cards[i], last = i === cards.length - 1;
-  show(`<div class="scr">
+  show(`<div class="scr scene-swipe">
     ${bar('<span style="width:2.8rem"></span>', `<span class="label">📖 Lekcja · ${m.title.replace(/^MeowMission \d+: /, '')}</span>`, '<span style="width:2.8rem"></span>')}
     <div class="grow"></div>
     <div class="col center tc">${cat(last ? 'cheer' : (i % 2 ? 'think' : 'happy'), 9, 'float')}
       <div class="lcard mt"><div class="licon">${c.icon || '💡'}</div><h3>${c.title}</h3><p>${c.text}</p></div></div>
-    <div class="dots mt">${cards.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>
     <div class="grow"></div>
     <div class="foot"><button class="btn b-lav nudge" data-act="lesson" data-arg="${m.id}:${i + 1}:${auto ? 1 : 0}">${last ? (auto ? 'DO PYTAŃ 🚀' : 'GOTOWE') : 'DALEJ ›'}</button>
-      ${last ? '' : `<button class="link w100" data-act="lesson-end" data-arg="${m.id}:${auto ? 1 : 0}">pomiń</button>`}</div>
+      <button class="link w100" data-act="lesson-end" data-arg="${m.id}:${auto ? 1 : 0}"${last ? ' style="visibility:hidden" tabindex="-1" aria-hidden="true"' : ''}>pomiń</button>
+      ${sceneDots(cards.length, i)}</div>
   </div>`);
+  bindSceneSwipe($('.scene-swipe'), i, cards.length, next => renderLesson(m, next, auto));
 }
 /* arg "id:indeks:auto" (auto=1: po lekcji startuje quiz) */
 function lessonStep(arg) {

@@ -27,12 +27,13 @@ const WELCOME = [
 function renderWelcome(i = 0) {
   stopGame(); cur = () => renderWelcome(i);
   const w = WELCOME[i];
-  show(`<div class="scr">
+  show(`<div class="scr scene-swipe">
     <div class="tc mt">${i === 0 ? '<h1 class="logo sm"><span>Astro</span>Meow</h1>' : ''}</div>
     <div class="grow"></div>
     <div class="col center tc">${cat(w.pose, 13, 'float')}<div class="bubble up big mt tc"><b>${w.t}</b><br>${w.d}</div></div>
-    <div class="dots mt">${WELCOME.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>
     <div class="grow"></div>
-    <div class="foot"><button class="btn b-lav nudge" data-act="welcome-next" data-arg="${i}">${w.b}</button></div>
+    <div class="foot"><button class="btn b-lav nudge" data-act="welcome-next" data-arg="${i}">${w.b}</button>
+      ${sceneDots(WELCOME.length, i)}</div>
   </div>`);
+  bindSceneSwipe($('.scene-swipe'), i, WELCOME.length, renderWelcome);
 }

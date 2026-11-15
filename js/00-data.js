@@ -1,15 +1,12 @@
 'use strict';
-/* ===================== DANE Z PLIKÓW JSON (data/*.json) =====================
-   Treść gry (etapy, pytania, lekcje, ciekawostki) leży w folderze data/.
-   - W zbudowanym dist/astromeow.html dane są już wbudowane (window.DATA_EMBED).
-   - W trybie dev (index.html z serwera) są pobierane przez fetch.
-   Nowy plik data/xyz.json: dopisz 'xyz' do DATA_NAMES (build.py wbuduje go sam). */
-const DATA_NAMES = ['stages', 'ciekawostki'];
 let DATA = window.DATA_EMBED || null;
 function loadData() {
   if (DATA) return Promise.resolve(DATA);
-  return Promise.all(DATA_NAMES.map(n => fetch('data/' + n + '.json').then(r => {
-    if (!r.ok) throw new Error('HTTP ' + r.status + ' dla data/' + n + '.json');
-    return r.json();
-  }))).then(list => { DATA = {}; DATA_NAMES.forEach((n, i) => { DATA[n] = list[i]; }); return DATA; });
+  const files = ['missions.json', 'tutorials.json', 'ciekawostki.json', 'blocked-words.pl.txt', 'blocked-words.en.txt'];
+  return Promise.all(files.map(async file => {
+    const response = await fetch('config/' + file);
+    if (!response.ok) throw new Error('HTTP ' + response.status + ' dla config/' + file);
+    const value = file.endsWith('.json') ? await response.json() : (await response.text()).split(/\r?\n/);
+    return [file.slice(0, -file.split('.').at(-1).length - 1), value];
+  })).then(entries => DATA = Object.fromEntries(entries));
 }

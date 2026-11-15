@@ -94,3 +94,18 @@ button.pill{cursor:pointer;min-height:2.4rem}
 .rew{font-size:1.3rem;font-weight:900;margin:.9rem 0 0}
 .note{background:var(--orange-soft);border:.14rem solid var(--ink);border-radius:1.2rem;padding:.7rem .9rem;font-weight:800;text-align:center;font-size:.95rem}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Dotyk, profil i ranking */
+html, body, #app { touch-action: pan-x pan-y; }
+button, input, [role="button"] { min-width: 44px; min-height: 44px; }
+button, a, [role="button"] { touch-action: manipulation; }
+input { user-select: text; -webkit-user-select: text; font: inherit; }
+#nav button { min-width: 44px; }
+#nav img { width: 24px; height: 24px; }
+.game-icon { width: 1.15em; height: 1.15em; vertical-align: -.2em; display: inline-block; pointer-events: none; }
+.profile input { width: 100%; padding: .4rem .65rem; }
+.profile #profile-status:empty { display: none; }
+.profile #profile-tag { overflow-wrap: anywhere; }
+#leaderboard ol { list-style: none; margin: .3rem 0; padding: 0; }
+#leaderboard li { padding: .35rem .5rem; overflow-wrap: anywhere; }
+#leaderboard .your-score { background: var(--orange-soft); border-radius: .5rem; font-weight: 900; }

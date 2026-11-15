@@ -11,7 +11,7 @@ function renderBadges() {
   })).join('');
   const line = total === 0 ? 'Jeszcze pusto. Zalicz misję, a dostaniesz pierwszą odznakę!' : `Masz już <b>${total}</b> z ${MISSIONS.length * TIERS.length} odznak. Tak trzymaj!`;
   show(`<div class="scr">
-    ${bar('<h1 class="title">Odznaki</h1>', '', '')}
+    ${bar('<button class="x" data-act="profile">←</button>', '<h1 class="title">Odznaki</h1>', '')}
     <div class="mb">${catSay(total ? 'happy' : 'think', line, { size: 5.5 })}</div>
-    <div class="grid2" style="margin-bottom:1.2rem">${cards}</div></div>`, { nav: true, tab: 'badges' });
+    <div class="grid2" style="margin-bottom:1.2rem">${cards}</div></div>`, { nav: false });
 }

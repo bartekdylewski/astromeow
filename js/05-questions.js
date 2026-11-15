@@ -1,6 +1,6 @@
 'use strict';
 /* ===================== ETAPY, POZIOMY, PYTANIA, LEKCJE =====================
-   Treść jest w data/stages.json (opis: docs/JAK-DODAC-ETAP.md). Tu tylko budujemy z niej
+   Treść jest w config/missions.json (opis: docs/JAK-DODAC-ETAP.md). Tu tylko budujemy z niej
    globalne TIERS / DIFFS / MISSIONS, których używa reszta gry. Liczba etapów i pytań jest dowolna. */
 let TIERS = [], DIFFS = {}, MISSIONS = [];
 const LETTERS = ['A', 'B', 'C', 'D'];
@@ -8,7 +8,7 @@ const QUIZ_LEN = 5;   // ile pytań w jednej misji (jeśli w puli jest mniej, bi
 const validQ = q => q && typeof q.q === 'string' && typeof q.a === 'string' && Array.isArray(q.w) && q.w.length >= 1;
 function buildStages(stagesData) {
   const diffs = (stagesData && stagesData.difficulties) || [], stages = (stagesData && stagesData.stages) || [];
-  if (!diffs.length || !stages.length) throw new Error('data/stages.json: brak poziomów lub etapów');
+  if (!diffs.length || !stages.length) throw new Error('config/missions.json: brak poziomów lub etapów');
   TIERS = diffs.map(d => d.id); DIFFS = {};
   diffs.forEach(d => { DIFFS[d.id] = { id: d.id, name: d.name, icon: d.icon, desc: d.desc || '', mult: d.mult || 1 }; });
   MISSIONS = [];
@@ -23,7 +23,7 @@ function buildStages(stagesData) {
     TIERS.forEach(t => { if (!qs[t].length) qs[t] = qs[any]; });   // brak pytań na poziomie: użyj innego
     MISSIONS.push({ id: s.id, title: s.title, icon: s.icon, topic: s.topic || '🌌', qs, lesson });
   });
-  if (!MISSIONS.length) throw new Error('data/stages.json: żaden etap nie ma pytań');
+  if (!MISSIONS.length) throw new Error('config/missions.json: żaden etap nie ma pytań');
 }
 function pickQs(m, d) {
   const pool = m.qs[d];

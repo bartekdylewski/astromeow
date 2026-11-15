@@ -134,6 +134,10 @@ function endPack(win) {
   if (!PK || PK.over) return; PK.over = true;
   const placed = PK.pieces.filter(p => p.at).length;
   const score = placed * 2 + (win ? 3 + Math.ceil((PK.limit - PK.t) / 5) : 0);
-  if (win) { confetti(18); setTimeout(() => finishGame('pack', score, true), 700); }
+  if (win) {
+    const round = PK;
+    confetti(18);
+    setTimeout(() => { if (PK === round) finishGame('pack', score, true); }, 700);
+  }
   else finishGame('pack', score, false);
 }

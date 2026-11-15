@@ -29,9 +29,9 @@
   }
   const notes = (c, out, fs, step, o) => fs.forEach((f, i) => tone(c, out, Object.assign({ f, t: i * step }, o)));
 
-  function meow(c, out) {
+  function meow(c, out, pitch = 0) {
     const t0 = c.currentTime, dur = .46, base = 1 + (Math.random() - .5) * .22;
-    const src = c.createOscillator(); src.type = 'sawtooth';
+    const src = c.createOscillator(); src.type = 'sawtooth'; src.detune.value = pitch * 100;
     const p = src.frequency;                              // "mi-a-u": w górę, a potem w dół
     p.setValueAtTime(380 * base, t0);
     p.exponentialRampToValueAtTime(820 * base, t0 + .13);
@@ -61,14 +61,17 @@
   const SOUNDS = {
     click: (c, o) => tone(c, o, { f: 900, f2: 520, d: .05, type: 'triangle', v: .09, a: .003 }),
     ok:    (c, o) => notes(c, o, [660, 880, 1318], .075, { d: .22, type: 'triangle', v: .22 }),
-    no:    (c, o) => tone(c, o, { f: 220, f2: 130, d: .32, type: 'sine', v: .35, a: .02 }),
+    no:    (c, o) => tone(c, o, { f: 220, f2: 130, d: .32, type: 'triangle', v: .55, a: .02 }),
     win:   (c, o) => { notes(c, o, [523, 659, 784, 1047], .12, { d: .3, type: 'triangle', v: .22 }); notes(c, o, [1047], 0, { t: .36, d: .5, type: 'sine', v: .12 }); },
     lose:  (c, o) => notes(c, o, [440, 392, 330], .17, { d: .3, type: 'sine', v: .24 }),
     meow,
   };
   window.sfx = function (name) {
     if (!on || !SOUNDS[name]) return;
-    try { const c = ensure(); if (c) SOUNDS[name](c, master); } catch (_) {}
+    try { const c = ensure(); if (c) SOUNDS[name](c, master, name === 'meow' ? player.pitch : 0); } catch (_) {}
+  };
+  window.previewMeow = function (pitch) {
+    try { const c = ensure(); if (c) meow(c, master, pitch); } catch (_) {}
   };
   window.sfxToggle = function () {
     on = !on; try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (_) {}
