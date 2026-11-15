@@ -34,7 +34,7 @@ const fmt = n => n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(Math.floor(n *
 const doneCount = () => TIERS.reduce((a, t) => a + P.done[t].length, 0);
 const pGrid = i => P.planets[i].grid;
 const pFull = i => Object.keys(pGrid(i)).length >= PLANETS[i].n * PLANETS[i].n;
-const pOpen = i => i === 0 || (pFull(i - 1) && doneCount() >= PLANETS[i].need);
+const pOpen = i => i === 0 || !!window.ALLOW_DEV || (pFull(i - 1) && doneCount() >= PLANETS[i].need);   // serwer z --dev: wszystkie planety odblokowane
 function pReason(i) {
   const miss = [], left = PLANETS[i].need - doneCount();
   if (!pFull(i - 1)) miss.push(`zabuduj ${PLANETS[i - 1].name}`);
