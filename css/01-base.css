@@ -102,6 +102,7 @@ button, a, [role="button"] { touch-action: manipulation; }
 input { user-select: text; -webkit-user-select: text; font: inherit; }
 #nav button { min-width: 44px; }
 #nav img { width: 24px; height: 24px; }
+#nav .on img { background: var(--surface); border-radius: .5rem; box-shadow: 0 0 0 .2rem var(--surface); }
 .game-icon { width: 1.15em; height: 1.15em; vertical-align: -.2em; display: inline-block; pointer-events: none; }
 .profile input { width: 100%; padding: .4rem .65rem; }
 .profile #profile-status:empty { display: none; }
