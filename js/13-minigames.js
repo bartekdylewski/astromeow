@@ -14,14 +14,14 @@ const GP = {
 };
 /* cele do zaliczenia gierki (3 próby na podejście) */
 const LANDING_SCORE = 4;
-const GOAL = { easy: { shooter: 0, flappy: 4, catch: 8, lander: LANDING_SCORE }, mid: { shooter: 0, flappy: 6, catch: 12, lander: LANDING_SCORE }, hard: { shooter: 0, flappy: 7, catch: 16, lander: LANDING_SCORE } };
+const GOAL = { easy: { shooter: 0, flappy: 0, catch: 8, lander: LANDING_SCORE }, mid: { shooter: 0, flappy: 0, catch: 12, lander: LANDING_SCORE }, hard: { shooter: 0, flappy: 0, catch: 16, lander: LANDING_SCORE } };
 const MAXTRY = 3;
 const PLU = { shooter: ['meteor', 'meteory', 'meteorów'], flappy: ['przelot', 'przeloty', 'przelotów'], catch: ['próbkę', 'próbki', 'próbek'], lander: ['lądowanie', 'lądowania', 'lądowań'] };
 const plural = (n, f) => n === 1 ? f[0] : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? f[1] : f[2];
 function goalText(key) {
   if (key === 'pack') return 'ułóż wszystkie klocki w rakiecie';
   const g = GOAL[P.diff][key], n = key === 'lander' ? g / LANDING_SCORE : g;
-  if (!g) return `jak najwięcej ${PLU[key][2]}`;   // gra bez celu (shooter): zawsze zaliczona, liczy się ranking
+  if (!g) return `jak najwięcej ${PLU[key][2]}`;   // gra bez celu (shooter, flappy): zawsze zaliczona, liczy się ranking
   return `${n} ${plural(n, PLU[key])}`;
 }
 let GSET = null;
