@@ -27,7 +27,7 @@ test('crashing just after crossing the center of an asteroid pair grants no poin
 });
 
 test('a successful pass grants one point after clearing the collision area', () => {
-  const { G, step } = flight(300, 71);
+  const { G, step } = flight(300, 80);
   step();
   assert.equal(G.score, 0);
   step();
