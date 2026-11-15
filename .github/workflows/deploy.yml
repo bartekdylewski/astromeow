@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: false   # kolejkuj, nie przerywaj trwającego deployu
 jobs:
   deploy:
-    runs-on: [self-hosted, homelab]
+    runs-on: [self-hosted, skylab]
     timeout-minutes: 15
     steps:
       # Backup MUSI być pierwszy (przed pull/build); kolejne kroki mogą się wywalić, kopia już jest.
