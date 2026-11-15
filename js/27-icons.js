@@ -2,7 +2,7 @@
 
 const iconGroups = {
   map: '🗺️ 🧭', base: '🏠', shop: '🛍️', facts: '📖 📚', profile: '🐱 🧑‍🚀 👨‍🚀',
-  star: '⭐ 🌟 ✨ 🎉', heart: '💗 💛 ❤️ 🧡', rocket: '🚀 🛬', rock: '🪨 🗿 🧊 🧱',
+  star: '⭐ 🌟 ✨ 🎉', heart: '💗 ❤️ 🧡', goldheart: '💛', rocket: '🚀 🛬', rock: '🪨 🗿 🧊 🧱',
   meteor: '☄️', flask: '🧪 🌡️', box: '📦 🧰 🥫', clock: '⏱️', ufo: '🛸', fire: '🔥 💥 🌋',
   basket: '🧺', planet: '🪐 🌍 🌌 🔴 ⚪ 🌕 🌀 🌫️ 🌊 🌪️ 🫧', moon: '🌙 🌑 🌗', lock: '🔒', trophy: '🏆',
   tool: '🔧 🔩 🏗️ 📏 🧲 💻', brain: '🧠', light: '💡 ❓', sun: '☀️ 🌞', check: '✅',
