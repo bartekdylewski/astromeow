@@ -18,7 +18,8 @@
 .flame{display:inline-block;animation:flame 1.4s ease-in-out infinite}@keyframes flame{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.15) rotate(3deg)}}
 .idle{animation:float 3s ease-in-out infinite}
 .cfx{display:block;width:100%;height:100%}
-.cacc{position:absolute;left:27%;top:-3%;transform:translateX(-50%) rotate(-8deg);line-height:1;pointer-events:none;z-index:2}
+.cat.art .cfx{animation:artbob 2.6s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes artbob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-.15rem) scale(1.02,.99)}}
 .cpose{position:absolute;right:-6%;top:-8%;line-height:1;pointer-events:none;z-index:3;animation:float 1.8s ease-in-out infinite}
 .cat.p-cheer .cpose{animation:hop .45s ease-in-out infinite}
 /* dotyk kota: miau + sprężysty ruch */

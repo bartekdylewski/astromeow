@@ -74,17 +74,18 @@ function catSvg(pose) {
   ${extra}
 </svg>`;
 }
-/* skiny kota: fx = filtr koloru, acc = dodatek na głowie */
+/* skiny kota: fx = filtr koloru, art = narysowany kot z assets/skins/<art>.webp (zastępuje klatki cat/) */
 const SKINS = [
-  { id: 'classic', n: 'Klasyczny', fx: '', acc: '', p: 0 },
-  { id: 'sakura', n: 'Różowy', fx: 'hue-rotate(300deg) saturate(1.1)', acc: '🎀', p: 80 },
-  { id: 'mint', n: 'Fioletowy', fx: 'hue-rotate(240deg)', acc: '', p: 80 },
-  { id: 'sunny', n: 'Błękitny', fx: 'hue-rotate(160deg)', acc: '', p: 100 },
-  { id: 'dj', n: 'DJ Astruś', fx: '', acc: '🎧', p: 100 },
-  { id: 'cowboy', n: 'Kowboj', fx: '', acc: '🤠', p: 120 },
-  { id: 'gentleman', n: 'Dżentelmen', fx: '', acc: '🎩', p: 120 },
-  { id: 'king', n: 'Król', fx: '', acc: '👑', p: 150 },
-  { id: 'gold', n: 'Złoty król', fx: 'sepia(.9) saturate(2.4) hue-rotate(-12deg) brightness(1.05)', acc: '👑', p: 250 },
+  { id: 'classic', n: 'Klasyczny', fx: '', p: 0 },
+  { id: 'sakura', n: 'Różowy', fx: 'hue-rotate(300deg) saturate(1.1)', p: 80 },
+  { id: 'mint', n: 'Fioletowy', fx: 'hue-rotate(240deg)', p: 80 },
+  { id: 'sunny', n: 'Błękitny', fx: 'hue-rotate(160deg)', p: 100 },
+  { id: 'dj', n: 'Muzyk', fx: '', art: 'dj', p: 100 },
+  { id: 'cowboy', n: 'Kowboj', fx: '', art: 'cowboy', p: 120 },
+  { id: 'gentleman', n: 'Elegant', fx: '', art: 'gentleman', p: 120 },
+  { id: 'baker', n: 'Piekarz', fx: '', art: 'baker', p: 130 },
+  { id: 'king', n: 'Król', fx: '', art: 'king', p: 150 },
+  { id: 'gold', n: 'Złoty król', fx: 'sepia(.9) saturate(2.4) hue-rotate(-12deg) brightness(1.05)', art: 'king', p: 250 },
 ];
 const GOLD_PRICE = 50;
 const skinOf = id => SKINS.find(x => x.id === (id || (typeof P !== 'undefined' && P.skin))) || SKINS[0];
@@ -95,10 +96,9 @@ function cat(pose = 'idle', size = 6, cls = '', skin) {
   size = +(size * CAT_K).toFixed(2);
   const sk = skinOf(skin);
   const fr = CATX[pose] || CATX.idle;
-  const inner = fr ? `<img data-pose="${pose}" src="${fr[0].src}" alt="Astruś" draggable="false">` : catSvg(pose);
-  const acc = sk.acc ? `<span class="cacc" style="font-size:${(size * .42).toFixed(2)}rem">${sk.acc}</span>` : '';
-  const fx = fr && !CATX[pose] && POSE_FX[pose] ? `<span class="cpose" style="font-size:${(size * .3).toFixed(2)}rem">${POSE_FX[pose]}</span>` : '';
-  return `<span class="cat p-${pose} ${fr ? 'ext' : ''} ${cls}" style="width:${size}rem;height:${size}rem"><span class="cfx" style="${sk.fx ? 'filter:' + sk.fx : ''}">${inner}</span>${acc}${fx}</span>`;
+  const inner = sk.art ? `<img src="${assetSrc('assets/skins/' + sk.art + '.webp')}" alt="Astruś" draggable="false">` : fr ? `<img data-pose="${pose}" src="${fr[0].src}" alt="Astruś" draggable="false">` : catSvg(pose);
+  const fx = !sk.art && fr && !CATX[pose] && POSE_FX[pose] ? `<span class="cpose" style="font-size:${(size * .3).toFixed(2)}rem">${POSE_FX[pose]}</span>` : '';
+  return `<span class="cat p-${pose} ${fr ? 'ext' : ''} ${sk.art ? 'art' : ''} ${cls}" style="width:${size}rem;height:${size}rem"><span class="cfx" style="${sk.fx ? 'filter:' + sk.fx : ''}">${inner}</span>${fx}</span>`;
 }
 /* kot tłumaczy: wspólny komponent "kot + dymek" do wszystkich ekranów i gier */
 function catSay(pose, html, { size = 5, cls = '', who = '' } = {}) {
@@ -106,6 +106,8 @@ function catSay(pose, html, { size = 5, cls = '', who = '' } = {}) {
 }
 const svgImgs = {};
 function catCanvasImg(pose = 'idle') {
+  const art = skinOf().art;
+  if (art) { const k = 'a' + art; if (!svgImgs[k]) { const i = new Image(); i.src = assetSrc('assets/skins/' + art + '.webp'); svgImgs[k] = i; } return svgImgs[k]; }
   const fr = CATX[pose] || CATX.idle;
   if (fr) return fr[fi % fr.length];
   if (!svgImgs[pose]) { const i = new Image(); i.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(catSvg(pose)); svgImgs[pose] = i; }
