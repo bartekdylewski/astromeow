@@ -16,10 +16,10 @@ function finishGame(key, score, passedFlag) {
   const left = MAXTRY - set.attempts, final = passed || left <= 0;
   const retry = left > 0 && (!final || (key !== 'pack' && !goal));   // gra bez celu: próby na lepszy wynik w rankingu
   stopGame();
-  mapMsg = endMsg({ passed, final });   // dymek Astrusia na Misjach po DALEJ
+  mapMsg = endMsg({ passed, final });   // dymek Astrusia w Bazie po DALEJ
   renderResult({ key, score, goal, passed, attempt: set.attempts, retry, submission });
 }
-let mapMsg = '';   // komunikat dla Szlaku misji (pokazywany raz po grze)
+let mapMsg = '';   // komunikat Astrusia po grze (pokazywany raz, w Bazie)
 function endMsg({ passed, final }) {
   const set = GSET, mission = set.mission;
   let line = passed ? say(BR.gameHigh) : say(BR.gameLow);
@@ -38,7 +38,7 @@ function renderResult({ key, score, goal, passed, attempt, retry, submission }) 
   cur = () => renderResult({ key, score, goal, passed, attempt, retry, submission });
   const g = GAMES[key], set = GSET, sec = (t, body) => `<section class="card mt tc"><div class="label mb-s">${t}</div>${body}</section>`;
   const quiz = set.mission && S ? sec('Quiz', `<p style="margin:0;font-size:1.2rem;font-weight:900">${S.correct}/${S.qs.length} dobrze · ${'⭐'.repeat(S.stars)}</p>
-    <p class="rew">⭐ +${S.quizPts} &nbsp; 🧠 +${S.quizKnow}</p>`) : '';
+    <p class="rew">⭐ +${S.quizPts} &nbsp; ${RES.wiedza.icon} +${S.quizKnow}</p>`) : '';
   const miss = key === 'pack' || passed ? '' : ` · brakuje ${Math.max(0, goal - score)}`;
   const game = sec(`${g.icon} ${g.name}`, `<p style="margin:0;font-size:1.4rem;font-weight:900">Wynik: ${score}</p>
     <p class="muted" style="margin:.2rem 0 0">${key === 'pack' ? '' : 'Cel: ' + goalText(key) + miss}${retry ? ` · próba ${attempt} z ${MAXTRY}` : ''}</p>
@@ -48,7 +48,7 @@ function renderResult({ key, score, goal, passed, attempt, retry, submission }) 
     ${quiz}${game}
     <div class="foot col gap-s">
       ${retry ? `<button class="btn b-white" data-act="retry-game">SPRÓBUJ PONOWNIE (${attempt + 1}/${MAXTRY})</button>` : ''}
-      <button class="btn b-lav nudge" data-act="tab" data-arg="map">DALEJ ›</button>
+      <button class="btn b-lav nudge" data-act="tab" data-arg="base">DALEJ ›</button>
     </div>
   </div>`);
   if (!g.noRank) loadLeaderboard(key, $('#leaderboard'), submission);

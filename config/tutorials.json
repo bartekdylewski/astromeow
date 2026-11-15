@@ -8,7 +8,7 @@
     {
       "e": "❤️",
       "t": "Masz 3 serca",
-      "d": "Zła odpowiedź zabiera serce. Dobra daje ⭐ punkty i 🧠 Wiedzę do bazy."
+      "d": "Zła odpowiedź zabiera serce. Dobra daje ⭐ punkty i 🫁 Tlen do bazy."
     },
     {
       "e": "➡️",
@@ -18,9 +18,9 @@
   ],
   "base": [
     {
-      "e": "🧠 🔩 ☄️",
-      "t": "Trzy zasoby",
-      "d": "Quiz daje 🧠 Wiedzę, a gierki 🔩 Części i ☄️ Meteoryty. Za nie budujemy bazę!"
+      "e": "🫁 ⚡ 💧",
+      "t": "Tlen, energia i woda",
+      "d": "Quiz daje 🫁 Tlen, a gierki ⚡ Energię i 💧 Wodę. Za nie budujemy bazę na Księżycu i Marsie!"
     },
     {
       "e": "🏗️",
@@ -30,7 +30,7 @@
     {
       "e": "⭐",
       "t": "Ulepszaj",
-      "d": "Dotknij budynku, żeby go ulepszyć albo dodać dodatek ☀️ 📡 🫧."
+      "d": "Dotknij budynku, żeby go ulepszyć albo dodać dodatek ☀️ 📡 🛡️."
     },
     {
       "e": "🪐",

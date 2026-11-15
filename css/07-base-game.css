@@ -13,3 +13,6 @@
 .opt{border:.16rem solid var(--ink);background:var(--surface);border-radius:1.4rem;padding:.8rem;display:flex;flex-direction:column;align-items:center;gap:.3rem;font:inherit;color:var(--ink);cursor:pointer;box-shadow:0 .24rem 0 var(--ink)}
 .opt.lock{opacity:.5}
 .opt .ic{font-size:2.4rem}.opt small{font-weight:900;color:var(--oranged)}
+@keyframes tpop{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.tile:not(.empty) .idle{animation:tpop .35s ease-out}
+.tile .idle .game-icon{width:1.45em;height:1.45em;vertical-align:middle}

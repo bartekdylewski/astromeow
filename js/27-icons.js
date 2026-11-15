@@ -4,7 +4,7 @@ const iconGroups = {
   map: '🗺️ 🧭', base: '🏠', shop: '🛍️', facts: '📖 📚', profile: '🐱 🧑‍🚀 👨‍🚀',
   star: '⭐ 🌟 ✨ 🎉', heart: '💗 ❤️ 🧡', goldheart: '💛', rocket: '🚀 🛬', rock: '🪨 🗿 🧊 🧱',
   meteor: '☄️', flask: '🧪 🌡️', box: '📦', clock: '⏱️', ufo: '🛸', fire: '🔥 💥 🌋',
-  basket: '🧺', planet: '🪐 🌍 🌌 🔴 ⚪ 🌕 🌀 🌫️ 🌊 🌪️ 🫧', moon: '🌙 🌑 🌗', lock: '🔒', trophy: '🏆',
+  basket: '🧺', planet: '🪐 🌍 🌌 ⚪ 🌕 🌀 🌫️ 🌊 🌪️ 🫧', mars: '🔴', drop: '💧', oxygen: '🫁', moon: '🌙 🌑 🌗', lock: '🔒', trophy: '🏆',
   tool: '🔧 🔩 🏗️ 📏 🧲 💻', brain: '🧠', light: '💡 ❓', sun: '☀️ 🌞', check: '✅',
   arrow: '➡️ ⬆️ 👇 👆 ↗ 🔄 ♻️ 🤌', eye: '👀 🔭', flag: '🇵🇱', game: '🎮 🎯 🏋️ 💪',
   voice: '🔊 🎧', mute: '🔇', leaf: '🌱 🪶', pin: '📍', face: '😤 😎 😮 😅 🥹 🤔 😢 🙈 💀 🤖',
