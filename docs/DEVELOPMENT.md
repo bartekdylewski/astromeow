@@ -1,206 +1,212 @@
 # AstroMeow: developer notes
 
-Gra edukacyjna o kosmosie dla dzieci 7–12 lat (NASA Space Apps Stalowa Wola 2026).
+An educational space game for kids aged 7-12. The UI and the content are in Polish; the code and these docs are in English. Astro the cat is called **Astruś** in the game.
 
-## Uruchomienie
+## Running
+
 ```bash
-cloudflared tunnel --url http://127.0.0.1:8085
+cloudflared tunnel --url http://127.0.0.1:8085   # optional: public URL
 
-bash run.sh          # build + serwer + baza SQLite, Ctrl+C kończy
-bash run.sh -d       # to samo w tle   (stop | status | logs)
-```
-Szczegóły, komendy i baza: sekcja [Licznik wejść](#licznik-wejść) niżej.
-
-**Tryb deweloperski** (tylko serwer z `--dev`, np. `DEV_MODE=1 bash run.sh`; bez niego `?dev=` jest ignorowane): `index.html?dev=flappy` (albo `shooter`, `catch`, `lander`, `pack`) od razu uruchamia wybraną minigierkę, bez wprowadzenia i misji. Opcjonalnie `&diff=easy|mid|hard`. Nic nie jest zapisywane (save i ranking wyłączone), SPRÓBUJ PONOWNIE gra jeszcze raz, DALEJ idzie na Misje (odśwież stronę, żeby znów odpalić grę). Nieznany klucz: lista kluczy w `console.warn`, gra startuje normalnie.
-
-## Struktura
-```
-index.html          szkielet strony (ładuje pliki w kolejności)
-run.sh              build + start/restart serwera z licznikiem (bash run.sh | -d | stop | status | logs)
-build.py            skleja cały projekt w jeden plik dist/astromeow.html
-counter/            licznik wejść: server.py (serwer + SQLite), live.html, counter.sh (reset/stats/test)
-css/                style, w kolejności ładowania
-  01-base           paleta (:root), nawigacja, przyciski, karty
-  02-cat            kot i jego skiny
-  03-quiz           ekran pytań i serca
-  04-map            szlak MeowMission, planety
-  05-tutorial       okienka tutoriali
-  06-effects        konfetti, toast, animacje
-  07-base-game      baza (planety i budynki)
-  08-minigames      gierki i pakowanie rakiety
-js/                 skrypty klasyczne (wspólny zakres, kolejność ma znaczenie)
-  01-config         klucze, zapis
-  02-layout         skalowanie (fit) pod pionowy laptop 9:16 i telefon
-  03-cat            kot SVG / klatki z cat/, skiny
-  04-reactions      brainrotowe reakcje na odpowiedzi
-  00-data           ładowanie config/*.json (DATA)
-  05-questions      buduje MISSIONS/DIFFS z config/missions.json (treść jest w JSON, nie tu)
-  06-base-data      planety, budynki, dodatki
-  07-state          stan gry, zapis, ekonomia bazy
-  08-ui, 09-start, 10-home, 11-trail   ekrany: start, menu, szlak misji
-  12-quiz           quiz, serca, złote życie
-  13-minigames, 14-pack   gierki (canvas) i układanie rakiety
-  15-results        wynik gierki / raport misji
-  16-base, 17-shop, 18-tutorial, 19-badges   baza, sklep, tutoriale, odznaki
-  20-router, 21-start-loop   akcje kliknięć i start aplikacji
-  22-counter        zgłoszenie wejścia do licznika (POST /api/hit)
-  23-facts          ekran Ciekawostki (zakładka "Ciekawostki"), style w css/09-facts.css
-  24-sound          dźwięki Web Audio (klik, dobrze/źle, wynik, miau Astrusia); wyciszenie: 🔊 na ekranie głównym lub sfxToggle()
-cat/                (opcjonalnie) klatki kota: idle_1.png … cheer_3.png albo idle.gif …
+bash run.sh          # build + server + SQLite database, Ctrl+C stops it
+bash run.sh -d       # the same in the background   (stop | status | logs)
 ```
 
-## Baza i zapis gracza
-- Zasoby (klucze w kodzie bez zmian): `wiedza` = **Tlen** 🫁, `czesci` = **Energia** ⚡, `meteo` = **Woda** 💧. Nazwy i ikony: `RES` w `js/06-base-data.js`.
-- Planety w kolejności: Księżyc, Mars, Merkury, a potem kolejne lokacje na Księżycu (Morze Spokoju), Marsie (Valles Marineris) i Merkurym (Biegun Północny): `PLANETS` w `js/06-base-data.js`.
-- Po quizie i gierce DALEJ prowadzi do **Bazy**. Przy każdym wejściu do Bazy pojawia się pytanie A/B o bezpieczeństwie (`config/safety.json`): dobra odpowiedź +20% zasobu, zła −10%. Każde pytanie ma pole `res`, czyli którego zasobu dotyczy.
-- **Reset starych baz:** podbij `BASE_VER` w `js/01-config.js`. Każdy gracz dostanie czystą bazę przy następnym wejściu, a postęp misji, gwiazdki i skiny zostają.
-- **Reset całego zapisu na urządzeniu:** dopisz `?reset=1` do adresu strony i potwierdź.
+Details, commands and the database: see [Visit counter](#visit-counter) below.
 
-- **Panel „Najnowsze z NASA” w Ciekawostkach** (`counter/nasa.py`, `loadNasa()` w `js/23-facts.js`): rozbłysk słoneczny, burza geomagnetyczna i CME z NASA DONKI oraz obraz dnia z APOD. Serwer odświeża DONKI w tle co 5 min (APOD co godzinę, a z `DEMO_KEY` całość co 30 min ze względu na limit; zmiana: `--nasa-every SEK`), a panel w grze sam się odświeża co 5 min, gdy gracz zostaje w Ciekawostkach (`/api/nasa`, cache w `counter/data/nasa-cache.json`), więc gracze nie uderzają w API. Klucz: `NASA_API_KEY=... bash run.sh` (darmowy na https://api.nasa.gov; bez niego `DEMO_KEY` ma limit 30 zapytań na godzinę z jednego adresu i często zwraca 429). Bez danych panel się nie pokazuje, a przy braku sieci gra pokazuje ostatnie zapamiętane. Testy: `python3 -m unittest tests/test_nasa.py`.
-- **Konto deweloperskie:** gracze z pseudonimem podanym w `--dev-nick` dostają tryb dev (`?dev=`, `?demo=1`, wszystkie planety odblokowane) także na serwerze bez `--dev`. Uwaga: dopasowanie jest po pseudonimie, więc każdy, kto wybierze `Dylu`, też je dostanie. Domyślnie nikt go nie ma. Podanie: `python3 counter/server.py serve --dev-nick Dylu` (można kilka razy) albo `DEV_NICKS="Dylu" bash run.sh`. Zawęź do jednego konta przez `Dylu#8054`.
-- **Demo do nagrania:** na serwerze z `--dev` (`DEV_MODE=1 bash run.sh`) otwórz `/?demo=1`: wczytuje przykładowy stan (zaliczone misje, zasoby, zabudowane planety, wszystkie odblokowane). Odświeżenie bez `?demo=1` zostawia ten stan. Pierwszy raz trzeba jeszcze podać pseudonim.
-- **Modele 3D budynków** (`js/29-models3d.js`, three.js r177 w `vendor/three.min.js`, licencja MIT): każdy budynek ma własną bryłę, renderowaną raz do PNG we wspólnym kontekście WebGL. Bez WebGL pokazuje się zwykła ikona. Pytanie A/B ma limit 1 na 45 s (`SAFE_COOLDOWN` w `js/16-base.js`).
+**Developer mode** (only on a server started with `--dev`, e.g. `DEV_MODE=1 bash run.sh`; without it `?dev=` is ignored): `index.html?dev=flappy` (or `shooter`, `catch`, `lander`, `pack`) starts the chosen mini-game right away, skipping the intro and the missions. Optional `&diff=easy|mid|hard`. Nothing is saved (saving and the leaderboard are off), TRY AGAIN replays the game, NEXT goes to Missions (refresh the page to start the game again). Unknown key: the list of keys is printed with `console.warn` and the game starts normally.
 
-## Typowe zmiany
-- Nowe etapy i pytania: `config/missions.json`. Lekcje i samouczki: `config/tutorials.json`, bez kodu. Instrukcja: [docs/JAK-DODAC-ETAP.md](JAK-DODAC-ETAP.md). `python3 build.py` sprawdza dane i wypisze błędy po polsku.
-- `config/*.json` są wbudowywane do `dist/astromeow.html` jako `window.DATA_EMBED`; w dev (index.html z serwera) ładuje je `js/00-data.js` przez fetch. Plik otwarty z `file://` bez builda pokaże komunikat Astrusia.
-- Progi odblokowania planet i ich mnożniki: `js/06-base-data.js` (`PLANETS`).
-- Skiny i ceny: `js/03-cat.js` (`SKINS`), cena złotego życia: `GOLD_PRICE`.
-- Kolory: `css/01-base.css` (blok `:root`, ograniczona paleta, patrz „Wygląd i Astruś” niżej).
+## Structure
 
-## Licznik wejść
+```
+index.html          page skeleton (loads the files in order)
+run.sh              build + start/restart of the server with the counter (bash run.sh | -d | stop | status | logs)
+build.py            bundles the whole project into a single dist/astromeow.html
+counter/            visit counter: server.py (server + SQLite), live.html, counter.sh (reset/stats/test)
+css/                styles, in loading order
+  01-base           palette (:root), navigation, buttons, cards
+  02-cat            the cat and its skins
+  03-quiz           question screen and hearts
+  04-map            MeowMission trail, planets
+  05-tutorial       tutorial pop-ups
+  06-effects        confetti, toast, animations
+  07-base-game      the base (planets and buildings)
+  08-minigames      mini-games and rocket packing
+js/                 classic scripts (shared scope, the order matters)
+  01-config         keys, saving
+  02-layout         scaling (fit) for a portrait 9:16 laptop and a phone
+  03-cat            SVG cat / frames from cat/, skins
+  04-reactions      brainrot-style reactions to answers
+  00-data           loading config/*.json (DATA)
+  05-questions      builds MISSIONS/DIFFS from config/missions.json (the content is in JSON, not here)
+  06-base-data      planets, buildings, add-ons
+  07-state          game state, saving, base economy
+  08-ui, 09-start, 10-home, 11-trail   screens: start, menu, mission trail
+  12-quiz           quiz, hearts, golden life
+  13-minigames, 14-pack   mini-games (canvas) and rocket packing
+  15-results        mini-game result / mission report
+  16-base, 17-shop, 18-tutorial, 19-badges   base, shop, tutorials, badges
+  20-router, 21-start-loop   click actions and app start
+  22-counter        reporting a visit to the counter (POST /api/hit)
+  23-facts          the Facts screen ("Ciekawostki" tab), styles in css/09-facts.css
+  24-sound          Web Audio sounds (click, right/wrong, result, Astruś' meow); mute: 🔊 on the home screen or sfxToggle()
+cat/                (optional) cat frames: idle_1.png … cheer_3.png or idle.gif …
+```
 
-Mały serwer w Pythonie (tylko biblioteka standardowa) + baza SQLite. Serwuje `dist/astromeow.html`, zlicza
-**unikalne przeglądarki** (cookie z losowym ID) i pokazuje licznik na żywo pod `/live`. Działa za
-`cloudflared tunnel`, więc nic nie trzeba przenosić na Cloudflare Pages.
+## Base and player save
 
-### Tunel i aplikacja są niezależne
+- Resources (keys in the code unchanged): `wiedza` = **Oxygen** 🫁, `czesci` = **Energy** ⚡, `meteo` = **Water** 💧. Names and icons: `RES` in `js/06-base-data.js`.
+- Planets in order: Moon, Mars, Mercury, then further locations on the Moon (Sea of Tranquility), Mars (Valles Marineris) and Mercury (North Pole): `PLANETS` in `js/06-base-data.js`.
+- After a quiz and a mini-game, NEXT leads to the **Base**. Every time the player enters the Base, an A/B safety question appears (`config/safety.json`): a right answer gives +20% of the resource, a wrong one −10%. Each question has a `res` field, the resource it concerns.
+- **Resetting old bases:** bump `BASE_VER` in `js/01-config.js`. Every player gets a clean base on their next visit, while mission progress, stars and skins stay.
+- **Resetting the whole save on a device:** append `?reset=1` to the page URL and confirm.
 
-| | Co | Jak często |
+- **"Latest from NASA" panel in Facts** (`counter/nasa.py`, `loadNasa()` in `js/23-facts.js`): solar flare, geomagnetic storm and CME from NASA DONKI, plus the Astronomy Picture of the Day (APOD). The server refreshes DONKI in the background every 5 min (APOD every hour, and with `DEMO_KEY` everything every 30 min because of the rate limit; change with `--nasa-every SEC`). The in-game panel refreshes itself every 5 min while the player stays in Facts (`/api/nasa`, cache in `counter/data/nasa-cache.json`), so players never hit the API directly. Key: `NASA_API_KEY=... bash run.sh` (free at https://api.nasa.gov; without it `DEMO_KEY` is limited to 30 requests per hour per address and often returns 429). With no data the panel is hidden, and offline the game shows the last remembered data. Tests: `python3 -m unittest tests/test_nasa.py`.
+- **Developer account:** players whose nickname is passed with `--dev-nick` get developer mode (`?dev=`, `?demo=1`, all planets unlocked) also on a server without `--dev`. Note: matching is by nickname, so anyone who picks `Dylu` gets it too. By default nobody has it. Pass it with `python3 counter/server.py serve --dev-nick Dylu` (repeatable) or `DEV_NICKS="Dylu" bash run.sh`. Narrow it to a single account with `Dylu#8054`.
+- **Demo for recording:** on a server with `--dev` (`DEV_MODE=1 bash run.sh`) open `/?demo=1`: it loads a sample state (completed missions, resources, built planets, everything unlocked). Refreshing without `?demo=1` keeps that state. The first time you still have to enter a nickname.
+- **3D building models** (`js/29-models3d.js`, three.js r177 in `vendor/three.min.js`, MIT licence): every building has its own solid, rendered once to a PNG in a shared WebGL context. Without WebGL a plain icon is shown. The A/B question is rate-limited to 1 per 45 s (`SAFE_COOLDOWN` in `js/16-base.js`).
+
+## Common changes
+
+- New stages and questions: `config/missions.json`. Lessons and tutorials: `config/tutorials.json`, no code needed. Guide: [ADDING-A-STAGE.md](ADDING-A-STAGE.md). `python3 build.py` validates the data and prints errors (in Polish).
+- `config/*.json` are embedded into `dist/astromeow.html` as `window.DATA_EMBED`; in dev (index.html served by the server) `js/00-data.js` loads them with fetch. A file opened from `file://` without a build shows a message from Astruś.
+- Planet unlock thresholds and multipliers: `js/06-base-data.js` (`PLANETS`).
+- Skins and prices: `js/03-cat.js` (`SKINS`), golden life price: `GOLD_PRICE`.
+- Colours: `css/01-base.css` (the `:root` block, a limited palette, see "Look and Astruś" below).
+
+## Visit counter
+
+A small Python server (standard library only) plus a SQLite database. It serves `dist/astromeow.html`, counts
+**unique browsers** (a cookie with a random ID) and shows a live counter at `/live`. It runs behind a
+`cloudflared tunnel`, so nothing has to be moved to Cloudflare Pages.
+
+### The tunnel and the app are independent
+
+| | What | How often |
 |---|---|---|
-| **Tunel** | `cloudflared tunnel --url http://127.0.0.1:8085` | **raz**, w osobnym terminalu/tmux, nie zamykaj. Adres `…trycloudflare.com` zostaje, dopóki ten proces żyje |
-| **Aplikacja** | `bash run.sh` | **ile razy chcesz**: buduje grę, restartuje serwer pod tym samym portem, baza zostaje |
+| **Tunnel** | `cloudflared tunnel --url http://127.0.0.1:8085` | **once**, in a separate terminal/tmux, keep it open. The `…trycloudflare.com` address stays as long as this process lives |
+| **App** | `bash run.sh` | **as often as you like**: builds the game, restarts the server on the same port, the database stays |
 
-Podczas restartu aplikacji (1–2 s) tunel zwraca 502, potem znowu działa pod tym samym adresem. QR zrobisz raz
-z adresu tunelu: `https://…trycloudflare.com/?src=scena`.
+While the app restarts (1-2 s) the tunnel returns 502, then works again under the same address. You can make a QR code
+once from the tunnel address: `https://…trycloudflare.com/?src=qr`.
 
-> Port w `run.sh` (domyślnie **8085**) musi być ten sam co w komendzie tunelu (inny: `PORT=9000 bash run.sh`).
-> Nie zamykaj terminala z tunelem i nie usypiaj laptopa. Restart `cloudflared` = **nowy adres**, a wtedy QR
-> przestaje działać, a cookie liczy wszystkich od nowa.
+> The port in `run.sh` (default **8085**) must match the one in the tunnel command (to change it: `PORT=9000 bash run.sh`).
+> Do not close the tunnel terminal and do not suspend the machine. Restarting `cloudflared` = **a new address**, the QR
+> stops working and the cookie counts everyone from scratch.
 
-### Komendy
+### Commands
 
-Z katalogu `astromeow/`:
+From the `astromeow/` directory:
 
-| Komenda | Co robi |
+| Command | What it does |
 |---|---|
-| `bash run.sh` | build + (re)start w tym terminalu, Ctrl+C kończy |
-| `bash run.sh -d` | to samo w tle, logi w `counter/data/server.log` |
-| `bash run.sh stop` / `status` / `logs` | zatrzymaj / czy działa + statystyki / śledź logi |
-| `bash counter/counter.sh stats` | statystyki z bazy (także gdy serwer stoi) |
-| `bash counter/counter.sh reset` | kopia + wyzerowanie (**po testach, przed pokazem**) |
-| `bash counter/counter.sh export` | CSV na stdout (`> wejscia.csv`) |
-| `bash counter/counter.sh backup` | ręczna kopia bazy |
-| `bash counter/counter.sh test` | 8 automatycznych sprawdzeń, nie rusza prawdziwej bazy |
-| `bash counter/counter.sh install` | jednorazowo: sprawdza zależności, buduje grę, tworzy bazę |
+| `bash run.sh` | build + (re)start in this terminal, Ctrl+C stops it |
+| `bash run.sh -d` | the same in the background, logs in `counter/data/server.log` |
+| `bash run.sh stop` / `status` / `logs` | stop / is it running + statistics / follow the logs |
+| `bash counter/counter.sh stats` | statistics from the database (also when the server is down) |
+| `bash counter/counter.sh reset` | backup + zeroing (**after testing, before going live**) |
+| `bash counter/counter.sh export` | CSV to stdout (`> visits.csv`) |
+| `bash counter/counter.sh backup` | manual database backup |
+| `bash counter/counter.sh test` | 8 automatic checks, does not touch the real database |
+| `bash counter/counter.sh install` | one-off: checks dependencies, builds the game, creates the database |
 
-Zmienne: `PORT=8085`, `DB=ścieżka`, `PYTHON=python3`, `KEEP=10` (ile kopii trzymać), `BACKUP_DIR=~/astromeow-backup` (kopie poza repo; ten sam katalog dla `run.sh` i `counter.sh backup`/`reset`).
+Variables: `PORT=8085`, `DB=path`, `PYTHON=python3`, `KEEP=10` (how many backups to keep), `BACKUP_DIR=~/astromeow-backup` (backups outside the repo; the same directory for `run.sh` and `counter.sh backup`/`reset`).
 
-### Co robi `run.sh` przy każdym starcie
+### What `run.sh` does on every start
 
-1. **Build** (`build.py` → `dist/astromeow.html`). Jeśli build się wywali, **działająca instancja nie jest ruszana**.
-2. Zatrzymuje poprzednią instancję (pidfile `counter/data/server.pid`), więc spokojnie odpalasz go wielokrotnie.
-3. **Kopia bazy** do `~/astromeow-backup/` poza repo (`BACKUP_DIR`; zostaje `KEEP` = 10 ostatnich, starsze są kasowane).
-4. Startuje serwer. Jeśli padnie, nadzorca podnosi go po 1 s (po 5 szybkich upadkach z rzędu się poddaje).
-5. **Nie dotyka danych.** Baza jest zwykłym plikiem i przeżywa każdy restart.
+1. **Build** (`build.py` → `dist/astromeow.html`). If the build fails, **the running instance is not touched**.
+2. Stops the previous instance (pidfile `counter/data/server.pid`), so you can safely run it many times.
+3. **Database backup** to `~/astromeow-backup/` outside the repo (`BACKUP_DIR`; the `KEEP` = 10 latest are kept, older ones are deleted).
+4. Starts the server. If it crashes, the supervisor restarts it after 1 s (it gives up after 5 quick crashes in a row).
+5. **Does not touch the data.** The database is a plain file and survives every restart.
 
-### Jak to liczy
+### How it counts
 
-1. Gra (`js/22-counter.js`) przy starcie robi `POST /api/hit?src=…` (błąd licznika nigdy nie psuje gry).
-2. Serwer czyta cookie `vid`. Brak lub błędne → generuje UUID i ustawia cookie na rok.
-3. Zapis w bazie: nowy ID = nowy wiersz, znany ID = `hits + 1`. Boty i podglądy linków (po User-Agent) są pomijane.
+1. On start the game (`js/22-counter.js`) does `POST /api/hit?src=…` (a counter error never breaks the game).
+2. The server reads the `vid` cookie. Missing or invalid → it generates a UUID and sets the cookie for a year.
+3. Written to the database: a new ID = a new row, a known ID = `hits + 1`. Bots and link previews (by User-Agent) are skipped.
 
-**Unikalny = jedna przeglądarka**, nie jedna osoba (tryb prywatny albo drugi telefon policzą się osobno).
-Na slajdzie mów „unikalne urządzenia/przeglądarki”.
+**Unique = one browser**, not one person (a private window or a second phone count separately).
+Describe the number as "unique devices/browsers".
 
-### Baza danych (SQLite)
+### Database (SQLite)
 
-Nie ma żadnego serwera bazy: to plik `counter/data/counter.db` (obok `-wal` i `-shm`, to normalne, nie kasuj ich
-przy działającym serwerze). Tworzy się sam przy pierwszym starcie, jest w `.gitignore`.
+There is no database server: it is the file `counter/data/counter.db` (next to `-wal` and `-shm`, which is normal, do not delete them
+while the server is running). It is created on the first start and is in `.gitignore`.
 
 ```sql
 CREATE TABLE visits (
-  id         TEXT PRIMARY KEY,      -- cookie vid
-  first_seen INTEGER NOT NULL,      -- unix time pierwszego wejścia
-  last_seen  INTEGER NOT NULL,      -- unix time ostatniego
+  id         TEXT PRIMARY KEY,      -- vid cookie
+  first_seen INTEGER NOT NULL,      -- unix time of the first visit
+  last_seen  INTEGER NOT NULL,      -- unix time of the last one
   hits       INTEGER NOT NULL DEFAULT 1,
-  src        TEXT NOT NULL DEFAULT ''   -- ?src= z QR
+  src        TEXT NOT NULL DEFAULT ''   -- ?src= from the QR
 );
 ```
 
-Własne zapytania (wymaga `sqlite3`: `sudo apt install sqlite3`; bez niego wystarczy `counter.sh stats` i `export`):
+Your own queries (needs `sqlite3`: `sudo apt install sqlite3`; without it `counter.sh stats` and `export` are enough):
 
 ```bash
 sqlite3 counter/data/counter.db "SELECT COUNT(*) FROM visits;"
-# wejścia na godzinę
+# visits per hour
 sqlite3 counter/data/counter.db "SELECT strftime('%H:00', first_seen,'unixepoch','localtime') h, COUNT(*) FROM visits GROUP BY h;"
-# kto wraca (więcej niż jedno uruchomienie)
+# who comes back (more than one launch)
 sqlite3 counter/data/counter.db "SELECT COUNT(*) FROM visits WHERE hits > 1;"
-# który QR działa najlepiej
+# which QR works best
 sqlite3 counter/data/counter.db "SELECT src, COUNT(*) FROM visits GROUP BY src ORDER BY 2 DESC;"
 ```
 
-### Co jest publiczne przez tunel
+### What is public through the tunnel
 
-Tylko to, co serwer świadomie wystawia: `/` (gra), `/api/hit`, `/api/stats` i `/live` (licznik widoczny dla każdego,
-kto zna adres) oraz `/healthz`. Baza, skrypty i `.git` są niedostępne.
+Only what the server deliberately exposes: `/` (the game), `/api/hit`, `/api/stats` and `/live` (the counter is visible to
+anyone who knows the address) and `/healthz`. The database, scripts and `.git` are not reachable.
 
-### Lista kontrolna przed wejściem na scenę
+### Smoke test
 
-- [ ] Tunel działa w osobnym terminalu/tmux, adres zapisany, QR z `?src=scena`
-- [ ] `bash counter/counter.sh test` → „WSZYSTKO OK”
-- [ ] `bash counter/counter.sh reset` (zero po próbach), potem `bash run.sh -d`
-- [ ] Zeskanuj QR własnym telefonem: w `/live` liczba rośnie o 1
-- [ ] Zeskanuj drugi raz tym samym telefonem: liczba **nie** rośnie (uruchomienia tak)
-- [ ] `/live` otwarte na drugim ekranie, laptop na zasilaniu i bez usypiania
-- [ ] Sieć na sali: hotspot z telefonu jako plan B
+- [ ] `bash counter/counter.sh test` → "WSZYSTKO OK" (the script prints this in Polish)
+- [ ] `bash counter/counter.sh reset` (zero after testing), then `bash run.sh -d`
+- [ ] Open the QR link on your own phone: the number at `/live` goes up by 1
+- [ ] Open it a second time on the same phone: the number does **not** go up (launches do)
 
-### Ograniczenia
+### Limitations
 
-- Serwer musi działać na laptopie/serwerze przez cały pokaz. Zamknięcie laptopa = koniec gry dla nowych osób.
-- Wspólne Wi-Fi nie szkodzi (liczymy po cookie, nie po IP).
-- Cloudflare Web Analytics możesz włączyć równolegle jako drugie, niezależne źródło (opóźnione).
-- Przy ewentualnym przejściu na Cloudflare Pages logika zostaje ta sama (Pages Functions + D1, ten sam schemat).
+- The server has to keep running for the counter to work. If the machine goes down, new players cannot load the game.
+- A shared Wi-Fi network does no harm (we count by cookie, not by IP).
+- You can enable Cloudflare Web Analytics in parallel as a second, independent (delayed) source.
+- If you ever move to Cloudflare Pages the logic stays the same (Pages Functions + D1, the same schema).
 
-## Wygląd i Astruś (główny bohater)
-Kot nazywa się **Astruś** i to on prowadzi gracza: wita, komentuje odpowiedzi w quizie, tłumaczy tutoriale i podpowiada w bazie (`catSay()` = Astruś + dymek). Nazwa aplikacji zostaje „AstroMeow”.
+## Look and Astruś (the main character)
 
-### Paleta (jasna, ograniczona; `css/01-base.css`, `:root`)
-| Zmienna | Hex | Użycie |
+The cat is called **Astruś** and it guides the player: greets them, comments on quiz answers, explains the tutorials and gives hints in the base (`catSay()` = Astruś + speech bubble). The app name stays "AstroMeow".
+
+### Palette (light, limited; `css/01-base.css`, `:root`)
+
+| Variable | Hex | Use |
 |---|---|---|
-| `--bg` | `#FFF8F0` | tło aplikacji (ciepły krem) |
-| `--surface` | `#FFFFFF` | karty, okna, odpowiedzi |
-| `--ink` | `#1B1446` | tekst i obrysy (granat kombinezonu) |
-| `--orange` | `#F28A1E` | kolor główny, jedna następna akcja (przycisk `b-lav`, aktywna zakładka) |
-| `--oranged` | `#A85200` | ciemny pomarańcz: małe napisy i cienie na jasnym tle |
-| `--orange-soft` | `#FFEBD2` | tint pomarańczu: zaznaczenie, kafelki, tło planety |
-| `--muted` | `#645F7E` | tekst pomocniczy |
-| `--grey` | `#E8E1D6` | neutralna szarość: tory, zablokowane, wyłączone |
-| `--ok` / `--ok-soft` | `#167A45` / `#DDF4E6` | **tylko** dobra odpowiedź |
-| `--bad` / `--bad-soft` | `#C62E2E` / `#FBDEDE` | **tylko** zła odpowiedź |
+| `--bg` | `#FFF8F0` | app background (warm cream) |
+| `--surface` | `#FFFFFF` | cards, windows, answers |
+| `--ink` | `#1B1446` | text and outlines (the navy of the suit) |
+| `--orange` | `#F28A1E` | main colour, the one next action (`b-lav` button, active tab) |
+| `--oranged` | `#A85200` | dark orange: small text and shadows on a light background |
+| `--orange-soft` | `#FFEBD2` | orange tint: selection, tiles, planet background |
+| `--muted` | `#645F7E` | secondary text |
+| `--grey` | `#E8E1D6` | neutral grey: tracks, locked, disabled |
+| `--ok` / `--ok-soft` | `#167A45` / `#DDF4E6` | **only** a right answer |
+| `--bad` / `--bad-soft` | `#C62E2E` / `#FBDEDE` | **only** a wrong answer |
 
-Zasady: na ekranie jest **jeden** pomarańczowy przycisk (następny krok), reszta to białe przyciski z obrysem (`b-white`) albo linki (`.link`). Zielony i czerwony nie występują nigdzie poza feedbackiem poprawne/błędne. Nowe kolory dodawaj tylko w `:root`.
-- Przyciski i karty mają gruby ciemny obrys i twardy cień. Konfetti (`confetti()`) to małe kawałki w kolorach palety.
-- Kot: `cat/idle.webp` oraz `happy/sad/think/cheer.webp` (nie zmieniać). `build.py` wbudowuje je w `dist/astromeow.html`, więc plik działa sam.
-- `cat(poza, rozmiar)` rysuje Astrusia, `catSay(poza, html)` daje „Astruś + dymek”: używaj do tłumaczenia czegokolwiek (quiz, gierki, tutorial). `confirmSheet({...})` to okno potwierdzenia z Astrusiem.
-- Dolne menu (`#nav` w `index.html`) mieści do 6 zakładek (dodaj kolejny `<button data-act="tab" data-arg="...">` i wpis w `setTab()` w `js/20-router.js`).
+Rules: there is **one** orange button on the screen (the next step), the rest are white outlined buttons (`b-white`) or links (`.link`). Green and red appear nowhere except right/wrong feedback. Add new colours only in `:root`.
 
-## Ciekawostki
-Treść ekranu Ciekawostki (kategorie: Ignis, Polacy w kosmosie, POLSA, ESA, NASA) leży w `config/ciekawostki.json`. Żeby dodać ciekawostkę, dopisz obiekt (`id` unikalny, `title`, `text`, opcjonalnie `astrus` i `source`) do `facts` wybranej kategorii; kod nie wymaga zmian. Ikona kategorii (`icon`) to nazwa pliku z `assets/facts/` bez `.svg`, np. `"esa"` (własne, stylizowane SVG, bez oficjalnych logotypów). Pierwsza kategoria na liście jest wyróżniona. Ekran czyta `DATA.ciekawostki` (loader z `js/00-data.js`), a przeczytane ciekawostki zapisuje w `P.facts`.
+- Buttons and cards have a thick dark outline and a hard shadow. Confetti (`confetti()`) is small pieces in the palette colours.
+- The cat: `cat/idle.webp` and `happy/sad/think/cheer.webp` (do not rename). `build.py` embeds them into `dist/astromeow.html`, so the file works on its own.
+- `cat(pose, size)` draws Astruś, `catSay(pose, html)` gives "Astruś + speech bubble": use it to explain anything (quiz, mini-games, tutorial). `confirmSheet({...})` is a confirmation window with Astruś.
+- The bottom menu (`#nav` in `index.html`) holds up to 6 tabs (add another `<button data-act="tab" data-arg="...">` and an entry in `setTab()` in `js/20-router.js`).
 
-### Profile i ranking
+## Facts
 
-Uruchom grę przez `python3 build.py` i `python3 counter/server.py serve`.
-Serwer trzyma nicki, głos, sesje i rekordy minigier w istniejącym pliku SQLite.
-Skopiowany samodzielny HTML działa offline z lokalnym profilem. Ranking wymaga tego serwera.
-Listy blokowanych nazw są w `config/blocked-words.pl.txt` oraz `config/blocked-words.en.txt`.
+The content of the Facts screen (categories: Ignis, Poles in space, POLSA, ESA, NASA) lives in `config/ciekawostki.json`. To add a fact, append an object (unique `id`, `title`, `text`, optional `astrus` and `source`) to `facts` of the chosen category; no code changes are needed. The category icon (`icon`) is the name of a file from `assets/facts/` without `.svg`, e.g. `"esa"` (our own stylised SVG, no official logos). The first category on the list is highlighted. The screen reads `DATA.ciekawostki` (loader from `js/00-data.js`) and stores read facts in `P.facts`.
+
+### Profiles and leaderboard
+
+Run the game with `python3 build.py` and `python3 counter/server.py serve`.
+The server keeps nicknames, voice pitch, sessions and mini-game records in the existing SQLite file.
+A copied standalone HTML works offline with a local profile. The leaderboard needs this server.
+The blocked-name lists are in `config/blocked-words.pl.txt` and `config/blocked-words.en.txt`.

@@ -1,6 +1,6 @@
 'use strict';
 /* ===================== ETAPY, POZIOMY, PYTANIA, LEKCJE =====================
-   Treść jest w config/missions.json (opis: docs/JAK-DODAC-ETAP.md). Tu tylko budujemy z niej
+   Treść jest w config/missions.json (opis: docs/ADDING-A-STAGE.md). Tu tylko budujemy z niej
    globalne TIERS / DIFFS / MISSIONS, których używa reszta gry. Liczba etapów i pytań jest dowolna. */
 let TIERS = [], DIFFS = {}, MISSIONS = [];
 const LETTERS = ['A', 'B', 'C', 'D'];
