@@ -26,7 +26,7 @@ function renderBase() {
   P.seenPlanets = Math.max(P.seenPlanets, pi + 1);
   const chipsRow = pOpen(1)
     ? `<div class="row gap-s mb-s">${PLANETS.map((p, i) => `<button class="pchip ${i === pi ? 'on' : ''} ${pOpen(i) ? '' : 'lk'}" data-act="goplanet" data-arg="${i}"><span>${pOpen(i) ? p.icon : '🔒'}</span><small>${p.n}×${p.n}</small></button>`).join('')}</div>` : '';
-  const em = [0, 0, 3.3, 2.6, 2.1, 1.7][n]; let tiles = '';
+  const bgUrl = planetBg(pl.id), em = [0, 0, 3.3, 2.6, 2.1, 1.7][n]; let tiles = '';
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
     const t = g[key(x, y)];
     if (!t) { tiles += `<button id="tile-${x}-${y}" data-act="tile" data-arg="${x},${y}" class="tile empty ${cnt === 0 ? 'pulse' : ''}" aria-label="Wolne pole"><span class="plus" style="font-size:${em * .6}rem">＋</span></button>`; continue; }
@@ -39,7 +39,7 @@ function renderBase() {
     ${bar('<h1 class="title">Twoja baza</h1>', '', `<span class="row gap-s">${starPill()}<button class="x" data-act="tut" data-arg="base">?</button></span>`)}
     ${chipsRow}
     <div class="resbar mb">${resCell('wiedza', r)}${resCell('czesci', r)}${resCell('meteo', r)}</div>
-    <section class="sky" style="background:${pl.bg}"><div class="cap">${pl.icon} ${pl.name} · ${cnt}/${n * n}</div>
+    <section class="sky${bgUrl ? ' real' : ''}" style="background:${bgUrl ? `url(${bgUrl}) center/cover, ${pl.bg}` : pl.bg}"><div class="cap">${pl.icon} ${pl.name} · ${cnt}/${n * n}</div>
       <div style="max-width:${[0, 0, 15, 19, 22, 24][n]}rem;margin:0 auto;perspective:56rem;position:relative"><div class="ground" style="grid-template-columns:repeat(${n},1fr)">${tiles}</div></div></section>
     <div class="mt" style="margin-bottom:1.2rem">${coach}</div>
   </div>`, { nav: true, tab: 'base' });
