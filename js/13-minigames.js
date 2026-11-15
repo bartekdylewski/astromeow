@@ -33,7 +33,6 @@ function renderGameIntro(key) {
   stopGame(); const g = GAMES[key], set = GSET;
   cur = () => renderGameIntro(key);
   show(`<div class="scr">
-    ${g.noRank ? '' : '<section class="card mt" aria-label="Ranking minigry"><h3>Ranking</h3><div id="leaderboard">Ładowanie…</div></section>'}
     <div class="grow"></div>
     <div class="col center tc">${cat('cheer', 10, 'float')}<div class="bubble up big mt tc"><b>${g.icon} ${g.name}</b><br>${g.desc}</div>
       <p class="muted" style="margin:1rem 0 0">🎯 Cel: ${goalText(key)}${set.attempts ? ` · próba ${set.attempts + 1} z ${MAXTRY}` : ''}</p></div>
@@ -41,7 +40,6 @@ function renderGameIntro(key) {
     <div class="foot"><button class="btn b-lav nudge" data-act="play" data-arg="${key}">GRAJ 🎮</button>
       <button class="link w100" data-act="skipgame">pomiń gierkę</button></div>
   </div>`);
-  if (!g.noRank) loadLeaderboard(key, $('#leaderboard'));
 }
 let pillarEl;
 const pillarImg = () => pillarEl || (pillarEl = Object.assign(new Image(), { src: assetSrc('assets/flappy/pillar.webp') }));
