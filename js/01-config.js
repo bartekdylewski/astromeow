@@ -13,6 +13,7 @@ const CAT_DIR  = 'cat/';
 /* grafika z assets/: w dist/astromeow.html wbudowana przez build.py (ASSET_EMBED), lokalnie zwykły plik */
 const assetSrc = p => window.ASSET_EMBED?.[p] || p;
 const SAVE_KEY = 'astromeow-v1';
+const BASE_VER = 2;   // podbij, gdy zmienia się struktura bazy: gracze dostaną czystą bazę (postęp misji zostaje)
 let DEV = '';   // ?dev=<klucz gierki>: tryb deweloperski, patrz boot(); nic nie zapisuje
 
 const $ = s => document.querySelector(s);

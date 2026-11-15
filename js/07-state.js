@@ -4,7 +4,7 @@ const key = (x, y) => x + ',' + y;
 const fresh = () => ({
   pts: 0, streak: 0, lastDay: null, diff: null, startIdx: 0, runs: 0, done: { easy: [], mid: [], hard: [] }, best: {},
   stars: { easy: {}, mid: {}, hard: {} }, seen: { easy: [], mid: [], hard: [] },
-  res: { wiedza: 20, czesci: 0, meteo: 0 }, planets: PLANETS.map(() => ({ grid: {} })), planet: 0, seenPlanets: 1,
+  res: { wiedza: 20, czesci: 0, meteo: 0 }, planets: PLANETS.map(() => ({ grid: {} })), planet: 0, seenPlanets: 1, baseVer: BASE_VER,
   tut: { welcome: false, quiz: false, base: false, map: false, shop: false },
   skin: 'classic', skins: ['classic'], golden: 0, lessons: {},
   lastSave: Date.now(),
@@ -17,6 +17,7 @@ function load() {
   try {
     const raw = localStorage.getItem(SAVE_KEY); if (!raw) return;
     const s = JSON.parse(raw), f = fresh();
+    if (s.baseVer !== BASE_VER) { delete s.res; delete s.planets; s.planet = 0; s.seenPlanets = 1; s.baseVer = BASE_VER; }   // stara baza -> czysta
     P = { ...f, ...s, res: { ...f.res, ...s.res }, done: { ...f.done, ...s.done }, best: { ...s.best }, stars: { ...f.stars, ...s.stars }, seen: { ...f.seen, ...s.seen },
           tut: { ...f.tut, ...s.tut }, lessons: { ...(s.lessons || {}) }, skins: Array.isArray(s.skins) && s.skins.length ? s.skins : ['classic'], planets: PLANETS.map((_, i) => ({ grid: { ...(((s.planets || [])[i] || {}).grid || {}) } })) };
     const away = Math.min(7200, (Date.now() - (s.lastSave || Date.now())) / 1000);

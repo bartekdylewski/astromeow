@@ -8,6 +8,10 @@ function bootError(err) {
     <div class="grow"></div></div>`);
 }
 async function boot() {
+  if (new URLSearchParams(location.search).get('reset') === '1' && confirm('Wyczyścić zapis gry na tym urządzeniu?')) {   // ?reset=1
+    try { localStorage.removeItem(SAVE_KEY); } catch (_) {}
+    return location.replace(location.pathname);
+  }
   load();
   if (!P.diff) P.diff = 'easy';
   const q = new URLSearchParams(location.search), dk = window.ALLOW_DEV ? q.get('dev') : null;   // ?dev=flappy[&diff=mid] (tylko serwer z --dev): od razu gra, bez zapisu i rankingu
