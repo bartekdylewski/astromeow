@@ -1,7 +1,7 @@
 /* ===== CIEKAWOSTKI ===== */
 .fcat{min-height:4.6rem}
 .fcat .fico{font-size:2rem;line-height:1;flex:none;width:2.6rem;text-align:center}
-.fimg{width:2rem;height:2rem;vertical-align:middle}
+.fimg{width:2rem;height:2rem;vertical-align:middle;object-fit:contain}
 .fcat .fico .fimg{width:2.6rem;height:2.6rem}
 .fcat .fgo{font-size:1.8rem;font-weight:900;color:var(--oranged);flex:none}
 .fcat.feat{background:var(--orange-soft);padding:1rem}

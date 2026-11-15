@@ -4,7 +4,8 @@ let FACT = { cat: null, i: 0 };
 const factEsc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const factCats = () => { const d = typeof DATA !== 'undefined' && DATA && DATA.ciekawostki; return d && Array.isArray(d.categories) && d.categories.length ? d.categories : null; };
 const factRead = () => (P.facts = P.facts && typeof P.facts === 'object' ? P.facts : {});
-const factIcon = c => `<img class="fimg" src="${assetSrc('assets/facts/' + c.icon + '.svg')}" alt="">`;
+const factFile = c => /\./.test(c.icon) ? c.icon : c.icon + '.svg'; // icon z rozszerzeniem = raster, bez = svg
+const factIcon = c => `<img class="fimg" src="${assetSrc('assets/facts/' + factFile(c))}" alt="">`;
 const factCount = c => c.facts.filter(f => factRead()[f.id]).length;
 
 function renderFacts() {
