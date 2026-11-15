@@ -76,5 +76,7 @@ function demoState() {
   P.planets[0].grid = { '0,0': B('warsztat', 4, ['panel', 'antena']), '1,0': B('lab', 3, ['kopula']), '0,1': B('lowca', 3, ['kopula']), '1,1': B('satelita', 2) };
   P.planets[1].grid = { '0,0': B('warsztat', 3, ['panel']), '1,0': B('lab', 2), '2,0': B('lowca', 2), '0,1': B('satelita', 2, ['antena']), '1,1': B('hangar', 2, ['panel']), '2,1': B('lab', 1), '0,2': B('warsztat', 2) };
   P.planets[2].grid = { '0,0': B('lowca', 2), '1,0': B('satelita', 1), '1,1': B('warsztat', 2, ['panel']), '2,2': B('hangar', 1) };
-  P.planets[3].grid = { '0,0': B('lab', 1), '1,1': B('lowca', 1), '2,2': B('warsztat', 1) };
+  const TY = ['warsztat', 'lab', 'lowca', 'satelita', 'hangar'], AD = [[], ['panel'], ['antena'], ['kopula'], ['panel', 'antena']];
+  const fill = (pi, k) => { const n = PLANETS[pi].n, g = {}; let c = 0; for (let y = 0; y < n && c < k; y++) for (let x = 0; x < n && c < k; x++) if ((x + y) % 2 === 0 || c < k - n) { g[key(x, y)] = B(TY[(x * 2 + y) % 5], 1 + (x + y) % 4, AD[(x + 2 * y) % 5]); c++; } P.planets[pi].grid = g; };
+  fill(3, 10); fill(4, 15); fill(5, 12);
 }
