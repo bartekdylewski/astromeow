@@ -88,7 +88,7 @@ python3 -m unittest tests/test_nasa.py tests/test_players.py
 ```
 
 - Developer notes: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
-- Adding a stage: [docs/JAK-DODAC-ETAP.md](docs/JAK-DODAC-ETAP.md)
+- Adding a stage: [docs/ADDING-A-STAGE.md](docs/ADDING-A-STAGE.md)
 - Deploy: [docs/deploy.md](docs/deploy.md)
 
 ## Roadmap
