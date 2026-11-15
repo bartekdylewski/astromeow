@@ -1,6 +1,7 @@
 'use strict';
 /* ===================== CIEKAWOSTKI: kosmos po polsku (dane: config/ciekawostki.json -> DATA.ciekawostki) ===================== */
 let FACT = { cat: null, i: 0 };
+const FACT_WAIT_MS = 3000;
 const factEsc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const factCats = () => { const d = typeof DATA !== 'undefined' && DATA && DATA.ciekawostki; return d && Array.isArray(d.categories) && d.categories.length ? d.categories : null; };
 const factRead = () => (P.facts = P.facts && typeof P.facts === 'object' ? P.facts : {});
@@ -56,7 +57,16 @@ function renderFact() {
       <p>${factEsc(f.text)}</p></div>
     ${f.source ? `<div class="tc"><a class="link fsrc" href="${factEsc(f.source)}" target="_blank" rel="noopener">Źródło ↗</a></div>` : ''}
     <div class="grow"></div>
-    <div class="foot row gap">${i > 0 ? '<button class="btn b-white" style="width:5rem" data-act="fact-prev" aria-label="Poprzednia">←</button>' : ''}
-      <button class="btn b-lav" data-act="${last ? 'fact-list' : 'fact-next'}">${last ? 'GOTOWE' : 'DALEJ ›'}</button></div>
+    <div class="foot col gap-s">
+      <div class="meter fact-delay" aria-hidden="true" style="--fact-wait:${FACT_WAIT_MS}ms"><i></i></div>
+      <div class="row gap">${i > 0 ? '<button class="btn b-white" style="width:5rem" data-act="fact-prev" aria-label="Poprzednia">←</button>' : ''}
+        <button id="fact-continue" class="btn b-lav" data-act="${last ? 'fact-list' : 'fact-next'}" disabled>${last ? 'GOTOWE' : 'DALEJ ›'}</button></div>
+    </div>
   </div>`, { nav: true, tab: 'facts' });
+  const button = $('#fact-continue'), progress = $('.fact-delay');
+  setTimeout(() => {
+    if (!button.isConnected) return;
+    progress.classList.add('ready');
+    button.disabled = false;
+  }, FACT_WAIT_MS);
 }
