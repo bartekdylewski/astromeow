@@ -7,17 +7,27 @@ Serwer odświeża dane w tle co 30 minut i zapisuje je w pliku, więc gracze nie
 limit 30 zapytań na godzinę z jednego adresu). Przy błędzie jednego źródła reszta nadal się pokazuje, a przy
 braku sieci zostają ostatnie dobre dane. Klucz: zmienna NASA_API_KEY albo --nasa-key (darmowy: https://api.nasa.gov).
 """
-import datetime, json, os, threading, time, urllib.parse, urllib.request
+import datetime, json, os, threading, time, urllib.error, urllib.parse, urllib.request
 
 BASE = "https://api.nasa.gov"
 EVERY = 1800          # s między odświeżeniami
 WINDOW_DAYS = 30      # jak daleko wstecz szukamy zdarzeń pogody kosmicznej
+RETRY_PAUSE = 2       # s między ponownymi próbami APOD
 
 
 def _fetch(path, key, **params):
     query = urllib.parse.urlencode({**params, "api_key": key})
-    with urllib.request.urlopen("%s%s?%s" % (BASE, path, query), timeout=15) as r:
-        return json.load(r)
+    for attempt in (1, 2):   # NASA czasem odpowiada chwilowym 5xx (APOD), więc jedna ponowna próba
+        try:
+            with urllib.request.urlopen("%s%s?%s" % (BASE, path, query), timeout=15) as r:
+                return json.load(r)
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 or attempt == 2:
+                raise
+        except (urllib.error.URLError, TimeoutError):
+            if attempt == 2:
+                raise
+        time.sleep(2)
 
 
 def _latest(items, field):
@@ -49,22 +59,32 @@ def parse_cme(items):
 def parse_apod(d):
     if not isinstance(d, dict) or d.get("media_type") != "image" or not str(d.get("url", "")).startswith("https://"):
         return None
+    if "nasa-logo" in d["url"]:   # w czasie awarii APOD NASA zwraca zamiast obrazu dnia samo logo
+        return None
     return {"title": d.get("title", ""), "url": d["url"], "date": d.get("date", ""), "credit": d.get("copyright", "NASA").strip()}
 
 
 def build(key, fetch=_fetch, today=None):
     today = today or datetime.date.today()
     window = {"startDate": str(today - datetime.timedelta(days=WINDOW_DAYS)), "endDate": str(today)}
-    out = {"updated": int(time.time())}
+    out, errors = {"updated": int(time.time())}, []
     for name, parse, path, params in (
         ("flare", parse_flare, "/DONKI/FLR", window), ("storm", parse_storm, "/DONKI/GST", window),
         ("cme", parse_cme, "/DONKI/CME", window), ("apod", parse_apod, "/planetary/apod", {}),
     ):
-        try:
-            out[name] = parse(fetch(path, key, **params))
-        except Exception as exc:   # jedno źródło nie może położyć reszty (limit, brak sieci)
-            out[name] = None
-            out.setdefault("errors", []).append("%s: %s" % (name, exc))
+        out[name], error = None, None
+        for attempt in range(3 if name == "apod" else 1):   # APOD bywa niestabilny (5xx albo samo logo zamiast obrazu)
+            try:
+                out[name], error = parse(fetch(path, key, **params)), None
+            except Exception as exc:   # jedno źródło nie może położyć reszty (limit, brak sieci)
+                error = "%s: %s" % (name, exc)
+            if out[name] or attempt == 2 or name != "apod":
+                break
+            time.sleep(RETRY_PAUSE)
+        if error:
+            errors.append(error)
+    if errors:
+        out["errors"] = errors
     return out
 
 

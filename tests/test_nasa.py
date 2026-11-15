@@ -40,6 +40,14 @@ class NasaTests(unittest.TestCase):
         self.assertIsNone(data['storm'])
         self.assertIn('storm: limit', data['errors'][0])
 
+    def test_apod_retries_when_nasa_returns_only_the_logo(self):
+        logo = {'media_type': 'image', 'url': 'https://science.nasa.gov/x/nasa-logo@2x.png', 'title': 'NASA Science'}
+        replies = iter([logo, APOD])
+        with patch.object(nasa, 'RETRY_PAUSE', 0):
+            data = nasa.build('K', lambda path, key, **p: next(replies) if path == '/planetary/apod' else [])
+        self.assertEqual(data['apod']['title'], 'T')
+        self.assertNotIn('errors', data)
+
     def test_cache_keeps_last_good_data_and_hides_errors(self):
         with tempfile.TemporaryDirectory() as tmp:
             cache = nasa.Cache('K', str(Path(tmp) / 'c.json'))
