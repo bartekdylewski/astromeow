@@ -9,3 +9,8 @@
 .lcard .licon{font-size:2.6rem;line-height:1.1}
 .lcard h3{font-size:1.4rem;font-weight:900;margin:.3rem 0 .2rem}
 .lcard p{font-weight:700;color:var(--muted);margin:.2rem 0 0;font-size:1.06rem;line-height:1.4}
+
+/* Poziomy gest zmienia scenę, pionowy przewija dłuższą treść. */
+.scene-swipe{touch-action:pan-y}
+.scene-dots{margin-top:.8rem}
+.tutcard.scene-swipe{max-height:100%;overflow-y:auto}
