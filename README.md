@@ -90,13 +90,13 @@ Z katalogu `astromeow/`:
 | `bash counter/counter.sh test` | 8 automatycznych sprawdzeń, nie rusza prawdziwej bazy |
 | `bash counter/counter.sh install` | jednorazowo: sprawdza zależności, buduje grę, tworzy bazę |
 
-Zmienne: `PORT=8085`, `DB=ścieżka`, `PYTHON=python3`, `KEEP=10` (ile kopii trzymać).
+Zmienne: `PORT=8085`, `DB=ścieżka`, `PYTHON=python3`, `KEEP=10` (ile kopii trzymać), `BACKUP_DIR=~/astromeow-backup` (kopie poza repo; ten sam katalog dla `run.sh` i `counter.sh backup`/`reset`).
 
 ### Co robi `run.sh` przy każdym starcie
 
 1. **Build** (`build.py` → `dist/astromeow.html`). Jeśli build się wywali, **działająca instancja nie jest ruszana**.
 2. Zatrzymuje poprzednią instancję (pidfile `counter/data/server.pid`), więc spokojnie odpalasz go wielokrotnie.
-3. **Kopia bazy** do `counter/data/backups/` (10 ostatnich).
+3. **Kopia bazy** do `~/astromeow-backup/` poza repo (`BACKUP_DIR`; zostaje `KEEP` = 10 ostatnich, starsze są kasowane).
 4. Startuje serwer. Jeśli padnie, nadzorca podnosi go po 1 s (po 5 szybkich upadkach z rzędu się poddaje).
 5. **Nie dotyka danych.** Baza jest zwykłym plikiem i przeżywa każdy restart.
 

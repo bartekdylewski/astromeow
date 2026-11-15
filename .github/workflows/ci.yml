@@ -1,0 +1,11 @@
+name: CI
+on:
+  pull_request:
+    branches: [main, develop]
+jobs:
+  test:
+    runs-on: [self-hosted, skylab]   # hosted runnery dają startup_failure na tym koncie; homelab jest darmowy
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash counter/counter.sh test
