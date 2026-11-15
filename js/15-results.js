@@ -13,40 +13,43 @@ function finishGame(key, score, passedFlag) {
   set.passed = set.passed || passed; set.totGain += gain; set.totPts += pts;
   P.res[g.res] += gain; P.pts += pts; P.best[key] = Math.max(P.best[key] || 0, score); save();
   const submission = submitRankedScore(key, score);
+  const left = MAXTRY - set.attempts;
+  mapMsg = endMsg({ passed, final: passed || left <= 0 });
   stopGame();
-  renderResult({ key, score, goal, passed, gain, pts, attempt: set.attempts, left: MAXTRY - set.attempts, submission });
+  renderResult({ key, score, goal, passed, gain, pts, attempt: set.attempts, left, submission });
+}
+let mapMsg = '';   // komunikat dla Szlaku misji (pokazywany raz po grze)
+function endMsg({ passed, final }) {
+  const set = GSET, mission = set.mission;
+  let line = passed ? say(BR.gameHigh) : say(BR.gameLow);
+  if (mission && final && P.runs === 1) line = 'Pierwsza misja za nami! 🎉 Na dole pojawiło się menu: misje, baza i sklep.';
+  let promo = '';
+  if (mission && final) {
+    const tierDone = P.done[S.d].length === MISSIONS.length, nt = TIERS[TIERS.indexOf(S.d) + 1];
+    if (tierDone && nt) promo = `<br>Poziom ${DIFFS[S.d].name} ukończony! W menu czeka awans: ${DIFFS[nt].icon} ${DIFFS[nt].name}`;
+    else if (tierDone) promo = '<br>🏆 Wszystkie poziomy zaliczone! Jesteś mistrzem kosmosu!';
+    if (S.newPlanet > 0) { const i = S.newPlanet, pl = PLANETS[i]; promo += `<br>🪐 Odblokowana planeta ${pl.name}! ${pOpen(i) ? 'Zajrzyj do Bazy.' : 'Najpierw zabuduj ' + PLANETS[i - 1].name + ' w Bazie.'}`; }
+  }
+  return catSay(passed ? 'cheer' : final ? 'happy' : 'think', line + promo, { size: 4.6 });
 }
 function renderResult(info) {
   cur = () => renderResult(info);
-  const g = GAMES[info.key], set = GSET, mission = set.mission, final = info.passed || info.left <= 0;
-  const title = info.passed ? 'Zaliczone!' : final ? 'Koniec prób' : 'Prawie!';
-  const pose = info.passed ? 'cheer' : final ? 'happy' : 'think';
-  let line = info.passed ? say(BR.gameHigh) : say(BR.gameLow);
-  if (mission && final && P.runs === 1) line = 'Pierwsza misja za nami! 🎉 Na dole pojawiło się menu: misje, baza i sklep.';
+  const g = GAMES[info.key], set = GSET, final = info.passed || info.left <= 0;
   const miss = info.key === 'pack' ? '' : (info.passed ? '' : ` · brakuje ${Math.max(0, info.goal - info.score)}`);
-  let body = '', promo = '';
-  if (mission && final) {
-    const tierDone = P.done[S.d].length === MISSIONS.length, nt = TIERS[TIERS.indexOf(S.d) + 1];
-    body = `<p class="rew">⭐ +${S.quizPts + set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain} &nbsp; 🧠 +${S.quizKnow}</p><p class="muted tc" style="margin:.2rem 0 0">Quiz: ${S.correct}/${S.qs.length} ${'⭐'.repeat(S.stars)}</p>`;
-    if (tierDone && nt) promo = `<div class="note mt-s">Poziom ${DIFFS[S.d].name} ukończony! W menu czeka awans: ${DIFFS[nt].icon} ${DIFFS[nt].name}</div>`;
-    else if (tierDone) promo = `<div class="note mt-s">🏆 Wszystkie poziomy zaliczone! Jesteś mistrzem kosmosu!</div>`;
-    if (S.newPlanet > 0) { const i = S.newPlanet, pl = PLANETS[i]; promo += `<div class="note mt-s">🪐 Odblokowana planeta ${pl.name}! ${pOpen(i) ? 'Zajrzyj do Bazy.' : 'Najpierw zabuduj ' + PLANETS[i - 1].name + ' w Bazie.'}</div>`; }
-  } else {
-    body = `<p class="rew">⭐ +${set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain}</p>`;
-  }
+  const body = set.mission && final
+    ? `<p class="rew">⭐ +${S.quizPts + set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain} &nbsp; 🧠 +${S.quizKnow}</p>`
+    : `<p class="rew">⭐ +${set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain}</p>`;
   show(`<div class="scr">
     <section class="card mt" aria-label="Ranking minigry"><h3>Ranking</h3><div id="leaderboard">Ładowanie…</div></section>
     <div class="grow"></div>
-    <div class="col center tc">${cat(pose, 10)}<div class="bubble up big mt tc">${line}</div>
-      <h2 class="title" style="margin-top:1.1rem">${title}</h2>
-      <p class="muted" style="margin:.3rem 0 0">Wynik: ${info.score}${info.key === 'pack' ? '' : ' · cel: ' + goalText(info.key)}${miss}</p>
+    <div class="col center tc">
+      <p class="muted" style="margin:0">Wynik: ${info.score}${info.key === 'pack' ? '' : ' · cel: ' + goalText(info.key)}${miss}</p>
       ${final ? '' : `<p class="muted" style="margin:.2rem 0 0">Próba ${info.attempt} z ${MAXTRY}</p>`}
       ${body}</div>
-    ${promo}
     <div class="grow"></div>
     <div class="foot col gap-s">
-      ${final ? '' : `<button class="btn b-lav nudge" data-act="retry-game">SPRÓBUJ JESZCZE (${info.attempt + 1}/${MAXTRY})</button>`}
-      <button class="btn ${final ? 'b-lav nudge' : 'b-white'}" data-act="tab" data-arg="home">${final ? 'DALEJ ›' : 'WRÓĆ'}</button>
+      ${final ? '' : `<button class="btn b-white" data-act="retry-game">SPRÓBUJ PONOWNIE (${info.attempt + 1}/${MAXTRY})</button>`}
+      <button class="btn b-lav nudge" data-act="tab" data-arg="map">DALEJ ›</button>
     </div>
   </div>`);
   loadLeaderboard(info.key, $('#leaderboard'), info.submission);
