@@ -109,7 +109,7 @@ function launchRankedRun(game) {
   if (DEV) return;
   player.played = true;
   storePlayer();
-  scoreRun = profileOnline && player.nickname
+  scoreRun = profileOnline && player.nickname && !GAMES[game]?.noRank   // lander bez rankingu
     ? playerRequest('run/start', { game }).catch(() => null)
     : Promise.resolve(null);
 }

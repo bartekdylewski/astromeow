@@ -40,7 +40,7 @@ function renderResult(info) {
     ? `<p class="rew">⭐ +${S.quizPts + set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain} &nbsp; 🧠 +${S.quizKnow}</p>`
     : `<p class="rew">⭐ +${set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain}</p>`;
   show(`<div class="scr">
-    <section class="card mt" aria-label="Ranking minigry"><h3>Ranking</h3><div id="leaderboard">Ładowanie…</div></section>
+    ${g.noRank ? '' : '<section class="card mt" aria-label="Ranking minigry"><h3>Ranking</h3><div id="leaderboard">Ładowanie…</div></section>'}
     <div class="grow"></div>
     <div class="col center tc">
       <p class="muted" style="margin:0">Wynik: ${info.score}${info.key === 'pack' ? '' : ' · cel: ' + goalText(info.key)}${miss}</p>
@@ -52,7 +52,7 @@ function renderResult(info) {
       <button class="btn b-lav nudge" data-act="${DEV ? 'play' : 'tab'}" data-arg="${DEV ? info.key : 'map'}">DALEJ ›</button>
     </div>
   </div>`);
-  loadLeaderboard(info.key, $('#leaderboard'), info.submission);
+  if (!g.noRank) loadLeaderboard(info.key, $('#leaderboard'), info.submission);
   if (info.passed) confetti(14);
   window.sfx && sfx(info.passed ? 'win' : 'lose');
 }
