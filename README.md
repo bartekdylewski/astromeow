@@ -56,6 +56,8 @@ cat/                (opcjonalnie) klatki kota: idle_1.png … cheer_3.png albo i
 - **Reset starych baz:** podbij `BASE_VER` w `js/01-config.js`. Każdy gracz dostanie czystą bazę przy następnym wejściu, a postęp misji, gwiazdki i skiny zostają.
 - **Reset całego zapisu na urządzeniu:** dopisz `?reset=1` do adresu strony i potwierdź.
 
+- **Modele 3D budynków** (`js/29-models3d.js`, three.js r177 w `vendor/three.min.js`, licencja MIT): każdy budynek ma własną bryłę, renderowaną raz do PNG we wspólnym kontekście WebGL. Bez WebGL pokazuje się zwykła ikona. Pytanie A/B ma limit 1 na 45 s (`SAFE_COOLDOWN` w `js/16-base.js`).
+
 ## Typowe zmiany
 - Nowe etapy i pytania: `config/missions.json`. Lekcje i samouczki: `config/tutorials.json`, bez kodu. Instrukcja: [docs/JAK-DODAC-ETAP.md](docs/JAK-DODAC-ETAP.md). `python3 build.py` sprawdza dane i wypisze błędy po polsku.
 - `config/*.json` są wbudowywane do `dist/astromeow.html` jako `window.DATA_EMBED`; w dev (index.html z serwera) ładuje je `js/00-data.js` przez fetch. Plik otwarty z `file://` bez builda pokaże komunikat Astrusia.

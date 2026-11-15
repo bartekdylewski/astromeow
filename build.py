@@ -9,7 +9,7 @@ html = open(os.path.join(here, 'index.html'), encoding='utf-8').read()
 def css(m): return '<style>\n' + open(os.path.join(here, m.group(1)), encoding='utf-8').read() + '</style>'
 def js(m):  return '<script>\n' + open(os.path.join(here, m.group(1)), encoding='utf-8').read() + '</script>'
 html = re.sub(r'<link rel="stylesheet" href="(css/[^"]+)">', css, html)
-html = re.sub(r'<script src="(js/[^"]+)"></script>', js, html)
+html = re.sub(r'<script src="((?:js|vendor)/[^"]+)"></script>', js, html)
 # ---------- dane z config/*.json: wczytanie + walidacja ----------
 def check_stages(d):
     """Zwraca (bledy, ostrzezenia) po polsku dla config/missions.json."""

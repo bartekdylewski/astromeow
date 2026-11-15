@@ -32,7 +32,7 @@ function renderBase() {
     if (!t) { tiles += `<button id="tile-${x}-${y}" data-act="tile" data-arg="${x},${y}" class="tile empty ${cnt === 0 ? 'pulse' : ''}" aria-label="Wolne pole"><span class="plus" style="font-size:${em * .6}rem">＋</span></button>`; continue; }
     const def = TYPES[t.type], size = em * (.7 + t.level * .09);
     const badges = t.addons.map((a, i) => `<span class="badge" style="${i === 0 ? 'top:-.5rem;right:-.5rem' : 'bottom:-.5rem;left:-.5rem'}">${ADDONS[a].icon}</span>`).join('');
-    tiles += `<button id="tile-${x}-${y}" data-act="tile" data-arg="${x},${y}" class="tile" aria-label="${def.name}"><span class="idle" style="font-size:${size}rem;line-height:1">${def.icon}</span><div style="position:absolute;bottom:.15rem;font-size:.55rem;line-height:1">${'⭐'.repeat(t.level)}</div>${badges}</button>`;
+    tiles += `<button id="tile-${x}-${y}" data-act="tile" data-arg="${x},${y}" class="tile" aria-label="${def.name}"><span class="idle" style="font-size:${size}rem;line-height:1">${bImg(t.type, def.icon)}</span><div style="position:absolute;bottom:.15rem;font-size:.55rem;line-height:1">${'⭐'.repeat(t.level)}</div>${badges}</button>`;
   }
   const co = baseCoach(pi), coach = mapMsg || catSay(co.pose, co.html, { size: 4.6 }); mapMsg = ''; GSET = null;   // po quizie/gierce: komunikat Astrusia zamiast podpowiedzi
   show(`<div class="scr">
@@ -58,7 +58,7 @@ function openBuildMenu(x, y) {
     const def = TYPES[k], locked = doneCount() < def.req;
     const gain = Object.keys(def.prod).map(r => `${RES[r].icon}+${fmt(def.prod[r] * pm)}/s`).join(' ') || `✨ +${Math.round(def.aura * 100)}% aury`;
     return `<button class="opt ${locked ? 'lock' : ''}" data-act="place" data-arg="${k}">
-      <div class="ic">${locked ? '🔒' : def.icon}</div><b style="font-size:.9rem">${def.name}</b>
+      <div class="ic">${locked ? '🔒' : bImg(k, def.icon)}</div><b style="font-size:.9rem">${def.name}</b>
       ${locked ? `<small class="muted">${def.req} ${misPl(def.req)}</small>` : `<small>${gain}</small><div style="display:flex;flex-wrap:wrap;gap:.25rem;justify-content:center">${chips(placeCost(k, pi))}</div>`}</button>`;
   }).join('');
   openSheet(`<h3 class="tc mb title">Postaw budynek</h3><div class="grid2">${cards}</div>`);
@@ -88,7 +88,7 @@ function openBuilding(x, y) {
     return `<button data-act="slot" style="${box};border:.16rem dashed var(--oranged);font-size:2.2rem;font-weight:900;color:var(--oranged);background:transparent;cursor:pointer">＋</button>`;
   }).join('');
   openSheet(`<div class="col center gap-s mb">
-      <div class="idle" style="width:6rem;height:6rem;border-radius:2rem;background:var(--orange-soft);border:.16rem solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:3.2rem">${def.icon}</div>
+      <div class="idle" style="width:6rem;height:6rem;border-radius:2rem;background:var(--orange-soft);border:.16rem solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:3.2rem">${bImg(t.type, def.icon)}</div>
       <b style="font-size:1.3rem">${def.name}</b><small class="muted tc">${def.desc}</small>
       <div style="font-size:1.1rem">${'⭐'.repeat(t.level)}<span style="opacity:.25">${'⭐'.repeat(def.max - t.level)}</span></div>
       <div class="row gap-s" style="flex-wrap:wrap;justify-content:center">${prod}</div></div>
@@ -117,9 +117,12 @@ function addAddon(id) {
 
 /* ===================== PYTANIE A/B O BEZPIECZEŃSTWIE (przy każdym wejściu do Bazy; dane: config/safety.json) ===================== */
 let safeLast = -1, safeQ = null;
+const SAFE_COOLDOWN = 45000;   // ms między pytaniami A/B
 function askSafety() {
   const qs = DATA && DATA.safety && DATA.safety.questions;
   if (!qs || !qs.length || !P.tut.base || DEV) return;   // dopiero po samouczku Bazy
+  if (Date.now() - (P.safeAt || 0) < SAFE_COOLDOWN) return;   // max 1 pytanie na 45 s, żeby nie dało się klikać Baza dla bonusu
+  P.safeAt = Date.now(); save();
   let i; do i = Math.floor(Math.random() * qs.length); while (qs.length > 1 && i === safeLast);
   safeLast = i;
   const q = qs[i], flip = Math.random() < .5, opts = flip ? [q.wrong, q.right] : [q.right, q.wrong];
