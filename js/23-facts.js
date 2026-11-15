@@ -39,7 +39,43 @@ function renderFacts() {
   show(`<div class="scr">
     ${bar('<h1 class="title">Ciekawostki</h1>', '', starPill())}
     <div class="mb">${catSay(got ? 'happy' : 'idle', got >= all ? 'Przeczytane wszystko! Jesteś ekspertem od kosmosu.' : 'Wybierz temat, a opowiem Ci coś ciekawego o kosmosie!', { size: 5.5 })}</div>
+    <div id="nasa-panel"></div>
     <div class="col gap" style="margin-bottom:1.2rem">${cats.map(card).join('')}</div></div>`, { nav: true, tab: 'facts' });
+  loadNasa();
+}
+
+/* ---- panel „Najnowsze z NASA": dane z serwera (/api/nasa: DONKI + APOD, odświeżane w tle), przy braku sieci ostatnie zapamiętane ---- */
+const NASA_KEY = 'astromeow-nasa';
+const nasaDate = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('pl-PL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); };
+const nasaFlare = c => ({ A: 'bardzo słaby', B: 'bardzo słaby', C: 'słaby', M: 'silny', X: 'bardzo silny' }[String(c)[0]] || '');
+const nasaStorm = kp => kp >= 9 ? ['G5', 'ekstremalna'] : kp >= 8 ? ['G4', 'bardzo silna'] : kp >= 7 ? ['G3', 'silna'] : kp >= 6 ? ['G2', 'umiarkowana'] : kp >= 5 ? ['G1', 'mała'] : ['', 'spokojnie'];
+function nasaPanel(d) {
+  const row = (ic, title, text) => `<div class="nrow"><span class="nic">${ic}</span><span class="grow"><b>${title}</b><small>${text}</small></span></div>`;
+  const rows = [];
+  if (d.flare) rows.push(row('☀️', 'Rozbłysk słoneczny: klasa ' + factEsc(d.flare.class), `${nasaFlare(d.flare.class)}, ${nasaDate(d.flare.time)}`));
+  if (d.storm) { const [g, name] = nasaStorm(d.storm.kp); rows.push(row('🌍', 'Burza geomagnetyczna: Kp ' + factEsc(d.storm.kp), `${g ? g + ', ' : ''}${name}, ${nasaDate(d.storm.time)}`)); }
+  if (d.cme) rows.push(row('💥', 'Wyrzut plazmy ze Słońca (CME)', `${d.cme.speed ? 'prędkość ok. ' + factEsc(d.cme.speed) + ' km/s, ' : ''}${nasaDate(d.cme.time)}`));
+  const hot = d.flare && /^[MX]/.test(d.flare.class), apod = d.apod;
+  if (!rows.length && !apod) return '';
+  return `<section class="card nasa"><div class="row between mb-s"><span class="label">Najnowsze z NASA</span><small class="muted">${d.updated ? 'dane z ' + nasaDate(d.updated * 1000) : ''}</small></div>
+    ${rows.length ? `<p class="nsay">${hot ? 'Słońce jest dziś aktywne! Takie wydarzenia sprawdzają astronauci.' : 'Tak teraz wygląda pogoda w kosmosie.'}</p>${rows.join('')}` : ''}
+    ${apod ? `<figure class="napod"><img src="${factEsc(apod.url)}" alt="${factEsc(apod.title)}" loading="lazy" decoding="async" onerror="this.closest('figure').remove()"><figcaption><span>Obraz dnia NASA: ${factEsc(apod.title)}</span>
+      <a href="https://apod.nasa.gov/apod/astropix.html" target="_blank" rel="noopener">${factEsc(apod.credit)} ↗</a></figcaption></figure>` : ''}
+    <small class="muted">Źródło: <a class="link" href="https://ccmc.gsfc.nasa.gov/tools/DONKI/" target="_blank" rel="noopener">NASA DONKI</a> i <a class="link" href="https://api.nasa.gov" target="_blank" rel="noopener">NASA Open APIs</a></small></section>`;
+}
+async function loadNasa() {
+  let d = null;
+  try {
+    const r = await fetch('/api/nasa', { signal: AbortSignal.timeout(4000) });
+    if (r.ok) d = await r.json();
+    if (d && d.updated) localStorage.setItem(NASA_KEY, JSON.stringify(d));
+  } catch (_) {}
+  if (!d || !d.updated) try { d = JSON.parse(localStorage.getItem(NASA_KEY)); } catch (_) {}
+  const box = $('#nasa-panel');   // gracz mógł już wyjść z ekranu
+  if (!box || !d || !d.updated) return;
+  box.innerHTML = nasaPanel(d);
+  if (typeof replaceEmoji === 'function') replaceEmoji(box);
+  box.classList.add('mb');
 }
 
 function renderFact() {
