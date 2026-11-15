@@ -8,9 +8,9 @@ const GAMES = {
   pack:    { name: 'Pakowanie rakiety', icon: '📦', res: 'czesci', desc: 'Przeciągnij klocki do ładowni rakiety. Dotknij klocka na tacy, żeby go obrócić!', hint: 'Przeciągnij klocek · dotknij na tacy = obróć · dotknij w rakiecie = zdejmij' },
 };
 const GP = {
-  easy: { shooter: { gap: 1000, v: 80, lives: 4, limit: 30 }, flappy: { gap: 235, sp: 2.2, spawn: 1800, limit: 35 }, catch: { spawn: 800, rock: .2, v: 140, lives: 3, limit: 30 }, lander: { g: 95, th: 250, safe: 95, pad: 150, limit: 40 }, pack: { w: 3, h: 4, n: 4, slack: 2, limit: 70 } },
-  mid:  { shooter: { gap: 700, v: 115, lives: 3, limit: 30 }, flappy: { gap: 190, sp: 2.9, spawn: 1400, limit: 35 }, catch: { spawn: 560, rock: .3, v: 185, lives: 3, limit: 30 }, lander: { g: 125, th: 270, safe: 68, pad: 100, limit: 40 }, pack: { w: 4, h: 4, n: 5, slack: 0, limit: 70 } },
-  hard: { shooter: { gap: 550, v: 140, lives: 3, limit: 30 }, flappy: { gap: 170, sp: 3.3, spawn: 1250, limit: 35 }, catch: { spawn: 430, rock: .36, v: 225, lives: 3, limit: 30 }, lander: { g: 150, th: 290, safe: 55, pad: 80, limit: 40 }, pack: { w: 5, h: 4, n: 6, slack: 0, limit: 80 } },
+  easy: { shooter: { gap: 1000, v: 80, lives: 4, limit: 30 }, flappy: { gap: 245, sp: 2.2, spawn: 1800, limit: 35 }, catch: { spawn: 800, rock: .2, v: 140, lives: 3, limit: 30 }, lander: { g: 95, th: 250, safe: 95, pad: 150, limit: 40 }, pack: { w: 3, h: 4, n: 4, slack: 2, limit: 70 } },
+  mid:  { shooter: { gap: 700, v: 115, lives: 3, limit: 30 }, flappy: { gap: 205, sp: 2.9, spawn: 1400, limit: 35 }, catch: { spawn: 560, rock: .3, v: 185, lives: 3, limit: 30 }, lander: { g: 125, th: 270, safe: 68, pad: 100, limit: 40 }, pack: { w: 4, h: 4, n: 5, slack: 0, limit: 70 } },
+  hard: { shooter: { gap: 550, v: 140, lives: 3, limit: 30 }, flappy: { gap: 185, sp: 3.3, spawn: 1250, limit: 35 }, catch: { spawn: 430, rock: .36, v: 225, lives: 3, limit: 30 }, lander: { g: 150, th: 290, safe: 55, pad: 80, limit: 40 }, pack: { w: 5, h: 4, n: 6, slack: 0, limit: 80 } },
 };
 /* cele do zaliczenia gierki (3 próby na podejście) */
 const GOAL = { easy: { shooter: 8, flappy: 4, catch: 8, lander: 8 }, mid: { shooter: 12, flappy: 6, catch: 12, lander: 8 }, hard: { shooter: 16, flappy: 7, catch: 16, lander: 12 } };
@@ -27,7 +27,7 @@ function newSet(key, mission) { GSET = { key, mission, attempts: 0, best: 0, pas
 let lastGame = '';
 
 function renderGameIntro(key) {
-  if (!GSET || !GSET.mission) return renderMap();
+  if (!GSET || !GSET.mission && !DEV) return renderMap();
   stopGame(); const g = GAMES[key], set = GSET;
   cur = () => renderGameIntro(key);
   show(`<div class="scr">
@@ -41,13 +41,15 @@ function renderGameIntro(key) {
   </div>`);
   loadLeaderboard(key, $('#leaderboard'));
 }
+let pillarEl;
+const pillarImg = () => pillarEl || (pillarEl = Object.assign(new Image(), { src: assetSrc('assets/flappy/pillar.webp') }));
 function gameShell(key, inner) {
   return `<div class="scr fixed">
     ${bar('<button class="x" data-act="quitgame">✕</button>', `<span class="label">${GAMES[key].name}</span>`, '<span class="pill" id="hud">⏱️</span>')}
     ${inner}<p class="hint">${GAMES[key].hint}</p></div>`;
 }
 function playGame(key) {
-  if (!GSET || !GSET.mission) return renderMap();
+  if (!GSET || !GSET.mission && !DEV) return renderMap();
   stopGame(); lastGame = key; cur = null;
   launchRankedRun(key);
   if (key === 'pack') return startPack();
@@ -58,6 +60,7 @@ function playGame(key) {
         started: !(key === 'flappy' || key === 'lander'),
         lastFire: 0, lastSpawn: 0, ship: 215, bullets: [], enemies: [], lives: p.lives || 3, y: 300, vy: 0, pipes: [], items: [], x: 215,
         hold: false, tx: 215, landings: 0, msg: '', msgT: 0, pad: 215, shakeT: 0 };
+  if (key === 'flappy') pillarImg();   // wczytaj przed pierwszą klatką
   if (key === 'lander') { G.sx = 215; G.sy = 50; G.svy = 0; G.pad = rnd(110, 320); }
   const box0 = $('#cvbox'); G.H = Math.max(480, Math.min(760, Math.round(G.W * box0.clientHeight / Math.max(1, box0.clientWidth)))); G.y = G.H / 2;
   fitCanvas();
@@ -118,16 +121,16 @@ function updShooter(ts, dt) {
 /* --- Przelot z kotem --- */
 function updFlappy(ts, dt) {
   const { W, H, p } = G, k = dt * 60;
-  const catX = 110, collisionRange = 42;
+  const catX = 110, hitH = 30, collisionRange = 39;   // kot 108 px (patrz draw); hitbox mniejszy od sprite'a: pion ±30, poziom ~11 + połowa słupa (trzon ~25, czapka 34, bierzemy 28)
   G.vy += .42 * k; G.y += G.vy * k;
   if (G.y < 10 || G.y > H - 10) { G.over = true; return; }
-  if (ts - G.lastSpawn > p.spawn) { G.pipes.push({ x: W + 40, gapY: rnd(170, H - 170), gap: Math.max(p.gap - 40, p.gap - G.score * 4), passed: false }); G.lastSpawn = ts; }
+  if (ts - G.lastSpawn > p.spawn) { G.pipes.push({ x: W + 40, gapY: rnd(170, H - 170), gap: Math.max(p.gap - 20, p.gap - G.score * 4), passed: false }); G.lastSpawn = ts; }
   const sp = (p.sp + G.score * .08) * k;
   for (const pp of G.pipes) {
     pp.x -= sp;
     if (Math.abs(pp.x - catX) < collisionRange) {
       const top = pp.gapY - pp.gap / 2, bot = pp.gapY + pp.gap / 2;
-      if (G.y - 22 < top || G.y + 22 > bot) { G.over = true; return; }
+      if (G.y - hitH < top || G.y + hitH > bot) { G.over = true; return; }
     }
     if (!pp.passed && pp.x <= catX - collisionRange) { pp.passed = true; G.score++; }
   }
@@ -185,15 +188,21 @@ function draw() {
     hudText('Życia: ' + G.lives, 'Wynik: ' + G.score);
   } else if (G.key === 'flappy') {
     const bob = G.started ? 0 : Math.sin(performance.now() / 280) * 9;
-    const im = catCanvasImg(G.vy < 0 ? 'cheer' : 'idle'), sk = skinOf();
-    ctx.save(); if (sk.fx) ctx.filter = sk.fx;
-    if (im && im.complete && im.naturalWidth) ctx.drawImage(im, 110 - 40, G.y + bob - 40, 80, 80);
-    ctx.restore();
+    const pil = pillarImg(), art = pil.complete && pil.naturalWidth;
     G.pipes.forEach(pp => {
+      if (art) {   // PNG 2x, nieskalowany (poza 68 px szerokości); czapka u góry obrazu, górna kolumna odbita w pionie
+        const h = pil.naturalHeight / 2;
+        ctx.drawImage(pil, pp.x - 34, pp.gapY + pp.gap / 2, 68, h);
+        ctx.save(); ctx.translate(0, pp.gapY - pp.gap / 2); ctx.scale(1, -1); ctx.drawImage(pil, pp.x - 34, 0, 68, h); ctx.restore(); return;
+      }
       ctx.fillStyle = '#F28A1E'; ctx.strokeStyle = '#1B1446'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.roundRect(pp.x - 34, -20, 68, pp.gapY - pp.gap / 2 + 20, 16); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.roundRect(pp.x - 34, pp.gapY + pp.gap / 2, 68, H, 16); ctx.fill(); ctx.stroke();
     });
+    const im = catCanvasImg(G.vy < 0 ? 'cheer' : 'idle'), sk = skinOf();
+    ctx.save(); if (sk.fx) ctx.filter = sk.fx;
+    if (im && im.complete && im.naturalWidth) ctx.drawImage(im, 110 - 54, G.y + bob - 54, 108, 108);   // stałe 108 px: hitbox i szczeliny są dostrojone do tego rozmiaru, nie do CAT_K
+    ctx.restore();
     hudText('', 'Wynik: ' + G.score);
     if (!G.started) { ctx.font = '900 28px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.textAlign = 'center'; ctx.fillText('Dotknij, żeby zacząć!', W / 2, H / 2 + 90); }
   } else if (G.key === 'catch') {

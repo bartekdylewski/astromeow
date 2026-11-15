@@ -49,7 +49,7 @@ function renderResult(info) {
     <div class="grow"></div>
     <div class="foot col gap-s">
       ${final ? '' : `<button class="btn b-white" data-act="retry-game">SPRÓBUJ PONOWNIE (${info.attempt + 1}/${MAXTRY})</button>`}
-      <button class="btn b-lav nudge" data-act="tab" data-arg="map">DALEJ ›</button>
+      <button class="btn b-lav nudge" data-act="${DEV ? 'play' : 'tab'}" data-arg="${DEV ? info.key : 'map'}">DALEJ ›</button>
     </div>
   </div>`);
   loadLeaderboard(info.key, $('#leaderboard'), info.submission);

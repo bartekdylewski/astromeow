@@ -11,7 +11,7 @@ const source = fs.readFileSync(path.join(__dirname, '..', 'js', '13-minigames.js
 function flight(y, pipeX) {
   const G = {
     W: 430, H: 600, y, vy: 0, p: { sp: 2.2, spawn: 1800 },
-    pipes: [{ x: pipeX, gapY: 300, gap: 235, passed: false }],
+    pipes: [{ x: pipeX, gapY: 300, gap: 245, passed: false }],
     score: 0, over: false, lastSpawn: 1000,
   };
   const context = vm.createContext({ G, addEventListener() {} });
@@ -27,7 +27,7 @@ test('crashing just after crossing the center of an asteroid pair grants no poin
 });
 
 test('a successful pass grants one point after clearing the collision area', () => {
-  const { G, step } = flight(300, 71);
+  const { G, step } = flight(300, 74.5);
   step();
   assert.equal(G.score, 0);
   step();
