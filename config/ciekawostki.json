@@ -4,7 +4,7 @@
     {
       "id": "ignis",
       "title": "Misja Ignis",
-      "icon": "ignis",
+      "icon": "ignis.png",
       "intro": "Miau! Opowiem wam o Ignis, czyli polskiej misji na Międzynarodową Stację Kosmiczną!",
       "facts": [
         {
