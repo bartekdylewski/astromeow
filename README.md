@@ -109,5 +109,5 @@ AstroMeow is an independent hackathon project and is not affiliated with or endo
 
 <div align="center">
 Made in Stalowa Wola · NASA Space Apps Challenge 2026<br>
-<a href="https://github.com/bartekdylewski">@bartekdylewski</a> <a href="https://github.com/Hurtekk">@Hurtekk</a> <a href="juls-s05">@Juls-s05</a>
+<a href="https://github.com/bartekdylewski">@bartekdylewski</a> <a href="https://github.com/Hurtekk">@Hurtekk</a> <a href="https://github.com/juls-s05">@Juls-s05</a>
 </div>
