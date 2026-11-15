@@ -16,7 +16,7 @@ function finishGame(key, score, passedFlag) {
   const left = MAXTRY - set.attempts;
   mapMsg = endMsg({ passed, final: passed || left <= 0 });
   stopGame();
-  renderResult({ key, score, goal, passed, gain, pts, attempt: set.attempts, left, submission });
+  renderResult({ key, score, goal, passed, gain, pts, attempt: set.attempts, left, submission, free: key !== 'pack' && !goal });
 }
 let mapMsg = '';   // komunikat dla Szlaku misji (pokazywany raz po grze)
 function endMsg({ passed, final }) {
@@ -34,7 +34,7 @@ function endMsg({ passed, final }) {
 }
 function renderResult(info) {
   cur = () => renderResult(info);
-  const g = GAMES[info.key], set = GSET, final = info.passed || info.left <= 0;
+  const g = GAMES[info.key], set = GSET, final = info.passed || info.left <= 0, retry = info.left > 0 && (!final || info.free);   // gra bez celu: próby na lepszy wynik w rankingu
   const miss = info.key === 'pack' ? '' : (info.passed ? '' : ` · brakuje ${Math.max(0, info.goal - info.score)}`);
   const body = set.mission && final
     ? `<p class="rew">⭐ +${S.quizPts + set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain} &nbsp; 🧠 +${S.quizKnow}</p>`
@@ -44,11 +44,11 @@ function renderResult(info) {
     <div class="grow"></div>
     <div class="col center tc">
       <p class="muted" style="margin:0">Wynik: ${info.score}${info.key === 'pack' ? '' : ' · cel: ' + goalText(info.key)}${miss}</p>
-      ${final ? '' : `<p class="muted" style="margin:.2rem 0 0">Próba ${info.attempt} z ${MAXTRY}</p>`}
+      ${!retry ? '' : `<p class="muted" style="margin:.2rem 0 0">Próba ${info.attempt} z ${MAXTRY}</p>`}
       ${body}</div>
     <div class="grow"></div>
     <div class="foot col gap-s">
-      ${final ? '' : `<button class="btn b-white" data-act="retry-game">SPRÓBUJ PONOWNIE (${info.attempt + 1}/${MAXTRY})</button>`}
+      ${!retry ? '' : `<button class="btn b-white" data-act="retry-game">SPRÓBUJ PONOWNIE (${info.attempt + 1}/${MAXTRY})</button>`}
       <button class="btn b-lav nudge" data-act="${DEV ? 'play' : 'tab'}" data-arg="${DEV ? info.key : 'map'}">DALEJ ›</button>
     </div>
   </div>`);

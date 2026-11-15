@@ -8,19 +8,20 @@ const GAMES = {
   pack:    { noRank: true, name: 'Pakowanie rakiety', icon: '📦', res: 'czesci', desc: 'Przeciągnij klocki do ładowni rakiety. Dotknij klocka na tacy, żeby go obrócić!', hint: 'Przeciągnij klocek · dotknij na tacy = obróć · dotknij w rakiecie = zdejmij' },
 };
 const GP = {
-  easy: { shooter: { gap: 1000, v: 80, lives: 4 }, flappy: { gap: 245, sp: 2.2, spawn: 1800 }, catch: { spawn: 800, rock: .2, v: 140, lives: 3 }, lander: { g: 95, th: 250, safe: 95, pad: 150 }, pack: { w: 3, h: 4, n: 4, slack: 2, limit: 70 } },
+  easy: { shooter: { gap: 1000, v: 80, lives: 3 }, flappy: { gap: 245, sp: 2.2, spawn: 1800 }, catch: { spawn: 800, rock: .2, v: 140, lives: 3 }, lander: { g: 95, th: 250, safe: 95, pad: 150 }, pack: { w: 3, h: 4, n: 4, slack: 2, limit: 70 } },
   mid:  { shooter: { gap: 700, v: 115, lives: 3 }, flappy: { gap: 205, sp: 2.9, spawn: 1400 }, catch: { spawn: 560, rock: .3, v: 185, lives: 3 }, lander: { g: 125, th: 270, safe: 68, pad: 100 }, pack: { w: 4, h: 4, n: 5, slack: 0, limit: 70 } },
   hard: { shooter: { gap: 550, v: 140, lives: 3 }, flappy: { gap: 185, sp: 3.3, spawn: 1250 }, catch: { spawn: 430, rock: .36, v: 225, lives: 3 }, lander: { g: 150, th: 290, safe: 55, pad: 80 }, pack: { w: 5, h: 4, n: 6, slack: 0, limit: 80 } },
 };
 /* cele do zaliczenia gierki (3 próby na podejście) */
 const LANDING_SCORE = 4;
-const GOAL = { easy: { shooter: 8, flappy: 4, catch: 8, lander: LANDING_SCORE }, mid: { shooter: 12, flappy: 6, catch: 12, lander: LANDING_SCORE }, hard: { shooter: 16, flappy: 7, catch: 16, lander: LANDING_SCORE } };
+const GOAL = { easy: { shooter: 0, flappy: 4, catch: 8, lander: LANDING_SCORE }, mid: { shooter: 0, flappy: 6, catch: 12, lander: LANDING_SCORE }, hard: { shooter: 0, flappy: 7, catch: 16, lander: LANDING_SCORE } };
 const MAXTRY = 3;
 const PLU = { shooter: ['meteor', 'meteory', 'meteorów'], flappy: ['przelot', 'przeloty', 'przelotów'], catch: ['próbkę', 'próbki', 'próbek'], lander: ['lądowanie', 'lądowania', 'lądowań'] };
 const plural = (n, f) => n === 1 ? f[0] : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? f[1] : f[2];
 function goalText(key) {
   if (key === 'pack') return 'ułóż wszystkie klocki w rakiecie';
   const g = GOAL[P.diff][key], n = key === 'lander' ? g / LANDING_SCORE : g;
+  if (!g) return `jak najwięcej ${PLU[key][2]}`;   // gra bez celu (shooter): zawsze zaliczona, liczy się ranking
   return `${n} ${plural(n, PLU[key])}`;
 }
 let GSET = null;
