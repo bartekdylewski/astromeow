@@ -14,6 +14,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlparse
 
+import nasa
 import players
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -126,6 +127,8 @@ class Handler(BaseHTTPRequestHandler):
     # ---------- GET / HEAD ----------
     def _get(self, head):
         path = urlparse(self.path).path
+        if path == "/api/nasa":
+            return self._json(self.server.nasa.get(), head=head)
         if path == "/api/stats":
             return self._json(get_stats(self.server.conn, self.server.lock), head=head)
         if path in ("/live", "/live.html"):
@@ -227,6 +230,8 @@ def cmd_serve(a):
     srv.live = os.path.abspath(a.live)
     srv.verbose = a.verbose
     srv.dev = a.dev
+    srv.nasa = nasa.Cache(a.nasa_key, os.path.join(os.path.dirname(os.path.abspath(a.db)), "nasa-cache.json"))
+    srv.nasa.start()
     srv.dev_nicks = {n.lower() for n in a.dev_nick}
     if not os.path.isfile(os.path.join(srv.root, "astromeow.html")):
         sys.exit("Brak %s/astromeow.html – uruchom najpierw: python3 build.py" % srv.root)
@@ -293,6 +298,7 @@ def main():
     p.add_argument("--root", default=os.path.join(HERE, "..", "dist"))
     p.add_argument("--live", default=os.path.join(HERE, "live.html"))
     p.add_argument("-v", "--verbose", action="store_true")
+    p.add_argument("--nasa-key", default=os.environ.get("NASA_API_KEY", "DEMO_KEY"), help="klucz NASA Open APIs (darmowy: api.nasa.gov); domyślnie $NASA_API_KEY albo DEMO_KEY z niskim limitem")
     p.add_argument("--dev-nick", action="append", default=[], metavar="NICK", help="konto z tym pseudonimem (albo NICK#TAG) dostaje tryb deweloperski, można podać kilka razy")
     p.add_argument("--dev", action="store_true", help="włącz tryb deweloperski ?dev=<gra> w przeglądarce")
     add("stats", cmd_stats)
