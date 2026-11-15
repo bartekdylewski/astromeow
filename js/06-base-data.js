@@ -3,11 +3,11 @@
 /* planety/kolonie: rozmiar siatki, ile misji trzeba zaliczyć, mnożnik kosztów (cm) i zysków (pm) */
 const PLANETS = [
   { id: 'ksiezyc1', name: 'Księżyc: Biegun Południowy', icon: '🌙', n: 2, need: 0,  cm: 1,  pm: 1,   bg: '#E4E8F3' },
-  { id: 'ksiezyc2', name: 'Księżyc: Morze Spokoju',     icon: '🌗', n: 3, need: 3,  cm: 2,  pm: 3,   bg: '#D9DFEE' },
-  { id: 'mars',     name: 'Mars: Jezero',               icon: '🔴', n: 3, need: 7,  cm: 4,  pm: 7,   bg: '#FFD9C2' },
-  { id: 'proxima',  name: 'Proxima b',                  icon: '🪐', n: 4, need: 11, cm: 9,  pm: 16,  bg: '#F7D6D0' },
-  { id: 'trappist', name: 'TRAPPIST-1e',                icon: '🌍', n: 5, need: 15, cm: 20, pm: 40,  bg: '#D6EEF2' },
-  { id: 'kepler',   name: 'Kepler-452b',                icon: '🌌', n: 5, need: 18, cm: 45, pm: 100, bg: '#DDEFD6' },
+  { id: 'mars',     name: 'Mars: Jezero',               icon: '🔴', n: 3, need: 3,  cm: 2,  pm: 3,   bg: '#FFD9C2' },
+  { id: 'merkury',  name: 'Merkury: Basen Caloris',     icon: '⚫', n: 3, need: 7,  cm: 4,  pm: 7,   bg: '#E3DAD0' },
+  { id: 'ksiezyc2', name: 'Księżyc: Morze Spokoju',     icon: '🌗', n: 4, need: 11, cm: 9,  pm: 16,  bg: '#D9DFEE' },
+  { id: 'mars2',    name: 'Mars: Valles Marineris',     icon: '🔴', n: 5, need: 15, cm: 20, pm: 40,  bg: '#F3C9AE' },
+  { id: 'merkury2', name: 'Merkury: Biegun Północny',   icon: '⚫', n: 5, need: 18, cm: 45, pm: 100, bg: '#D5CCC4' },
 ];
 const misPl = n => n === 1 ? 'misję' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 'misje' : 'misji';
 const RES = {

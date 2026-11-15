@@ -51,7 +51,7 @@ cat/                (opcjonalnie) klatki kota: idle_1.png … cheer_3.png albo i
 
 ## Baza i zapis gracza
 - Zasoby (klucze w kodzie bez zmian): `wiedza` = **Tlen** 🫁, `czesci` = **Energia** ⚡, `meteo` = **Woda** 💧. Nazwy i ikony: `RES` w `js/06-base-data.js`.
-- Planety w kolejności: 2× Księżyc, Mars, potem egzoplanety z Drogi Mlecznej (Proxima b, TRAPPIST-1e, Kepler-452b): `PLANETS` w `js/06-base-data.js`.
+- Planety w kolejności: Księżyc, Mars, Merkury, a potem kolejne lokacje na Księżycu (Morze Spokoju), Marsie (Valles Marineris) i Merkurym (Biegun Północny): `PLANETS` w `js/06-base-data.js`.
 - Po quizie i gierce DALEJ prowadzi do **Bazy**. Przy każdym wejściu do Bazy pojawia się pytanie A/B o bezpieczeństwie (`config/safety.json`): dobra odpowiedź +20% zasobu, zła −10%. Każde pytanie ma pole `res`, czyli którego zasobu dotyczy.
 - **Reset starych baz:** podbij `BASE_VER` w `js/01-config.js`. Każdy gracz dostanie czystą bazę przy następnym wejściu, a postęp misji, gwiazdki i skiny zostają.
 - **Reset całego zapisu na urządzeniu:** dopisz `?reset=1` do adresu strony i potwierdź.

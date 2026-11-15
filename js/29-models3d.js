@@ -115,6 +115,9 @@ const B3D_BG = {
   ksiezyc1: { kind: 'moon', seed: 3, craters: 38, amp: 1.5, sun: [-14, 3.2, 8], earth: false, tone: [.5, .5, .52] },
   ksiezyc2: { kind: 'moon', seed: 11, craters: 22, amp: .8, sun: [12, 7, 6], earth: true, tone: [.42, .42, .45] },
   mars:     { kind: 'mars', seed: 5, amp: 2.2, rocks: 90 },
+  mars2:    { kind: 'mars', seed: 8, amp: 3.4, rocks: 60, sky: ['#6e4535', '#c07f5f', '#e0ae88'] },   // kanion: ciemniejsze, głębsze niebo
+  merkury:  { kind: 'moon', seed: 21, craters: 54, amp: .45, depth: 1.5, sun: [13, 5, 8], earth: false, tone: [.36, .33, .3], bigSun: [30, 13] },
+  merkury2: { kind: 'moon', seed: 34, craters: 40, amp: .6, depth: 1.8, sun: [-16, 2.6, 7], earth: false, tone: [.27, .26, .27], bigSun: [-32, 5] },
 };
 function b3dTerrain(cfg, w, d, seg) {
   const rnd = b3dRng(cfg.seed * 977), noise = b3dNoise(cfg.seed), craters = [];
@@ -124,8 +127,8 @@ function b3dTerrain(cfg, w, d, seg) {
     const far = Math.max(0, -z - 18) / 40; y += far * far * (cfg.kind === 'mars' ? 7 : 3.5) * noise(x * .05 + 9, z * .05, 4);   // dalekie wzgórza
     for (const c of craters) {
       const t = Math.hypot(x - c.x, z - c.z) / c.r;
-      if (t < 1) y -= c.r * .22 * (1 - t * t) * (1 - t * .25);
-      y += c.r * .09 * Math.exp(-Math.pow((t - 1) / .22, 2));   // wał krateru
+      if (t < 1) y -= c.r * .22 * (cfg.depth || 1) * (1 - t * t) * (1 - t * .25);
+      y += c.r * .09 * (cfg.depth || 1) * Math.exp(-Math.pow((t - 1) / .22, 2));   // wał krateru
     }
     return y;
   };
@@ -154,6 +157,12 @@ function b3dBgRender(id) {
       const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.BufferAttribute(p, 3));
       scene.add(new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xffffff, size: 1.1, sizeAttenuation: false })));
       scene.add(new THREE.AmbientLight(0x8c93b0, .22));
+      if (cfg.bigSun) {   // Słońce na Merkurym jest ok. 3 razy większe niż z Ziemi
+        const [sx, sy] = cfg.bigSun, d = new THREE.Mesh(new THREE.CircleGeometry(8, 28), new THREE.MeshBasicMaterial({ color: 0xfff6dc })); d.position.set(sx, sy, -95); scene.add(d);
+        const hc = document.createElement('canvas'); hc.width = hc.height = 128; const hx = hc.getContext('2d'), hg = hx.createRadialGradient(64, 64, 4, 64, 64, 64);
+        hg.addColorStop(0, 'rgba(255,225,170,.55)'); hg.addColorStop(1, 'rgba(255,225,170,0)'); hx.fillStyle = hg; hx.fillRect(0, 0, 128, 128);
+        const h = new THREE.Mesh(new THREE.PlaneGeometry(46, 46), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(hc), transparent: true, depthWrite: false })); h.position.set(sx, sy, -96); scene.add(h);
+      }
       const sun = new THREE.DirectionalLight(0xfff4e0, 3.4); sun.position.set(...cfg.sun); scene.add(sun);
       if (cfg.earth) {   // Ziemia na niebie: oceany, lądy i chmury z szumu
         const eg = new THREE.SphereGeometry(5, 40, 28), ep = eg.attributes.position, ec = new Float32Array(ep.count * 3), en = b3dNoise(99);
@@ -167,7 +176,7 @@ function b3dBgRender(id) {
       }
     } else {
       const c = document.createElement('canvas'); c.width = 4; c.height = 256; const x = c.getContext('2d'), gr = x.createLinearGradient(0, 0, 0, 256);
-      gr.addColorStop(0, '#9d6a4d'); gr.addColorStop(.55, '#d49a73'); gr.addColorStop(1, '#ecc9a3'); x.fillStyle = gr; x.fillRect(0, 0, 4, 256);
+      const sk = cfg.sky || ['#9d6a4d', '#d49a73', '#ecc9a3']; gr.addColorStop(0, sk[0]); gr.addColorStop(.55, sk[1]); gr.addColorStop(1, sk[2]); x.fillStyle = gr; x.fillRect(0, 0, 4, 256);
       const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; scene.background = t;
       scene.fog = new THREE.Fog(0xd8a982, 18, 78);
       scene.add(new THREE.HemisphereLight(0xffd8b8, 0x6b3a22, 1.0));
