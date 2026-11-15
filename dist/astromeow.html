@@ -1987,7 +1987,7 @@ try {
   const SOUNDS = {
     click: (c, o) => tone(c, o, { f: 900, f2: 520, d: .05, type: 'triangle', v: .09, a: .003 }),
     ok:    (c, o) => notes(c, o, [660, 880, 1318], .075, { d: .22, type: 'triangle', v: .22 }),
-    no:    (c, o) => tone(c, o, { f: 220, f2: 130, d: .32, type: 'sine', v: .35, a: .02 }),
+    no:    (c, o) => tone(c, o, { f: 220, f2: 130, d: .32, type: 'triangle', v: .55, a: .02 }),
     win:   (c, o) => { notes(c, o, [523, 659, 784, 1047], .12, { d: .3, type: 'triangle', v: .22 }); notes(c, o, [1047], 0, { t: .36, d: .5, type: 'sine', v: .12 }); },
     lose:  (c, o) => notes(c, o, [440, 392, 330], .17, { d: .3, type: 'sine', v: .24 }),
     meow,
