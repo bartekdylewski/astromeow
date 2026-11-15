@@ -14,7 +14,7 @@ function nodeOpen(t, m) {
 }
 const XS = [50, 78, 50, 22];
 function renderMap() {
-  stopGame(); cur = renderMap; GSET = null;
+  stopGame(); cur = renderMap; if (!mapMsg) GSET = null;   // karta wyniku może mieć SPRÓBUJ PONOWNIE
   const nt = nextTarget(), curId = nt.replay ? null : nt.tier + ':' + nt.m.id;
   /* elementy szlaku: kolonie (2×2, 3×3...), nagłówki poziomów i węzły misji */
   const items = []; let cnt = 0;   // planety są w Bazie, na szlaku tylko misje
@@ -56,6 +56,8 @@ function renderMap() {
     <div class="pathbox" style="height:${total}rem;margin-bottom:1.5rem"><svg viewBox="0 0 100 ${total}" preserveAspectRatio="none"><path d="${dp}" fill="none" style="stroke:var(--grey)" stroke-width="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>${paws}${catEl}${html}</div>
   </div>`, { nav: true, tab: 'map' });
   const c = mapMsg ? $('#mapmsg') : $('#curnode'), blk = mapMsg ? 'start' : 'center'; mapMsg = '';
+  if (mapRank && $('#leaderboard')) loadLeaderboard(mapRank.key, $('#leaderboard'), mapRank.submission);
+  mapRank = null;
   if (c && c.scrollIntoView) c.scrollIntoView({ block: blk });
   if (!P.tut.map) openTut('map');
 }
