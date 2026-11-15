@@ -15,6 +15,7 @@ async function boot() {
   load();
   if (!P.diff) P.diff = 'easy';
   const q = new URLSearchParams(location.search), dk = window.ALLOW_DEV ? q.get('dev') : null;   // ?dev=flappy[&diff=mid] (tylko serwer z --dev): od razu gra, bez zapisu i rankingu
+  if (window.ALLOW_DEV && q.get('demo') === '1') { demoState(); save(); history.replaceState(null, '', location.pathname); }   // ?demo=1 (tylko serwer z --dev): stan do nagrania dema
   if (dk && !GAMES[dk]) console.warn('?dev= nieznany klucz gry, dostępne:', Object.keys(GAMES).join(', '));
   else if (dk) {
     DEV = dk; if (TIERS.includes(q.get('diff'))) P.diff = q.get('diff');

@@ -63,3 +63,18 @@ const canAfford = c => Object.keys(c).every(k => P.res[k] >= c[k]);
 const pay = c => { for (const k in c) P.res[k] -= c[k]; };
 const goalFor = k => Math.max(1, ...Object.keys(TYPES).map(t => placeCost(t, P.planet)[k] || 0));
 const chips = cost => Object.keys(cost).map(k => `<span class="pill" style="${P.res[k] >= cost[k] ? '' : 'background:var(--grey);border-color:var(--muted);color:var(--muted)'}">${RES[k].icon} ${fmt(cost[k])}</span>`).join(' ');
+
+/* serwer z --dev + ?demo=1: przykładowy stan do nagrania dema (zaliczone misje, zasoby, zabudowane planety) */
+function demoState() {
+  const ids = MISSIONS.map(m => m.id), B = (type, level, addons = []) => ({ type, level, addons });
+  P = { ...fresh(), pts: 260, runs: 12, streak: 5, lastDay: today(), diff: 'mid', golden: 1, planet: 1, seenPlanets: 6,
+    tut: { welcome: true, quiz: true, base: true, map: true, shop: true }, res: { wiedza: 420, czesci: 380, meteo: 260 } };
+  TIERS.forEach((t, ti) => {
+    const n = ti === 0 ? ids.length : ti === 1 ? Math.ceil(ids.length * .6) : 0;
+    P.done[t] = ids.slice(0, n); ids.slice(0, n).forEach((id, i) => { P.stars[t][id] = 2 + (i % 2); });
+  });
+  P.planets[0].grid = { '0,0': B('warsztat', 4, ['panel', 'antena']), '1,0': B('lab', 3, ['kopula']), '0,1': B('lowca', 3, ['kopula']), '1,1': B('satelita', 2) };
+  P.planets[1].grid = { '0,0': B('warsztat', 3, ['panel']), '1,0': B('lab', 2), '2,0': B('lowca', 2), '0,1': B('satelita', 2, ['antena']), '1,1': B('hangar', 2, ['panel']), '2,1': B('lab', 1), '0,2': B('warsztat', 2) };
+  P.planets[2].grid = { '0,0': B('lowca', 2), '1,0': B('satelita', 1), '1,1': B('warsztat', 2, ['panel']), '2,2': B('hangar', 1) };
+  P.planets[3].grid = { '0,0': B('lab', 1), '1,1': B('lowca', 1), '2,2': B('warsztat', 1) };
+}
