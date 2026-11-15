@@ -152,9 +152,7 @@ img, svg, canvas { -webkit-touch-callout: none; -webkit-user-drag: none; user-se
 .face .tear{animation:tear 1.8s ease-in infinite}
 @keyframes tear{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(40px);opacity:0}}
 @keyframes artbob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-.15rem) scale(1.02,.99)}}
-.cpose{position:absolute;right:-6%;top:-8%;line-height:1;pointer-events:none;z-index:3;animation:float 1.8s ease-in-out infinite}
-.cat.p-cheer .cpose{animation:hop .45s ease-in-out infinite}
-/* dotyk kota: miau + sprężysty ruch */
+.cat.p-cheer /* dotyk kota: miau + sprężysty ruch */
 .cat{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .cat.meow{animation:meow .6s cubic-bezier(.3,1.4,.5,1)}
 @keyframes meow{0%{transform:scale(1,1)}18%{transform:scale(1.12,.86) translateY(.1rem)}40%{transform:scale(.9,1.14) translateY(-.9rem) rotate(-4deg)}58%{transform:scale(1.04,.96) translateY(-.2rem) rotate(4deg)}78%{transform:scale(1,1) rotate(-2deg)}100%{transform:scale(1,1)}}
@@ -497,7 +495,6 @@ const SKINS = [
 const GOLD_PRICE = 50;
 const skinOf = id => SKINS.find(x => x.id === (id || (typeof P !== 'undefined' && P.skin))) || SKINS[0];
 /* dodatki mimiki (jedna grafika kota + efekt przy mordce), gdy brak osobnych klatek */
-const POSE_FX = { happy: '✨', cheer: '🎉', think: '❓' };
 const CAT_K = 1.7;    // globalny mnożnik rozmiaru kota (#21); .cat ma max 78vw w CSS
 /* #20: mimika narysowanych skinów. Oczy leżą w tym samym miejscu na każdej grafice (420×420), więc jedna nakładka SVG
    zakrywa je kolorem pyszczka i rysuje minę dla pozy; idle mruga. Elegant ma monokl na prawym oku: mruga tylko lewym. */
@@ -519,8 +516,7 @@ function cat(pose = 'idle', size = 6, cls = '', skin) {
   const sk = skinOf(skin);
   const fr = CATX[pose] || CATX.idle;
   const inner = sk.art ? `<img src="${assetSrc('assets/skins/' + sk.art + '.webp')}" alt="Astruś" draggable="false">${artFace(pose, sk.art)}` : fr ? `<img data-pose="${pose}" src="${fr[0].src}" alt="Astruś" draggable="false">` : catSvg(pose);
-  const fx = (sk.art || fr && !CATX[pose]) && POSE_FX[pose] ? `<span class="cpose" style="font-size:${(size * .3).toFixed(2)}rem">${POSE_FX[pose]}</span>` : '';
-  return `<span class="cat p-${pose} ${fr ? 'ext' : ''} ${sk.art ? 'art' : ''} ${cls}" style="width:${size}rem;height:${size}rem"><span class="cfx" style="${sk.fx ? 'filter:' + sk.fx : ''}">${inner}</span>${fx}</span>`;
+  return `<span class="cat p-${pose} ${fr ? 'ext' : ''} ${sk.art ? 'art' : ''} ${cls}" style="width:${size}rem;height:${size}rem"><span class="cfx" style="${sk.fx ? 'filter:' + sk.fx : ''}">${inner}</span></span>`;
 }
 /* kot tłumaczy: wspólny komponent "kot + dymek" do wszystkich ekranów i gier */
 function catSay(pose, html, { size = 5, cls = '', who = '' } = {}) {
