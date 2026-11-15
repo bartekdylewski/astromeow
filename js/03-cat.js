@@ -91,7 +91,7 @@ const GOLD_PRICE = 50;
 const skinOf = id => SKINS.find(x => x.id === (id || (typeof P !== 'undefined' && P.skin))) || SKINS[0];
 /* dodatki mimiki (jedna grafika kota + efekt przy mordce), gdy brak osobnych klatek */
 const POSE_FX = { happy: '✨', cheer: '🎉', think: '❓' };
-const CAT_K = 1.35;   // globalny mnożnik rozmiaru kota (#21); .cat ma max 62vw w CSS
+const CAT_K = 1.7;    // globalny mnożnik rozmiaru kota (#21); .cat ma max 78vw w CSS
 function cat(pose = 'idle', size = 6, cls = '', skin) {
   size = +(size * CAT_K).toFixed(2);
   const sk = skinOf(skin);
