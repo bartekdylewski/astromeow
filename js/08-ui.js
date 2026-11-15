@@ -6,7 +6,6 @@ function show(html, { nav: withNav = false, tab = null, keep = false } = {}) {
   app.innerHTML = html;
   app.scrollTop = keep ? st : 0;
   labelBtns();
-  $('#profile-avatar').hidden = !withNav || !['home', 'map', 'base', 'shop', 'facts'].includes(tab);
   if (withNav && ['home', 'map', 'base', 'shop', 'facts'].includes(tab)) profileTab = tab;
   nav.classList.toggle('hide', !withNav || !(P.runs > 0));   // pierwsza misja bez menu: nic nie rozprasza
   nav.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.arg === tab));

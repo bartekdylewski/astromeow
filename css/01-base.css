@@ -101,10 +101,7 @@ button, input, [role="button"] { min-width: 44px; min-height: 44px; }
 button, a, [role="button"] { touch-action: manipulation; }
 input { user-select: text; -webkit-user-select: text; font: inherit; }
 #nav button { min-width: 44px; }
-#nav img, #profile-avatar img { width: 24px; height: 24px; }
-#profile-avatar { position: absolute; z-index: 8; top: max(.65rem, env(safe-area-inset-top));
-  right: .65rem; border: 2px solid var(--ink); border-radius: 50%; background: var(--orange-soft); cursor: pointer; }
-#device:has(#profile-avatar:not([hidden])) .scr { padding-top: calc(max(.65rem, env(safe-area-inset-top)) + 48px); }
+#nav img { width: 24px; height: 24px; }
 .game-icon { width: 1.15em; height: 1.15em; vertical-align: -.2em; display: inline-block; pointer-events: none; }
 .profile input { width: 100%; padding: .4rem .65rem; }
 .profile #profile-status:empty { display: none; }

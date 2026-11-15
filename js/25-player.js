@@ -66,7 +66,7 @@ function renderProfile(first = false) {
       <p id="profile-status" role="status"></p>
     </form>
     ${first ? '' : '<button class="btn b-white mt" data-act="profile-badges">Odznaki</button>'}
-  </section>`);
+  </section>`, { nav: !first, tab: 'profile' });
   const form = $('#profile-form'), nickname = form.elements.nickname, pitch = form.elements.pitch;
   const tag = $('#profile-tag'), status = $('#profile-status');
   nickname.value = player.nickname || '';

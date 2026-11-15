@@ -110,10 +110,7 @@ button, input, [role="button"] { min-width: 44px; min-height: 44px; }
 button, a, [role="button"] { touch-action: manipulation; }
 input { user-select: text; -webkit-user-select: text; font: inherit; }
 #nav button { min-width: 44px; }
-#nav img, #profile-avatar img { width: 24px; height: 24px; }
-#profile-avatar { position: absolute; z-index: 8; top: max(.65rem, env(safe-area-inset-top));
-  right: .65rem; border: 2px solid var(--ink); border-radius: 50%; background: var(--orange-soft); cursor: pointer; }
-#device:has(#profile-avatar:not([hidden])) .scr { padding-top: calc(max(.65rem, env(safe-area-inset-top)) + 48px); }
+#nav img { width: 24px; height: 24px; }
 .game-icon { width: 1.15em; height: 1.15em; vertical-align: -.2em; display: inline-block; pointer-events: none; }
 .profile input { width: 100%; padding: .4rem .65rem; }
 .profile #profile-status:empty { display: none; }
@@ -297,13 +294,13 @@ canvas{display:block;border-radius:1.6rem;touch-action:none;border:.2rem solid v
 </head>
 <body>
 <div id="device">
-  <button id="profile-avatar" type="button" aria-label="Profil gracza" data-act="profile" hidden><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWIxNDQ2IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNyA4IDUgM2w1IDJoNGw1LTItMiA1YzUgNyAxIDEyLTUgMTJTMiAxNSA3IDh6IE05IDExaC4wMW02IDBoLjAxTTEwIDE1cTIgMiA0IDAiLz48L3N2Zz4K" alt=""></button>
   <main id="app"></main>
   <nav id="nav" class="hide">
     <button data-act="tab" data-arg="map"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWIxNDQ2IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMyAxOGw1LTEzIDggMyA1LTN2MTRsLTUgMy04LTMtNSAyeiBNOCA1djE0bTgtMTF2MTQiLz48L3N2Zz4K" alt="">Misje</button>
     <button data-act="tab" data-arg="base"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWIxNDQ2IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMyAyMGgxOE01IDIwdi04bDctNyA3IDd2OE0xMCAyMHYtNWg0djVNMTIgNVYybTAgMWg1Ii8+PC9zdmc+Cg==" alt="">Baza</button>
     <button data-act="tab" data-arg="shop"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWIxNDQ2IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNCA4aDE2bDEgMTNIM3ogTTggOFY2YTQgNCAwIDAgMSA4IDB2MiIvPjwvc3ZnPgo=" alt="">Sklep</button>
     <button data-act="tab" data-arg="facts"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWIxNDQ2IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMTIgNkM4IDMgNCAzIDIgNHYxNWM0LTEgNyAwIDEwIDIgMy0yIDYtMyAxMC0yVjRjLTItMS02LTEtMTAgMnogTTEyIDZ2MTUiLz48L3N2Zz4K" alt="">Ciekawostki</button>
+    <button data-act="profile" data-arg="profile"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWIxNDQ2IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNNyA4IDUgM2w1IDJoNGw1LTItMiA1YzUgNyAxIDEyLTUgMTJTMiAxNSA3IDh6IE05IDExaC4wMW02IDBoLjAxTTEwIDE1cTIgMiA0IDAiLz48L3N2Zz4K" alt="">Profil</button>
   </nav>
 </div>
 
@@ -638,7 +635,6 @@ function show(html, { nav: withNav = false, tab = null, keep = false } = {}) {
   app.innerHTML = html;
   app.scrollTop = keep ? st : 0;
   labelBtns();
-  $('#profile-avatar').hidden = !withNav || !['home', 'map', 'base', 'shop', 'facts'].includes(tab);
   if (withNav && ['home', 'map', 'base', 'shop', 'facts'].includes(tab)) profileTab = tab;
   nav.classList.toggle('hide', !withNav || !(P.runs > 0));   // pierwsza misja bez menu: nic nie rozprasza
   nav.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.arg === tab));
@@ -1724,7 +1720,7 @@ function renderProfile(first = false) {
       <p id="profile-status" role="status"></p>
     </form>
     ${first ? '' : '<button class="btn b-white mt" data-act="profile-badges">Odznaki</button>'}
-  </section>`);
+  </section>`, { nav: !first, tab: 'profile' });
   const form = $('#profile-form'), nickname = form.elements.nickname, pitch = form.elements.pitch;
   const tag = $('#profile-tag'), status = $('#profile-status');
   nickname.value = player.nickname || '';
