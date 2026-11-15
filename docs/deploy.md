@@ -1,6 +1,6 @@
 # Deploy na homelab (CD)
 
-Push do `main` => workflow `.github/workflows/deploy.yml` odpala się na self-hosted runnerze (label `homelab`) i w `~/astromeow` robi: backup bazy, `git reset --hard origin/main`, `counter.sh test`, `run.sh -d`, `run.sh status`.
+Push do `main` => workflow `.github/workflows/deploy.yml` odpala się na self-hosted runnerze (label `skylab`) i w `~/astromeow` robi: backup bazy, `git reset --hard origin/main`, `counter.sh test`, `run.sh -d`, `run.sh status`.
 Deploye nie biegną równolegle (`concurrency`), job ma timeout 15 min. Ręcznie: Actions -> Deploy -> Run workflow.
 
 ## Runner (raz, na homelabie, user `bartek`)
@@ -9,7 +9,7 @@ Na GitHubie: Settings -> Actions -> Runners -> New self-hosted runner (Linux) po
 git clone git@github.com:bartekdylewski/astromeow.git ~/astromeow    # jeśli jeszcze go nie ma
 mkdir -p ~/actions-runner && cd ~/actions-runner
 # curl + tar z paczką ze strony GitHuba, następnie:
-./config.sh --url https://github.com/bartekdylewski/astromeow --token <TOKEN> --labels homelab --unattended
+./config.sh --url https://github.com/bartekdylewski/astromeow --token <TOKEN> --labels skylab --unattended
 sudo ./svc.sh install bartek
 sudo ./svc.sh start
 sudo ./svc.sh status
