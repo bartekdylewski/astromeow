@@ -5,7 +5,7 @@ const GAMES = {
   flappy:  { name: 'Przelot przez asteroidy', icon: '🐱', res: 'meteo', desc: 'Dotknij ekranu, żeby Astruś uniósł się w górę. Przeleć przez szczeliny między meteorytami.', hint: 'Gra zaczyna się po pierwszym dotknięciu · dotknij, żeby lecieć' },
   catch:   { name: 'Łapanie próbek', icon: '🧪', res: 'wiedza', desc: 'Przesuwaj koszyk i łap probówki. Omijaj skały i meteory!', hint: 'Przeciągnij palcem, żeby sterować koszykiem' },
   lander:  { noRank: true, name: 'Lądowanie na Księżycu', icon: '🛸', res: 'czesci', desc: 'Przytrzymaj ekran, żeby włączyć silnik, i przesuń palec, żeby sterować. Wyląduj łagodnie na pomarańczowym pasie!', hint: 'Gra zaczyna się po pierwszym dotknięciu · przytrzymaj = silnik · przesuń = kierunek' },
-  pack:    { name: 'Pakowanie rakiety', icon: '📦', res: 'czesci', desc: 'Przeciągnij klocki do ładowni rakiety. Dotknij klocka na tacy, żeby go obrócić!', hint: 'Przeciągnij klocek · dotknij na tacy = obróć · dotknij w rakiecie = zdejmij' },
+  pack:    { noRank: true, name: 'Pakowanie rakiety', icon: '📦', res: 'czesci', desc: 'Przeciągnij klocki do ładowni rakiety. Dotknij klocka na tacy, żeby go obrócić!', hint: 'Przeciągnij klocek · dotknij na tacy = obróć · dotknij w rakiecie = zdejmij' },
 };
 const GP = {
   easy: { shooter: { gap: 1000, v: 80, lives: 4 }, flappy: { gap: 245, sp: 2.2, spawn: 1800 }, catch: { spawn: 800, rock: .2, v: 140, lives: 3 }, lander: { g: 95, th: 250, safe: 95, pad: 150 }, pack: { w: 3, h: 4, n: 4, slack: 2, limit: 70 } },
