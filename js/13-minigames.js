@@ -189,7 +189,6 @@ function draw() {
     ctx.save(); if (sk.fx) ctx.filter = sk.fx;
     if (im && im.complete && im.naturalWidth) ctx.drawImage(im, 110 - 40, G.y + bob - 40, 80, 80);
     ctx.restore();
-    if (sk.acc) { ctx.save(); ctx.font = '36px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.translate(110, G.y + bob - 40); ctx.rotate(-.14); drawGameIcon(ctx, sk.acc, 0, 0, 36); ctx.restore(); }
     G.pipes.forEach(pp => {
       ctx.fillStyle = '#F28A1E'; ctx.strokeStyle = '#1B1446'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.roundRect(pp.x - 34, -20, 68, pp.gapY - pp.gap / 2 + 20, 16); ctx.fill(); ctx.stroke();
