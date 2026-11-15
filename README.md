@@ -11,7 +11,7 @@ bash run.sh -d       # to samo w tle   (stop | status | logs)
 ```
 Szczegóły, komendy i baza: sekcja [Licznik wejść](#licznik-wejść) niżej.
 
-**Tryb deweloperski:** `index.html?dev=flappy` (albo `shooter`, `catch`, `lander`, `pack`) od razu uruchamia wybraną minigierkę, bez wprowadzenia i misji. Opcjonalnie `&diff=easy|mid|hard`. Nic nie jest zapisywane (save i ranking wyłączone), DALEJ restartuje grę. Nieznany klucz: lista kluczy w `console.warn`, gra startuje normalnie.
+**Tryb deweloperski:** `index.html?dev=flappy` (albo `shooter`, `catch`, `lander`, `pack`) od razu uruchamia wybraną minigierkę, bez wprowadzenia i misji. Opcjonalnie `&diff=easy|mid|hard`. Nic nie jest zapisywane (save i ranking wyłączone), SPRÓBUJ PONOWNIE gra jeszcze raz, DALEJ idzie na Misje (odśwież stronę, żeby znów odpalić grę). Nieznany klucz: lista kluczy w `console.warn`, gra startuje normalnie.
 
 ## Struktura
 ```
