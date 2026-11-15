@@ -114,6 +114,15 @@ for path in sorted(glob.glob(os.path.join(here, 'assets', 'icons', '*.svg'))):
         icons[os.path.splitext(os.path.basename(path))[0]] = 'data:image/svg+xml;base64,' + base64.b64encode(source.read()).decode()
 html = re.sub(r'src="assets/icons/([a-z]+)\.svg"', lambda m: 'src="' + icons[m.group(1)] + '"', html)
 tags = '<script>window.ICON_EMBED=' + json.dumps(icons) + ';</script>\n'
+# pozostałe grafiki z assets/ (flappy, skiny, ciekawostki...) jako ASSET_EMBED = { 'assets/x/y.webp': data-URI }; w JS: assetSrc('assets/x/y.webp')
+MIME = {'.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml'}
+assets = {}
+for path in sorted(glob.glob(os.path.join(here, 'assets', '**', '*.*'), recursive=True)):
+    rel = os.path.relpath(path, here).replace(os.sep, '/')
+    ext = os.path.splitext(path)[1].lower()
+    if rel.startswith('assets/icons/') or ext not in MIME: continue
+    assets[rel] = 'data:' + MIME[ext] + ';base64,' + base64.b64encode(open(path, 'rb').read()).decode()
+tags += '<script>window.ASSET_EMBED=' + json.dumps(assets) + ';</script>\n'
 if emb: tags += '<script>window.CAT_EMBED=' + json.dumps(emb) + ';</script>\n'
 # wszystkie config/*.json wbudowane jako DATA_EMBED = { nazwa_pliku: zawartość }
 blob = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029')

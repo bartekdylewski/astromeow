@@ -10,6 +10,8 @@
    zastępczy kotek SVG. Zero zmian w kodzie.
    ===================================================================== */
 const CAT_DIR  = 'cat/';
+/* grafika z assets/: w dist/astromeow.html wbudowana przez build.py (ASSET_EMBED), lokalnie zwykły plik */
+const assetSrc = p => window.ASSET_EMBED?.[p] || p;
 const SAVE_KEY = 'astromeow-v1';
 
 const $ = s => document.querySelector(s);
