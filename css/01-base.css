@@ -100,6 +100,8 @@ html, body, #app { touch-action: pan-x pan-y; }
 button, input, [role="button"] { min-width: 44px; min-height: 44px; }
 button, a, [role="button"] { touch-action: manipulation; }
 input { user-select: text; -webkit-user-select: text; font: inherit; }
+/* długie przytrzymanie na telefonie: bez menu "zapisz obraz", podświetlenia i przeciągania grafik */
+img, svg, canvas { -webkit-touch-callout: none; -webkit-user-drag: none; user-select: none; -webkit-user-select: none; }
 #nav button { min-width: 44px; }
 #nav img { width: 24px; height: 24px; }
 #nav .on img { background: var(--surface); border-radius: .5rem; box-shadow: 0 0 0 .2rem var(--surface); }

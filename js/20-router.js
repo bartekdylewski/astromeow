@@ -4,6 +4,8 @@ function setTab(t) {
   closeSheet();
   ({ home: renderHome, map: renderMap, base: renderBase, shop: renderShop, badges: renderBadges, facts: renderFacts })[t]();
 }
+// Android: przytrzymanie grafiki otwiera menu przeglądarki (zapisz/udostępnij) – blokujemy je tylko na grafikach
+document.addEventListener('contextmenu', e => { if (e.target.closest('img,svg,canvas,.cat')) e.preventDefault(); });
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-ans],[data-act]'); if (!el || el.disabled) return;
   if (el.dataset.ans !== undefined) return answer(+el.dataset.ans);
