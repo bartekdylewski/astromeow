@@ -10,7 +10,9 @@ braku sieci zostają ostatnie dobre dane. Klucz: zmienna NASA_API_KEY albo --nas
 import datetime, json, os, threading, time, urllib.error, urllib.parse, urllib.request
 
 BASE = "https://api.nasa.gov"
-EVERY = 1800          # s między odświeżeniami
+EVERY = 300           # s między odświeżeniami DONKI (3 zapytania, ok. 36 na godzinę)
+EVERY_DEMO = 1800     # z DEMO_KEY (30 zapytań na godzinę z jednego adresu) odświeżamy rzadziej
+APOD_EVERY = 3600     # APOD zmienia się raz na dobę, więc wystarczy co godzinę
 WINDOW_DAYS = 30      # jak daleko wstecz szukamy zdarzeń pogody kosmicznej
 RETRY_PAUSE = 2       # s między ponownymi próbami APOD
 
@@ -64,7 +66,7 @@ def parse_apod(d):
     return {"title": d.get("title", ""), "url": d["url"], "date": d.get("date", ""), "credit": d.get("copyright", "NASA").strip()}
 
 
-def build(key, fetch=_fetch, today=None):
+def build(key, fetch=_fetch, today=None, skip=()):
     today = today or datetime.date.today()
     window = {"startDate": str(today - datetime.timedelta(days=WINDOW_DAYS)), "endDate": str(today)}
     out, errors = {"updated": int(time.time())}, []
@@ -73,6 +75,8 @@ def build(key, fetch=_fetch, today=None):
         ("cme", parse_cme, "/DONKI/CME", window), ("apod", parse_apod, "/planetary/apod", {}),
     ):
         out[name], error = None, None
+        if name in skip:   # nie pobieramy: Cache.refresh zostawi ostatnie dobre dane
+            continue
         for attempt in range(3 if name == "apod" else 1):   # APOD bywa niestabilny (5xx albo samo logo zamiast obrazu)
             try:
                 out[name], error = parse(fetch(path, key, **params)), None
@@ -91,13 +95,18 @@ def build(key, fetch=_fetch, today=None):
 class Cache:
     def __init__(self, key, path):
         self.key, self.path, self.data, self.lock = key, path, {"updated": None}, threading.Lock()
+        self.apod_at = 0   # kiedy ostatnio próbowaliśmy pobrać APOD
         try:
             self.data = json.load(open(path))
         except (OSError, ValueError):
             pass
 
     def refresh(self):
-        fresh = build(self.key)
+        now = time.time()
+        want_apod = now - self.apod_at >= APOD_EVERY
+        fresh = build(self.key, skip=() if want_apod else ("apod",))
+        if want_apod:   # po udanym pobraniu czekamy godzinę, po nieudanym (awaria, logo) ponawiamy za 15 minut
+            self.apod_at = now if fresh.get("apod") else now - APOD_EVERY + 900
         with self.lock:
             old = self.data
             for name in ("flare", "storm", "cme", "apod"):   # pusty wynik nie kasuje ostatnich dobrych danych
@@ -114,7 +123,9 @@ class Cache:
         with self.lock:
             return {k: v for k, v in self.data.items() if k != "errors"}
 
-    def start(self, every=EVERY):
+    def start(self, every=None):
+        every = every or (EVERY_DEMO if self.key == "DEMO_KEY" else EVERY)
+
         def loop():
             while True:
                 try:

@@ -2483,7 +2483,8 @@ function renderFacts() {
 }
 
 /* ---- panel „Najnowsze z NASA": dane z serwera (/api/nasa: DONKI + APOD, odświeżane w tle), przy braku sieci ostatnie zapamiętane ---- */
-const NASA_KEY = 'astromeow-nasa';
+const NASA_KEY = 'astromeow-nasa', NASA_POLL_MS = 5 * 60 * 1000;   // panel odświeża się co 5 minut, gdy gracz zostaje na ekranie
+let nasaTimer = null;
 const nasaDate = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('pl-PL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); };
 const nasaFlare = c => ({ A: 'bardzo słaby', B: 'bardzo słaby', C: 'słaby', M: 'silny', X: 'bardzo silny' }[String(c)[0]] || '');
 const nasaStorm = kp => kp >= 9 ? ['G5', 'ekstremalna'] : kp >= 8 ? ['G4', 'bardzo silna'] : kp >= 7 ? ['G3', 'silna'] : kp >= 6 ? ['G2', 'umiarkowana'] : kp >= 5 ? ['G1', 'mała'] : ['', 'spokojnie'];
@@ -2502,6 +2503,8 @@ function nasaPanel(d) {
     <small class="muted">Źródło: <a class="link" href="https://ccmc.gsfc.nasa.gov/tools/DONKI/" target="_blank" rel="noopener">NASA DONKI</a> i <a class="link" href="https://api.nasa.gov" target="_blank" rel="noopener">NASA Open APIs</a></small></section>`;
 }
 async function loadNasa() {
+  clearTimeout(nasaTimer);
+  nasaTimer = setTimeout(() => { if ($('#nasa-panel')) loadNasa(); }, NASA_POLL_MS);   // zatrzymuje się samo po wyjściu z ekranu
   let d = null;
   try {
     const r = await fetch('/api/nasa', { signal: AbortSignal.timeout(4000) });
