@@ -27,9 +27,7 @@
 .face .tear{animation:tear 1.8s ease-in infinite}
 @keyframes tear{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(40px);opacity:0}}
 @keyframes artbob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-.15rem) scale(1.02,.99)}}
-.cpose{position:absolute;right:-6%;top:-8%;line-height:1;pointer-events:none;z-index:3;animation:float 1.8s ease-in-out infinite}
-.cat.p-cheer .cpose{animation:hop .45s ease-in-out infinite}
-/* dotyk kota: miau + sprężysty ruch */
+.cat.p-cheer /* dotyk kota: miau + sprężysty ruch */
 .cat{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .cat.meow{animation:meow .6s cubic-bezier(.3,1.4,.5,1)}
 @keyframes meow{0%{transform:scale(1,1)}18%{transform:scale(1.12,.86) translateY(.1rem)}40%{transform:scale(.9,1.14) translateY(-.9rem) rotate(-4deg)}58%{transform:scale(1.04,.96) translateY(-.2rem) rotate(4deg)}78%{transform:scale(1,1) rotate(-2deg)}100%{transform:scale(1,1)}}

@@ -90,7 +90,6 @@ const SKINS = [
 const GOLD_PRICE = 50;
 const skinOf = id => SKINS.find(x => x.id === (id || (typeof P !== 'undefined' && P.skin))) || SKINS[0];
 /* dodatki mimiki (jedna grafika kota + efekt przy mordce), gdy brak osobnych klatek */
-const POSE_FX = { happy: '✨', cheer: '🎉', think: '❓' };
 const CAT_K = 1.7;    // globalny mnożnik rozmiaru kota (#21); .cat ma max 78vw w CSS
 /* #20: mimika narysowanych skinów. Oczy leżą w tym samym miejscu na każdej grafice (420×420), więc jedna nakładka SVG
    zakrywa je kolorem pyszczka i rysuje minę dla pozy; idle mruga. Elegant ma monokl na prawym oku: mruga tylko lewym. */
@@ -112,8 +111,7 @@ function cat(pose = 'idle', size = 6, cls = '', skin) {
   const sk = skinOf(skin);
   const fr = CATX[pose] || CATX.idle;
   const inner = sk.art ? `<img src="${assetSrc('assets/skins/' + sk.art + '.webp')}" alt="Astruś" draggable="false">${artFace(pose, sk.art)}` : fr ? `<img data-pose="${pose}" src="${fr[0].src}" alt="Astruś" draggable="false">` : catSvg(pose);
-  const fx = (sk.art || fr && !CATX[pose]) && POSE_FX[pose] ? `<span class="cpose" style="font-size:${(size * .3).toFixed(2)}rem">${POSE_FX[pose]}</span>` : '';
-  return `<span class="cat p-${pose} ${fr ? 'ext' : ''} ${sk.art ? 'art' : ''} ${cls}" style="width:${size}rem;height:${size}rem"><span class="cfx" style="${sk.fx ? 'filter:' + sk.fx : ''}">${inner}</span>${fx}</span>`;
+  return `<span class="cat p-${pose} ${fr ? 'ext' : ''} ${sk.art ? 'art' : ''} ${cls}" style="width:${size}rem;height:${size}rem"><span class="cfx" style="${sk.fx ? 'filter:' + sk.fx : ''}">${inner}</span></span>`;
 }
 /* kot tłumaczy: wspólny komponent "kot + dymek" do wszystkich ekranów i gier */
 function catSay(pose, html, { size = 5, cls = '', who = '' } = {}) {
