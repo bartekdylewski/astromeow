@@ -1,0 +1,145 @@
+{
+ "version": 1,
+ "questions": [
+  {
+   "res": "wiedza",
+   "q": "Czujnik pokazuje, że tlenu w module jest coraz mniej. Co robisz?",
+   "right": "Sprawdzam czujniki i zamykam wadliwy moduł",
+   "wrong": "Czekam, może samo przejdzie",
+   "why": "Mało tlenu to groźna sprawa, więc trzeba działać od razu i odciąć uszkodzony moduł."
+  },
+  {
+   "res": "wiedza",
+   "q": "W szklarni zwiędły rośliny, które dają tlen. Co robisz?",
+   "right": "Sprawdzam światło i wodę, a potem je naprawiam",
+   "wrong": "Wyłączam szklarnię na zawsze",
+   "why": "Rośliny potrzebują światła i wody. Najpierw szukamy przyczyny, a nie wyłączamy."
+  },
+  {
+   "res": "wiedza",
+   "q": "Włączył się alarm dymu, a w module jest tlen i mała iskra. Co robisz?",
+   "right": "Odcinam zasilanie w tym module",
+   "wrong": "Otwieram wszystkie włazy, żeby wywietrzyć",
+   "why": "Bez prądu iskra nie rośnie. Otwarte włazy rozniosłyby problem po całej bazie."
+  },
+  {
+   "res": "wiedza",
+   "q": "Masz dwa zbiorniki: pełny tlenu i prawie pusty. Idziesz na długi spacer. Który bierzesz?",
+   "right": "Pełny",
+   "wrong": "Prawie pusty, bo lżejszy",
+   "why": "Na spacerze tlen to życie. Zawsze bierzemy pełny zbiornik i zapas."
+  },
+  {
+   "res": "czesci",
+   "q": "Burza słoneczna zbliża się do bazy. Co robisz?",
+   "right": "Przenoszę załogę do osłoniętego modułu",
+   "wrong": "Wychodzę na zewnątrz zobaczyć burzę",
+   "why": "Podczas burzy słonecznej jest więcej promieniowania, więc chowamy się za grubymi ścianami."
+  },
+  {
+   "res": "czesci",
+   "q": "Zasilanie spadło o połowę. Co wyłączasz najpierw?",
+   "right": "Rzeczy, bez których baza przeżyje (np. rozrywkę)",
+   "wrong": "Podtrzymywanie życia",
+   "why": "Najpierw oszczędzamy na tym, co niekonieczne. Tlen i ciepło mają pierwszeństwo."
+  },
+  {
+   "res": "czesci",
+   "q": "Panele słoneczne pokryły się pyłem księżycowym. Co robisz?",
+   "right": "Czyszczę je ostrożnie",
+   "wrong": "Zostawiam, panele są wytrzymałe",
+   "why": "Pył zasłania światło i panele dają mniej energii. Trzeba je czyścić."
+  },
+  {
+   "res": "czesci",
+   "q": "Jedna bateria się grzeje i jest wyraźnie gorąca. Co robisz?",
+   "right": "Odłączam ją i zostawiam do ostygnięcia",
+   "wrong": "Dokładam jeszcze jedną do tej samej wtyczki",
+   "why": "Przegrzana bateria może się zapalić. Odłączamy i chłodzimy."
+  },
+  {
+   "res": "czesci",
+   "q": "Masz mało energii, a lampa w pustym module świeci cały dzień. Co robisz?",
+   "right": "Gaszę lampę",
+   "wrong": "Zostawiam, może się komuś przyda",
+   "why": "W kosmosie każda energia się liczy, więc wyłączamy to, czego nikt nie używa."
+  },
+  {
+   "res": "czesci",
+   "q": "Chcesz podłączyć trzy urządzenia do jednego gniazdka. Co robisz?",
+   "right": "Rozkładam je na kilka gniazdek",
+   "wrong": "Wpinam wszystkie do jednego",
+   "why": "Przeciążone gniazdko może się przegrzać. Obciążenie dzielimy."
+  },
+  {
+   "res": "meteo",
+   "q": "W zbiorniku z wodą widać mętną ciecz. Co robisz?",
+   "right": "Filtruję i badam wodę przed piciem",
+   "wrong": "Piję, woda to woda",
+   "why": "Woda na stacji jest recyklingowana i musi być czysta. Najpierw filtr i test."
+  },
+  {
+   "res": "meteo",
+   "q": "Masz mało wody. Co jest rozsądne?",
+   "right": "Zbieram wodę z pary w powietrzu i oszczędzam",
+   "wrong": "Biorę długi prysznic na zapas",
+   "why": "Na stacji odzyskuje się wodę z pary i oddechu. Oszczędzanie to podstawa."
+  },
+  {
+   "res": "meteo",
+   "q": "Z rury kapie woda do panelu z elektroniką. Co robisz?",
+   "right": "Zakręcam wodę i wyłączam zasilanie",
+   "wrong": "Wycieram i czekam",
+   "why": "Woda i prąd się nie lubią. Najpierw odcinamy oba."
+  },
+  {
+   "res": "meteo",
+   "q": "Masz lód z meteorytu. Co z nim zrobisz?",
+   "right": "Roztopię i przefiltruję, zanim go użyję",
+   "wrong": "Wrzucę do napoju prosto z meteorytu",
+   "why": "Lód z kosmosu może mieć pył i zanieczyszczenia, więc go filtrujemy."
+  },
+  {
+   "res": "meteo",
+   "q": "Rozlała się woda na podłodze modułu. Co robisz?",
+   "right": "Wycieram, żeby nikt się nie poślizgnął",
+   "wrong": "Zostawiam",
+   "why": "W niskiej grawitacji krople wędrują, a mokra podłoga bywa śliska."
+  },
+  {
+   "res": "wiedza",
+   "q": "W bazie jest tłok i tlen szybko się zużywa. Co robisz?",
+   "right": "Wysyłam część załogi do innego modułu",
+   "wrong": "Zamykam wszystkie wentylatory",
+   "why": "Rozproszenie załogi i wentylacja pomagają, a zatrzymanie wentylatorów pogarsza powietrze."
+  },
+  {
+   "res": "czesci",
+   "q": "Silnik rakiety hałasuje dziwnie przed startem. Co robisz?",
+   "right": "Odwołuję start i sprawdzam silnik",
+   "wrong": "Startuję, bo jesteśmy spóźnieni",
+   "why": "Bezpieczeństwo jest ważniejsze niż pośpiech, bo awaria w locie jest groźna."
+  },
+  {
+   "res": "meteo",
+   "q": "Meteoryt uderzył w kopułę i jest mała szczelina. Co robisz?",
+   "right": "Szybko zaklejam szczelinę i zamykam moduł",
+   "wrong": "Czekam, aż mała dziura sama się zasklepi",
+   "why": "Wyciek powietrza trzeba zatrzymać od razu, bo tlen ucieka w próżnię."
+  },
+  {
+   "res": "wiedza",
+   "q": "Idziesz na spacer po Księżycu. Co sprawdzasz przed wyjściem?",
+   "right": "Skafander, tlen i łączność",
+   "wrong": "Tylko czy jest ładna pogoda",
+   "why": "Skafander dba o ciśnienie, tlen i temperaturę. Łączność pozwala wezwać pomoc."
+  },
+  {
+   "res": "czesci",
+   "q": "Zgasło światło w całej bazie. Co robisz najpierw?",
+   "right": "Włączam awaryjne zasilanie i latarkę",
+   "wrong": "Idę po omacku zobaczyć, co się stało",
+   "why": "Awaryjne zasilanie daje czas na spokojne szukanie przyczyny."
+  }
+ ]
+}

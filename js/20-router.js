@@ -3,6 +3,7 @@
 function setTab(t) {
   closeSheet();
   ({ home: renderHome, map: renderMap, base: renderBase, shop: renderShop, badges: renderBadges, facts: renderFacts })[t]();
+  if (t === 'base') askSafety();   // pytanie A/B przy każdym wejściu do Bazy
 }
 // Android: przytrzymanie grafiki otwiera menu przeglądarki (zapisz/udostępnij) – blokujemy je tylko na grafikach
 document.addEventListener('contextmenu', e => { if (e.target.closest('img,svg,canvas,.cat')) e.preventDefault(); });
@@ -50,5 +51,6 @@ document.addEventListener('click', e => {
     case 'upgrade':     return upgradeBuilding();
     case 'slot':        return openAddonPicker();
     case 'addon':       return addAddon(arg);
+    case 'safe-ans':    return answerSafety(arg);
   }
 });

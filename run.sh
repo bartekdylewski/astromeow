@@ -10,6 +10,7 @@
 # Tunel (raz, w osobnym terminalu/tmux, nie zamykaj):  cloudflared tunnel --url http://127.0.0.1:8085
 # Baza = zwykły plik SQLite counter/data/counter.db. Zostaje między restartami; przy każdym starcie robię jej kopię.
 # Zmienne: PORT=8085 (ten sam co w tunelu!)  DB=ścieżka  PYTHON=python3  KEEP=10 (ile kopii trzymać)
+#          DEV_MODE=1 (serwer z --dev: odblokowuje ?dev=<gra>; bez tego tryb dev jest wyłączony)
 #          BACKUP_DIR=~/astromeow-backup (kopie bazy poza repo; używa go też counter.sh backup/reset)
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
@@ -79,7 +80,7 @@ supervise() {
   local fails=0 t0
   while :; do
     t0=$SECONDS
-    "$PY" "$CNT/server.py" serve --port "$PORT" --db "$DB" --root "$GAME/dist" --live "$CNT/live.html" &
+    "$PY" "$CNT/server.py" serve --port "$PORT" --db "$DB" --root "$GAME/dist" --live "$CNT/live.html" ${DEV_MODE:+--dev} &
     CHILD=$!
     wait "$CHILD" || true
     [[ $STOP == 1 ]] && break

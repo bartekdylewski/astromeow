@@ -97,7 +97,10 @@ class Handler(BaseHTTPRequestHandler):
         if ctype.startswith("text/") or ctype in ("application/javascript", "application/json"):
             ctype += "; charset=utf-8"
         with open(full, "rb") as f:
-            self._send(200, f.read(), ctype, head=head)
+            body = f.read()
+        if self.server.dev and ctype.startswith("text/html"):   # ?dev= działa tylko z --dev
+            body = body.replace(b"<head>", b"<head><script>window.ALLOW_DEV=1</script>", 1)
+        self._send(200, body, ctype, head=head)
 
     def _static(self, path, head=False):
         root = self.server.root
@@ -212,6 +215,7 @@ def cmd_serve(a):
     srv.root = os.path.realpath(a.root)
     srv.live = os.path.abspath(a.live)
     srv.verbose = a.verbose
+    srv.dev = a.dev
     if not os.path.isfile(os.path.join(srv.root, "astromeow.html")):
         sys.exit("Brak %s/astromeow.html – uruchom najpierw: python3 build.py" % srv.root)
     signal.signal(signal.SIGTERM, lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))  # stop z run.sh
@@ -277,6 +281,7 @@ def main():
     p.add_argument("--root", default=os.path.join(HERE, "..", "dist"))
     p.add_argument("--live", default=os.path.join(HERE, "live.html"))
     p.add_argument("-v", "--verbose", action="store_true")
+    p.add_argument("--dev", action="store_true", help="włącz tryb deweloperski ?dev=<gra> w przeglądarce")
     add("stats", cmd_stats)
     add("export", cmd_export)
     add("backup", cmd_backup).add_argument("--out", required=True)

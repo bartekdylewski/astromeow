@@ -4,7 +4,7 @@ const key = (x, y) => x + ',' + y;
 const fresh = () => ({
   pts: 0, streak: 0, lastDay: null, diff: null, startIdx: 0, runs: 0, done: { easy: [], mid: [], hard: [] }, best: {},
   stars: { easy: {}, mid: {}, hard: {} }, seen: { easy: [], mid: [], hard: [] },
-  res: { wiedza: 20, czesci: 0, meteo: 0 }, planets: PLANETS.map(() => ({ grid: {} })), planet: 0, seenPlanets: 1,
+  res: { wiedza: 20, czesci: 0, meteo: 0 }, planets: PLANETS.map(() => ({ grid: {} })), planet: 0, seenPlanets: 1, baseVer: BASE_VER,
   tut: { welcome: false, quiz: false, base: false, map: false, shop: false },
   skin: 'classic', skins: ['classic'], golden: 0, lessons: {},
   lastSave: Date.now(),
@@ -17,6 +17,7 @@ function load() {
   try {
     const raw = localStorage.getItem(SAVE_KEY); if (!raw) return;
     const s = JSON.parse(raw), f = fresh();
+    if (s.baseVer !== BASE_VER) { delete s.res; delete s.planets; s.planet = 0; s.seenPlanets = 1; s.baseVer = BASE_VER; }   // stara baza -> czysta
     P = { ...f, ...s, res: { ...f.res, ...s.res }, done: { ...f.done, ...s.done }, best: { ...s.best }, stars: { ...f.stars, ...s.stars }, seen: { ...f.seen, ...s.seen },
           tut: { ...f.tut, ...s.tut }, lessons: { ...(s.lessons || {}) }, skins: Array.isArray(s.skins) && s.skins.length ? s.skins : ['classic'], planets: PLANETS.map((_, i) => ({ grid: { ...(((s.planets || [])[i] || {}).grid || {}) } })) };
     const away = Math.min(7200, (Date.now() - (s.lastSave || Date.now())) / 1000);
@@ -33,7 +34,7 @@ const fmt = n => n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(Math.floor(n *
 const doneCount = () => TIERS.reduce((a, t) => a + P.done[t].length, 0);
 const pGrid = i => P.planets[i].grid;
 const pFull = i => Object.keys(pGrid(i)).length >= PLANETS[i].n * PLANETS[i].n;
-const pOpen = i => i === 0 || (pFull(i - 1) && doneCount() >= PLANETS[i].need);
+const pOpen = i => i === 0 || !!window.ALLOW_DEV || (pFull(i - 1) && doneCount() >= PLANETS[i].need);   // serwer z --dev: wszystkie planety odblokowane
 function pReason(i) {
   const miss = [], left = PLANETS[i].need - doneCount();
   if (!pFull(i - 1)) miss.push(`zabuduj ${PLANETS[i - 1].name}`);
@@ -62,3 +63,20 @@ const canAfford = c => Object.keys(c).every(k => P.res[k] >= c[k]);
 const pay = c => { for (const k in c) P.res[k] -= c[k]; };
 const goalFor = k => Math.max(1, ...Object.keys(TYPES).map(t => placeCost(t, P.planet)[k] || 0));
 const chips = cost => Object.keys(cost).map(k => `<span class="pill" style="${P.res[k] >= cost[k] ? '' : 'background:var(--grey);border-color:var(--muted);color:var(--muted)'}">${RES[k].icon} ${fmt(cost[k])}</span>`).join(' ');
+
+/* serwer z --dev + ?demo=1: przykładowy stan do nagrania dema (zaliczone misje, zasoby, zabudowane planety) */
+function demoState() {
+  const ids = MISSIONS.map(m => m.id), B = (type, level, addons = []) => ({ type, level, addons });
+  P = { ...fresh(), pts: 260, runs: 12, streak: 5, lastDay: today(), diff: 'mid', golden: 1, planet: 1, seenPlanets: 6,
+    tut: { welcome: true, quiz: true, base: true, map: true, shop: true }, res: { wiedza: 420, czesci: 380, meteo: 260 } };
+  TIERS.forEach((t, ti) => {
+    const n = ti === 0 ? ids.length : ti === 1 ? Math.ceil(ids.length * .6) : 0;
+    P.done[t] = ids.slice(0, n); ids.slice(0, n).forEach((id, i) => { P.stars[t][id] = 2 + (i % 2); });
+  });
+  P.planets[0].grid = { '0,0': B('warsztat', 4, ['panel', 'antena']), '1,0': B('lab', 3, ['kopula']), '0,1': B('lowca', 3, ['kopula']), '1,1': B('satelita', 2) };
+  P.planets[1].grid = { '0,0': B('warsztat', 3, ['panel']), '1,0': B('lab', 2), '2,0': B('lowca', 2), '0,1': B('satelita', 2, ['antena']), '1,1': B('hangar', 2, ['panel']), '2,1': B('lab', 1), '0,2': B('warsztat', 2) };
+  P.planets[2].grid = { '0,0': B('lowca', 2), '1,0': B('satelita', 1), '1,1': B('warsztat', 2, ['panel']), '2,2': B('hangar', 1) };
+  const TY = ['warsztat', 'lab', 'lowca', 'satelita', 'hangar'], AD = [[], ['panel'], ['antena'], ['kopula'], ['panel', 'antena']];
+  const fill = (pi, k) => { const n = PLANETS[pi].n, g = {}; let c = 0; for (let y = 0; y < n && c < k; y++) for (let x = 0; x < n && c < k; x++) if ((x + y) % 2 === 0 || c < k - n) { g[key(x, y)] = B(TY[(x * 2 + y) % 5], 1 + (x + y) % 4, AD[(x + 2 * y) % 5]); c++; } P.planets[pi].grid = g; };
+  fill(3, 10); fill(4, 15); fill(5, 12);
+}

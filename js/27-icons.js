@@ -3,12 +3,12 @@
 const iconGroups = {
   map: '🗺️ 🧭', base: '🏠', shop: '🛍️', facts: '📖 📚', profile: '🐱 🧑‍🚀 👨‍🚀',
   star: '⭐ 🌟 ✨ 🎉', heart: '💗 ❤️ 🧡', goldheart: '💛', rocket: '🚀 🛬', rock: '🪨 🗿 🧊 🧱',
-  meteor: '☄️', flask: '🧪 🌡️', box: '📦 🧰 🥫', clock: '⏱️', ufo: '🛸', fire: '🔥 💥 🌋',
-  basket: '🧺', planet: '🪐 🌍 🌌 🔴 ⚪ 🌕 🌀 🌫️ 🌊 🌪️ 🫧', moon: '🌙 🌑 🌗', lock: '🔒', trophy: '🏆',
+  meteor: '☄️', flask: '🧪 🌡️', box: '📦', clock: '⏱️', ufo: '🛸', fire: '🔥 💥 🌋',
+  basket: '🧺', planet: '🪐 🌍 🌌 ⚪ 🌕 🌀 🌫️ 🌊 🌪️ 🫧', mars: '🔴', mercury: '⚫', drop: '💧', oxygen: '🫁', moon: '🌙 🌑 🌗', lock: '🔒', trophy: '🏆',
   tool: '🔧 🔩 🏗️ 📏 🧲 💻', brain: '🧠', light: '💡 ❓', sun: '☀️ 🌞', check: '✅',
   arrow: '➡️ ⬆️ 👇 👆 ↗ 🔄 ♻️ 🤌', eye: '👀 🔭', flag: '🇵🇱', game: '🎮 🎯 🏋️ 💪',
-  voice: '🔊 🎧', mute: '🔇', leaf: '🌱 🪴 🪶', pin: '📍', face: '😤 😎 😮 😅 🥹 🤔 😢 🙈 💀 🤖',
-  paw: '🐾', shield: '🛡️ 🛰️ 📡', crown: '👑 🎩 🤠 🎀 🎈 💅', bolt: '⚡ 🔋',
+  voice: '🔊 🎧', mute: '🔇', leaf: '🌱 🪶', pin: '📍', face: '😤 😎 😮 😅 🥹 🤔 😢 🙈 💀 🤖',
+  paw: '🐾', lander: '🚡', satellite: '🛰️', dish: '📡', battery: '🔋', can: '🥫', toolbox: '🧰', plant: '🪴', shield: '🛡️', crown: '👑 🎩 🤠 🎀 🎈 💅', bolt: '⚡',
 };
 const iconNames = new Map();
 for (const [name, group] of Object.entries(iconGroups)) {

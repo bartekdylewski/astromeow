@@ -4,7 +4,7 @@ const GAMES = {
   shooter: { name: 'Obrona bazy', icon: '🚀', res: 'meteo', desc: 'Przesuwaj statek palcem. Strzelanie jest automatyczne. Zbij meteory, zanim spadną na bazę!', hint: 'Przeciągnij palcem, żeby sterować' },
   flappy:  { name: 'Przelot przez asteroidy', icon: '🐱', res: 'meteo', desc: 'Dotknij ekranu, żeby Astruś uniósł się w górę. Przeleć przez szczeliny między meteorytami.', hint: 'Gra zaczyna się po pierwszym dotknięciu · dotknij, żeby lecieć' },
   catch:   { name: 'Łapanie próbek', icon: '🧪', res: 'wiedza', desc: 'Przesuwaj koszyk i łap probówki. Omijaj skały i meteory!', hint: 'Przeciągnij palcem, żeby sterować koszykiem' },
-  lander:  { noRank: true, name: 'Lądowanie na Księżycu', icon: '🛸', res: 'czesci', desc: 'Przytrzymaj ekran, żeby włączyć silnik, i przesuń palec, żeby sterować. Wyląduj łagodnie na pomarańczowym pasie!', hint: 'Gra zaczyna się po pierwszym dotknięciu · przytrzymaj = silnik · przesuń = kierunek' },
+  lander:  { noRank: true, name: 'Lądowanie na Księżycu', icon: '🚡', res: 'czesci', desc: 'Przytrzymaj ekran, żeby włączyć silnik, i przesuń palec, żeby sterować. Wyląduj łagodnie na pomarańczowym pasie!', hint: 'Gra zaczyna się po pierwszym dotknięciu · przytrzymaj = silnik · przesuń = kierunek' },
   pack:    { noRank: true, name: 'Pakowanie rakiety', icon: '📦', res: 'czesci', desc: 'Przeciągnij klocki do ładowni rakiety. Dotknij klocka na tacy, żeby go obrócić!', hint: 'Przeciągnij klocek · dotknij na tacy = obróć · dotknij w rakiecie = zdejmij' },
 };
 const GP = {
@@ -235,7 +235,7 @@ function draw() {
     ctx.fillStyle = '#E8E1D6'; ctx.beginPath(); ctx.roundRect(-10, gy + 22, W + 20, H, 20); ctx.fill();
     ctx.fillStyle = '#F28A1E'; ctx.beginPath(); ctx.roundRect(G.pad - G.p.pad / 2, gy + 22, G.p.pad, 10, 5); ctx.fill();
     ctx.font = '26px serif'; drawGameIcon(ctx, '🪨', 60, gy + 52, 26); drawGameIcon(ctx, '🪨', 360, gy + 58, 26);
-    ctx.font = '44px serif'; drawGameIcon(ctx, '🛸', G.sx, G.sy, 44);
+    ctx.font = '44px serif'; drawGameIcon(ctx, '🚡', G.sx, G.sy, 44);
     if (G.hold && G.msgT <= 0) { ctx.font = '30px serif'; drawGameIcon(ctx, '🔥', G.sx, G.sy + 38, 30); }
     const v = Math.max(0, G.svy), ok = v < G.p.safe;
     ctx.fillStyle = '#E8E1D6'; ctx.beginPath(); ctx.roundRect(W / 2 - 70, 14, 140, 12, 6); ctx.fill();

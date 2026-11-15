@@ -11,7 +11,7 @@ bash run.sh -d       # to samo w tle   (stop | status | logs)
 ```
 Szczegóły, komendy i baza: sekcja [Licznik wejść](#licznik-wejść) niżej.
 
-**Tryb deweloperski:** `index.html?dev=flappy` (albo `shooter`, `catch`, `lander`, `pack`) od razu uruchamia wybraną minigierkę, bez wprowadzenia i misji. Opcjonalnie `&diff=easy|mid|hard`. Nic nie jest zapisywane (save i ranking wyłączone), SPRÓBUJ PONOWNIE gra jeszcze raz, DALEJ idzie na Misje (odśwież stronę, żeby znów odpalić grę). Nieznany klucz: lista kluczy w `console.warn`, gra startuje normalnie.
+**Tryb deweloperski** (tylko serwer z `--dev`, np. `DEV_MODE=1 bash run.sh`; bez niego `?dev=` jest ignorowane): `index.html?dev=flappy` (albo `shooter`, `catch`, `lander`, `pack`) od razu uruchamia wybraną minigierkę, bez wprowadzenia i misji. Opcjonalnie `&diff=easy|mid|hard`. Nic nie jest zapisywane (save i ranking wyłączone), SPRÓBUJ PONOWNIE gra jeszcze raz, DALEJ idzie na Misje (odśwież stronę, żeby znów odpalić grę). Nieznany klucz: lista kluczy w `console.warn`, gra startuje normalnie.
 
 ## Struktura
 ```
@@ -48,6 +48,16 @@ js/                 skrypty klasyczne (wspólny zakres, kolejność ma znaczenie
   24-sound          dźwięki Web Audio (klik, dobrze/źle, wynik, miau Astrusia); wyciszenie: 🔊 na ekranie głównym lub sfxToggle()
 cat/                (opcjonalnie) klatki kota: idle_1.png … cheer_3.png albo idle.gif …
 ```
+
+## Baza i zapis gracza
+- Zasoby (klucze w kodzie bez zmian): `wiedza` = **Tlen** 🫁, `czesci` = **Energia** ⚡, `meteo` = **Woda** 💧. Nazwy i ikony: `RES` w `js/06-base-data.js`.
+- Planety w kolejności: Księżyc, Mars, Merkury, a potem kolejne lokacje na Księżycu (Morze Spokoju), Marsie (Valles Marineris) i Merkurym (Biegun Północny): `PLANETS` w `js/06-base-data.js`.
+- Po quizie i gierce DALEJ prowadzi do **Bazy**. Przy każdym wejściu do Bazy pojawia się pytanie A/B o bezpieczeństwie (`config/safety.json`): dobra odpowiedź +20% zasobu, zła −10%. Każde pytanie ma pole `res`, czyli którego zasobu dotyczy.
+- **Reset starych baz:** podbij `BASE_VER` w `js/01-config.js`. Każdy gracz dostanie czystą bazę przy następnym wejściu, a postęp misji, gwiazdki i skiny zostają.
+- **Reset całego zapisu na urządzeniu:** dopisz `?reset=1` do adresu strony i potwierdź.
+
+- **Demo do nagrania:** na serwerze z `--dev` (`DEV_MODE=1 bash run.sh`) otwórz `/?demo=1`: wczytuje przykładowy stan (zaliczone misje, zasoby, zabudowane planety, wszystkie odblokowane). Odświeżenie bez `?demo=1` zostawia ten stan. Pierwszy raz trzeba jeszcze podać pseudonim.
+- **Modele 3D budynków** (`js/29-models3d.js`, three.js r177 w `vendor/three.min.js`, licencja MIT): każdy budynek ma własną bryłę, renderowaną raz do PNG we wspólnym kontekście WebGL. Bez WebGL pokazuje się zwykła ikona. Pytanie A/B ma limit 1 na 45 s (`SAFE_COOLDOWN` w `js/16-base.js`).
 
 ## Typowe zmiany
 - Nowe etapy i pytania: `config/missions.json`. Lekcje i samouczki: `config/tutorials.json`, bez kodu. Instrukcja: [docs/JAK-DODAC-ETAP.md](docs/JAK-DODAC-ETAP.md). `python3 build.py` sprawdza dane i wypisze błędy po polsku.
