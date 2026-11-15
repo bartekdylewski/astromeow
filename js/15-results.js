@@ -16,14 +16,10 @@ function finishGame(key, score, passedFlag) {
   const left = MAXTRY - set.attempts, final = passed || left <= 0;
   const retry = left > 0 && (!final || (key !== 'pack' && !goal));   // gra bez celu: próby na lepszy wynik w rankingu
   stopGame();
-  mapMsg = endMsg({ passed, final }) + resultCard({ key, score, goal, passed, attempt: set.attempts, retry, final });
-  mapRank = GAMES[key].noRank ? null : { key, submission };
-  renderMap();   // #22: bez osobnego ekranu wyniku, od razu Misje
-  if (passed) confetti(14);
-  window.sfx && sfx(passed ? 'win' : 'lose');
+  mapMsg = endMsg({ passed, final });   // dymek Astrusia na Misjach po DALEJ
+  renderResult({ key, score, goal, passed, attempt: set.attempts, retry, submission });
 }
 let mapMsg = '';   // komunikat dla Szlaku misji (pokazywany raz po grze)
-let mapRank = null;   // { key, submission }: ranking do wczytania w karcie wyniku na Misjach
 function endMsg({ passed, final }) {
   const set = GSET, mission = set.mission;
   let line = passed ? say(BR.gameHigh) : say(BR.gameLow);
@@ -37,18 +33,25 @@ function endMsg({ passed, final }) {
   }
   return catSay(passed ? 'cheer' : final ? 'happy' : 'think', line + promo, { size: 4.6 });
 }
-/* karta wyniku na Szlaku misji: wynik, nagrody, ranking i ponowna próba */
-function resultCard({ key, score, goal, passed, attempt, retry, final }) {
-  const g = GAMES[key], set = GSET;
+/* pełny ekran wyniku: sekcja QUIZ (tylko w misji) i GIERKA; przyciski tylko DALEJ i SPRÓBUJ PONOWNIE */
+function renderResult({ key, score, goal, passed, attempt, retry, submission }) {
+  cur = () => renderResult({ key, score, goal, passed, attempt, retry, submission });
+  const g = GAMES[key], set = GSET, sec = (t, body) => `<section class="card mt tc"><div class="label mb-s">${t}</div>${body}</section>`;
+  const quiz = set.mission && S ? sec('Quiz', `<p style="margin:0;font-size:1.2rem;font-weight:900">${S.correct}/${S.qs.length} dobrze · ${'⭐'.repeat(S.stars)}</p>
+    <p class="rew">⭐ +${S.quizPts} &nbsp; 🧠 +${S.quizKnow}</p>`) : '';
   const miss = key === 'pack' || passed ? '' : ` · brakuje ${Math.max(0, goal - score)}`;
-  const rew = set.mission && final
-    ? `⭐ +${S.quizPts + set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain} &nbsp; 🧠 +${S.quizKnow}`
-    : `⭐ +${set.totPts} &nbsp; ${RES[g.res].icon} +${set.totGain}`;
-  return `<section class="card mt tc" aria-label="Wynik gierki">
-    <p class="muted" style="margin:0">${g.icon} ${g.name} · wynik: ${score}${key === 'pack' ? '' : ' · cel: ' + goalText(key)}${miss}</p>
-    ${retry ? `<p class="muted" style="margin:.2rem 0 0">Próba ${attempt} z ${MAXTRY}</p>` : ''}
-    <p class="rew">${rew}</p>
-    ${g.noRank ? '' : '<div id="leaderboard" class="mt-s">Ładowanie…</div>'}
-    ${retry ? `<button class="btn b-white mt-s" data-act="retry-game">SPRÓBUJ PONOWNIE (${attempt + 1}/${MAXTRY})</button>` : ''}
-  </section>`;
+  const game = sec(`${g.icon} ${g.name}`, `<p style="margin:0;font-size:1.4rem;font-weight:900">Wynik: ${score}</p>
+    <p class="muted" style="margin:.2rem 0 0">${key === 'pack' ? '' : 'Cel: ' + goalText(key) + miss}${retry ? ` · próba ${attempt} z ${MAXTRY}` : ''}</p>
+    ${g.noRank ? '' : '<h3 class="mt" style="margin-bottom:.3rem">🏆 Ranking</h3><div id="leaderboard">Ładowanie…</div>'}`);
+  show(`<div class="scr">
+    <div class="col center tc mt">${cat(passed ? 'cheer' : 'think', 6)}<h1 class="title" style="margin:.4rem 0 0">${passed ? 'Zaliczone!' : 'Koniec gierki'}</h1></div>
+    ${quiz}${game}
+    <div class="foot col gap-s">
+      ${retry ? `<button class="btn b-white" data-act="retry-game">SPRÓBUJ PONOWNIE (${attempt + 1}/${MAXTRY})</button>` : ''}
+      <button class="btn b-lav nudge" data-act="tab" data-arg="map">DALEJ ›</button>
+    </div>
+  </div>`);
+  if (!g.noRank) loadLeaderboard(key, $('#leaderboard'), submission);
+  if (passed) confetti(14);
+  window.sfx && sfx(passed ? 'win' : 'lose');
 }
