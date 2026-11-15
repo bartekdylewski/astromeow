@@ -8,9 +8,9 @@ const GAMES = {
   pack:    { name: 'Pakowanie rakiety', icon: '📦', res: 'czesci', desc: 'Przeciągnij klocki do ładowni rakiety. Dotknij klocka na tacy, żeby go obrócić!', hint: 'Przeciągnij klocek · dotknij na tacy = obróć · dotknij w rakiecie = zdejmij' },
 };
 const GP = {
-  easy: { shooter: { gap: 1000, v: 80, lives: 4, limit: 30 }, flappy: { gap: 245, sp: 2.2, spawn: 1800, limit: 35 }, catch: { spawn: 800, rock: .2, v: 140, lives: 3, limit: 30 }, lander: { g: 95, th: 250, safe: 95, pad: 150, limit: 40 }, pack: { w: 3, h: 4, n: 4, slack: 2, limit: 70 } },
-  mid:  { shooter: { gap: 700, v: 115, lives: 3, limit: 30 }, flappy: { gap: 205, sp: 2.9, spawn: 1400, limit: 35 }, catch: { spawn: 560, rock: .3, v: 185, lives: 3, limit: 30 }, lander: { g: 125, th: 270, safe: 68, pad: 100, limit: 40 }, pack: { w: 4, h: 4, n: 5, slack: 0, limit: 70 } },
-  hard: { shooter: { gap: 550, v: 140, lives: 3, limit: 30 }, flappy: { gap: 185, sp: 3.3, spawn: 1250, limit: 35 }, catch: { spawn: 430, rock: .36, v: 225, lives: 3, limit: 30 }, lander: { g: 150, th: 290, safe: 55, pad: 80, limit: 40 }, pack: { w: 5, h: 4, n: 6, slack: 0, limit: 80 } },
+  easy: { shooter: { gap: 1000, v: 80, lives: 4 }, flappy: { gap: 245, sp: 2.2, spawn: 1800 }, catch: { spawn: 800, rock: .2, v: 140, lives: 3 }, lander: { g: 95, th: 250, safe: 95, pad: 150 }, pack: { w: 3, h: 4, n: 4, slack: 2, limit: 70 } },
+  mid:  { shooter: { gap: 700, v: 115, lives: 3 }, flappy: { gap: 205, sp: 2.9, spawn: 1400 }, catch: { spawn: 560, rock: .3, v: 185, lives: 3 }, lander: { g: 125, th: 270, safe: 68, pad: 100 }, pack: { w: 4, h: 4, n: 5, slack: 0, limit: 70 } },
+  hard: { shooter: { gap: 550, v: 140, lives: 3 }, flappy: { gap: 185, sp: 3.3, spawn: 1250 }, catch: { spawn: 430, rock: .36, v: 225, lives: 3 }, lander: { g: 150, th: 290, safe: 55, pad: 80 }, pack: { w: 5, h: 4, n: 6, slack: 0, limit: 80 } },
 };
 /* cele do zaliczenia gierki (3 próby na podejście) */
 const GOAL = { easy: { shooter: 8, flappy: 4, catch: 8, lander: 8 }, mid: { shooter: 12, flappy: 6, catch: 12, lander: 8 }, hard: { shooter: 16, flappy: 7, catch: 16, lander: 12 } };
@@ -45,7 +45,7 @@ let pillarEl;
 const pillarImg = () => pillarEl || (pillarEl = Object.assign(new Image(), { src: assetSrc('assets/flappy/pillar.webp') }));
 function gameShell(key, inner) {
   return `<div class="scr fixed">
-    ${bar('<button class="x" data-act="quitgame">✕</button>', `<span class="label">${GAMES[key].name}</span>`, '<span class="pill" id="hud">⏱️</span>')}
+    ${bar('<button class="x" data-act="quitgame">✕</button>', `<span class="label">${GAMES[key].name}</span>`, '<span class="pill" id="hud">🎯</span>')}
     ${inner}<p class="hint">${GAMES[key].hint}</p></div>`;
 }
 function playGame(key) {
@@ -56,7 +56,7 @@ function playGame(key) {
   const p = GP[P.diff][key];
   show(gameShell(key, '<div class="cvbox" id="cvbox"><canvas id="cv"></canvas></div>'));
   const cv = $('#cv');
-  G = { key, cv, ctx: cv.getContext('2d'), W: 430, H: 600, k: 1, score: 0, t: 0, limit: p.limit, last: 0, over: false, p,
+  G = { key, cv, ctx: cv.getContext('2d'), W: 430, H: 600, k: 1, score: 0, t: 0, last: 0, over: false, p,
         started: !(key === 'flappy' || key === 'lander'),
         lastFire: 0, lastSpawn: 0, ship: 215, bullets: [], enemies: [], lives: p.lives || 3, y: 300, vy: 0, pipes: [], items: [], x: 215,
         hold: false, tx: 215, landings: 0, msg: '', msgT: 0, pad: 215, shakeT: 0 };
@@ -73,7 +73,7 @@ function playGame(key) {
     cv.onpointermove = e => { G.tx = rect(e); };
     cv.onpointerup = cv.onpointercancel = () => { G.hold = false; };
   }
-  const hud = $('#hud'); if (hud) hud.textContent = `⏱️ ${G.limit} · 🎯 ${goalText(key)}`;
+  const hud = $('#hud'); if (hud) hud.textContent = `🎯 ${goalText(key)}`;
   rafId = requestAnimationFrame(loop);
 }
 function fitCanvas() {
@@ -98,8 +98,7 @@ function loop(ts) {
   const dt = Math.min(.05, (ts - G.last) / 1000); G.last = ts; G.t += dt;
   ({ shooter: updShooter, flappy: updFlappy, catch: updCatch, lander: updLander })[G.key](ts, dt);
   draw();
-  const hud = $('#hud'); if (hud) hud.textContent = `⏱️ ${Math.max(0, Math.ceil(G.limit - G.t))} · 🎯 ${goalText(G.key)}`;
-  if (G.t >= G.limit) G.over = true;
+  const hud = $('#hud'); if (hud) hud.textContent = `🎯 ${goalText(G.key)}`;
   if (G.over) { const s = G.score; return finishGame(G.key, G.key === 'lander' ? G.landings * 4 : s); }
   rafId = requestAnimationFrame(loop);
 }
@@ -163,7 +162,7 @@ function updLander(ts, dt) {
   if (G.sy >= ground) {
     G.sy = ground;
     if (Math.abs(G.sx - G.pad) < p.pad / 2 && G.svy < p.safe) { G.landings++; G.msg = G.svy < p.safe / 2 ? 'Mięciutko!' : 'Lądowanie!'; }
-    else G.msg = Math.abs(G.sx - G.pad) >= p.pad / 2 ? 'Obok pasa!' : 'Za szybko!';
+    else { G.msg = Math.abs(G.sx - G.pad) >= p.pad / 2 ? 'Obok pasa!' : 'Za szybko!'; if (--G.lives <= 0) G.over = true; }
     G.msgT = 1.2; G.svy = 0;
   }
 }
@@ -219,7 +218,7 @@ function draw() {
     const v = Math.max(0, G.svy), ok = v < G.p.safe;
     ctx.fillStyle = '#E8E1D6'; ctx.beginPath(); ctx.roundRect(W / 2 - 70, 14, 140, 12, 6); ctx.fill();
     ctx.fillStyle = ok ? '#167A45' : '#C62E2E'; ctx.beginPath(); ctx.roundRect(W / 2 - 70, 14, Math.min(140, v / (G.p.safe * 2) * 140), 12, 6); ctx.fill();
-    hudText('Lądowania: ' + G.landings, '');
+    hudText('Życia: ' + G.lives, 'Lądowania: ' + G.landings);
     if (!G.started) { ctx.font = '900 26px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.textAlign = 'center'; ctx.fillText('Przytrzymaj, żeby zacząć!', W / 2, H / 2); }
     if (G.msgT > 0) { ctx.font = '900 30px Nunito, system-ui, sans-serif'; ctx.fillStyle = '#1B1446'; ctx.fillText(G.msg, W / 2, H / 2 - 60); }
   }

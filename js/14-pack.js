@@ -46,8 +46,7 @@ function startPack() {
   PK = { w: p.w, h: p.h, pieces: genPuzzle(p), t: 0, limit: p.limit, drag: null, over: false, cell: 48, tc: 32 };
   PK.timer = setInterval(() => {
     if (!PK || PK.over) return; PK.t += .25;
-    const hud = $('#hud'); if (hud) hud.textContent = `📦 ${PK.pieces.filter(x => x.at).length}/${PK.pieces.length} · ⏱️ ${Math.max(0, Math.ceil(PK.limit - PK.t))}`;
-    if (PK.t >= PK.limit) endPack(false);
+    const hud = $('#hud'); if (hud) hud.textContent = `📦 ${PK.pieces.filter(x => x.at).length}/${PK.pieces.length}`;
   }, 250);
   $('#pkroot').addEventListener('pointerdown', pkDown);
   layoutPack();
@@ -85,7 +84,7 @@ function renderPack() {
     if (p.at) { const el = pieceEl(p, PK.cell); el.classList.add('placed'); el.style.left = p.at.x * PK.cell + 'px'; el.style.top = p.at.y * PK.cell + 'px'; bay.appendChild(el); }
     else { const s = document.createElement('div'); s.className = 'slot'; s.appendChild(pieceEl(p, PK.tc)); tray.appendChild(s); }
   });
-  const hud = $('#hud'); if (hud) hud.textContent = `📦 ${PK.pieces.filter(x => x.at).length}/${PK.pieces.length} · ⏱️ ${Math.max(0, Math.ceil(PK.limit - PK.t))}`;
+  const hud = $('#hud'); if (hud) hud.textContent = `📦 ${PK.pieces.filter(x => x.at).length}/${PK.pieces.length}`;
 }
 function occGrid(skip) {
   const g = Array.from({ length: PK.h }, () => Array(PK.w).fill(false));
@@ -133,7 +132,7 @@ function pkUp() {
 function endPack(win) {
   if (!PK || PK.over) return; PK.over = true;
   const placed = PK.pieces.filter(p => p.at).length;
-  const score = placed * 2 + (win ? 3 + Math.ceil((PK.limit - PK.t) / 5) : 0);
+  const score = placed * 2 + (win ? 3 + Math.max(0, Math.ceil((PK.limit - PK.t) / 5)) : 0);   // limit = już tylko próg bonusu za tempo, nie koniec gry
   if (win) {
     const round = PK;
     confetti(18);
