@@ -13,11 +13,11 @@ function baseCoach(pi) {
   }
   if (cnt === 0) {
     const c = placeCost('warsztat', pi);
-    return canAfford(c) ? { pose: 'happy', html: `<b>Dotknij ＋ i postaw Warsztat.</b> <span style="white-space:nowrap">${chips(c)}</span>` }
-      : { pose: 'think', html: `<b>Brakuje ${fmt(c.wiedza - P.res.wiedza)} 🧠 na Warsztat.</b> Zrób quiz w misji!${toMenu('GRAJ')}` };
+    return canAfford(c) ? { pose: 'happy', html: `<b>Dotknij ＋ i postaw Elektrownię.</b> <span style="white-space:nowrap">${chips(c)}</span>` }
+      : { pose: 'think', html: `<b>Brakuje ${fmt(c.wiedza - P.res.wiedza)} ${RES.wiedza.icon} na Elektrownię.</b> Zrób quiz w misji!${toMenu('GRAJ')}` };
   }
   if (buyable.length) return { pose: 'happy', html: `<b>Stać nas na budynek!</b> Dotknij ＋ (wolne pola: ${tot - cnt}).` };
-  return { pose: 'think', html: `<b>Brakuje zasobów.</b> Quiz daje 🧠, gierki 🔩 i ☄️.${toMenu('GRAJ DALEJ')}` };
+  return { pose: 'think', html: `<b>Brakuje zasobów.</b> Quiz daje ${RES.wiedza.icon}, gierki ${RES.czesci.icon} i ${RES.meteo.icon}.${toMenu('GRAJ DALEJ')}` };
 }
 const resCell = (k, r) => `<div><b id="v-${k}">${fmt(P.res[k])}</b> ${RES[k].icon}<small id="r-${k}">+${fmt(r[k])}/s</small></div>`;
 function renderBase() {
@@ -34,14 +34,14 @@ function renderBase() {
     const badges = t.addons.map((a, i) => `<span class="badge" style="${i === 0 ? 'top:-.5rem;right:-.5rem' : 'bottom:-.5rem;left:-.5rem'}">${ADDONS[a].icon}</span>`).join('');
     tiles += `<button id="tile-${x}-${y}" data-act="tile" data-arg="${x},${y}" class="tile" aria-label="${def.name}"><span class="idle" style="font-size:${size}rem;line-height:1">${def.icon}</span><div style="position:absolute;bottom:.15rem;font-size:.55rem;line-height:1">${'⭐'.repeat(t.level)}</div>${badges}</button>`;
   }
-  const co = baseCoach(pi);
+  const co = baseCoach(pi), coach = mapMsg || catSay(co.pose, co.html, { size: 4.6 }); mapMsg = ''; GSET = null;   // po quizie/gierce: komunikat Astrusia zamiast podpowiedzi
   show(`<div class="scr">
     ${bar('<h1 class="title">Twoja baza</h1>', '', `<span class="row gap-s">${starPill()}<button class="x" data-act="tut" data-arg="base">?</button></span>`)}
     ${chipsRow}
     <div class="resbar mb">${resCell('wiedza', r)}${resCell('czesci', r)}${resCell('meteo', r)}</div>
-    <section class="sky"><div class="cap">${pl.icon} ${pl.name} · ${cnt}/${n * n}</div>
+    <section class="sky" style="background:${pl.bg}"><div class="cap">${pl.icon} ${pl.name} · ${cnt}/${n * n}</div>
       <div style="max-width:${[0, 0, 15, 19, 22, 24][n]}rem;margin:0 auto;perspective:56rem;position:relative"><div class="ground" style="grid-template-columns:repeat(${n},1fr)">${tiles}</div></div></section>
-    <div class="mt" style="margin-bottom:1.2rem">${catSay(co.pose, co.html, { size: 4.6 })}</div>
+    <div class="mt" style="margin-bottom:1.2rem">${coach}</div>
   </div>`, { nav: true, tab: 'base' });
   if (!P.tut.base) openTut('base');
 }
@@ -89,7 +89,7 @@ function openBuilding(x, y) {
   }).join('');
   openSheet(`<div class="col center gap-s mb">
       <div class="idle" style="width:6rem;height:6rem;border-radius:2rem;background:var(--orange-soft);border:.16rem solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:3.2rem">${def.icon}</div>
-      <b style="font-size:1.3rem">${def.name}</b>
+      <b style="font-size:1.3rem">${def.name}</b><small class="muted tc">${def.desc}</small>
       <div style="font-size:1.1rem">${'⭐'.repeat(t.level)}<span style="opacity:.25">${'⭐'.repeat(def.max - t.level)}</span></div>
       <div class="row gap-s" style="flex-wrap:wrap;justify-content:center">${prod}</div></div>
     ${up}<div class="label tc mb-s">Dodatki (poziom 1 i 3)</div><div class="row gap" style="justify-content:center">${slots}</div>`);
@@ -113,4 +113,32 @@ function addAddon(id) {
   const c = addonCost(id, P.planet);
   if (!canAfford(c)) return toast('Za mało zasobów 😢', false);
   pay(c); t.addons.push(id); save(); closeSheet(); confetti(6); renderBase();
+}
+
+/* ===================== PYTANIE A/B O BEZPIECZEŃSTWIE (przy każdym wejściu do Bazy; dane: config/safety.json) ===================== */
+let safeLast = -1, safeQ = null;
+function askSafety() {
+  const qs = DATA && DATA.safety && DATA.safety.questions;
+  if (!qs || !qs.length || !P.tut.base || DEV) return;   // dopiero po samouczku Bazy
+  let i; do i = Math.floor(Math.random() * qs.length); while (qs.length > 1 && i === safeLast);
+  safeLast = i;
+  const q = qs[i], flip = Math.random() < .5, opts = flip ? [q.wrong, q.right] : [q.right, q.wrong];
+  safeQ = { q, right: flip ? 'b' : 'a' };
+  openSheet(`<div class="label tc mb-s">Alarm w bazie ${RES[q.res].icon}</div><h3 class="tc mb">${q.q}</h3>
+    <div class="col gap-s">${opts.map((t, k) => `<button class="btn b-white" data-act="safe-ans" data-arg="${'ab'[k]}"><b>${'AB'[k]}.</b> ${t}</button>`).join('')}</div>`);
+  const o = $('#sheet'); o.replaceWith(o.cloneNode(true));   // bez zamykania tapnięciem w tło: trzeba odpowiedzieć
+}
+function answerSafety(pick) {
+  if (!safeQ) return;
+  const { q, right } = safeQ, ok = pick === right, r = RES[q.res], have = P.res[q.res];
+  const d = ok ? Math.min(50, Math.max(2, Math.round(have * .2))) : -Math.min(have, Math.round(have * .1));
+  P.res[q.res] = have + d; save(); updateStats(); safeQ = null;
+  window.sfx && sfx(ok ? 'win' : 'lose');
+  openSheet(`<div class="col center tc gap-s mb">
+      <h3 class="title" style="color:var(--${ok ? 'ok' : 'bad'})">${ok ? '✅ Dobrze!' : '❌ Nie tym razem'}</h3>
+      <p class="rew" style="font-size:1.3rem">${ok ? '+20%' : '−10%'} (${ok ? '+' : '−'}${fmt(Math.abs(d))}) ${r.icon} ${r.name}</p>
+      <small class="muted">${fmt(have)} → ${fmt(P.res[q.res])}</small>
+      <p style="margin:.4rem 0 0">${q.why}</p></div>
+    <button class="btn b-lav" data-act="sheet-close">DALEJ ›</button>`);
+  if (ok) confetti(8);
 }

@@ -88,7 +88,7 @@ def load_data():
             missions = {**missions, 'stages': [{**stage, **({'lesson': lessons[str(stage.get('id'))]} if str(stage.get('id')) in lessons else {})} if isinstance(stage, dict) else stage for stage in missions['stages']]}
         e, w = check_stages(missions)
         errors += ['config/missions.json: ' + x for x in e]; warns += ['config/missions.json: ' + x for x in w]
-    for required in ('missions', 'tutorials', 'ciekawostki'):
+    for required in ('missions', 'tutorials', 'ciekawostki', 'safety'):
         if required not in data and not any(x.startswith(f'config/{required}.json') for x in errors):
             errors.append(f'brak pliku config/{required}.json')
     for c in (data.get('ciekawostki') or {}).get('categories', []) if isinstance(data.get('ciekawostki'), dict) else []:
@@ -109,6 +109,8 @@ def load_data():
                     errors.append(where + ': brakuje pola image.' + field)
             if not isinstance(image.get('source'), str) or not image['source'].startswith('https://'):
                 errors.append(where + ': image.source powinno wskazywać adres HTTPS')
+    for i, q in enumerate((data.get('safety') or {}).get('questions', []) if isinstance(data.get('safety'), dict) else []):
+        if q.get('res') not in ('wiedza', 'czesci', 'meteo') or not all(q.get(k) for k in ('q', 'right', 'wrong', 'why')): errors.append('config/safety.json: pytanie %d: wymagane pola res (wiedza/czesci/meteo), q, right, wrong, why' % (i + 1))
     for lang in ('pl', 'en'):
         with open(os.path.join(here, 'config', f'blocked-words.{lang}.txt'), encoding='utf-8') as f:
             data[f'blocked-words.{lang}'] = f.read().splitlines()
