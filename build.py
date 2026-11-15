@@ -91,6 +91,8 @@ def load_data():
     for required in ('missions', 'tutorials', 'ciekawostki'):
         if required not in data and not any(x.startswith(f'config/{required}.json') for x in errors):
             errors.append(f'brak pliku config/{required}.json')
+    for c in (data.get('ciekawostki') or {}).get('categories', []) if isinstance(data.get('ciekawostki'), dict) else []:
+        if not os.path.exists(os.path.join(here, 'assets', 'facts', '%s.svg' % c.get('icon'))): errors.append('config/ciekawostki.json: kategoria "%s": brak pliku assets/facts/%s.svg (pole "icon" to nazwa pliku bez .svg)' % (c.get('id'), c.get('icon')))
     for lang in ('pl', 'en'):
         with open(os.path.join(here, 'config', f'blocked-words.{lang}.txt'), encoding='utf-8') as f:
             data[f'blocked-words.{lang}'] = f.read().splitlines()

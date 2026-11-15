@@ -4,7 +4,7 @@
     {
       "id": "ignis",
       "title": "Misja Ignis",
-      "icon": "🔥",
+      "icon": "ignis",
       "intro": "Miau! Opowiem wam o Ignis, czyli polskiej misji na Międzynarodową Stację Kosmiczną!",
       "facts": [
         {
@@ -73,7 +73,7 @@
     {
       "id": "polska",
       "title": "Polacy w kosmosie",
-      "icon": "🇵🇱",
+      "icon": "polska",
       "intro": "Polacy sięgają gwiazd od setek lat. Zobaczcie, co osiągnęli!",
       "facts": [
         {
@@ -137,7 +137,7 @@
     {
       "id": "polsa",
       "title": "POLSA",
-      "icon": "🛰️",
+      "icon": "polsa",
       "intro": "POLSA to nasza polska agencja kosmiczna. Sprawdźmy, czym się zajmuje!",
       "facts": [
         {
@@ -183,7 +183,7 @@
     {
       "id": "esa",
       "title": "ESA",
-      "icon": "🌍",
+      "icon": "esa",
       "intro": "ESA to Europejska Agencja Kosmiczna. Pracują w niej państwa z całej Europy, także Polska!",
       "facts": [
         {
@@ -236,7 +236,7 @@
     {
       "id": "nasa",
       "title": "NASA",
-      "icon": "🚀",
+      "icon": "nasa",
       "intro": "NASA to amerykańska agencja kosmiczna. Mam dla was kilka jej wielkich historii!",
       "facts": [
         {

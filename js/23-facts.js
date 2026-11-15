@@ -4,6 +4,7 @@ let FACT = { cat: null, i: 0 };
 const factEsc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const factCats = () => { const d = typeof DATA !== 'undefined' && DATA && DATA.ciekawostki; return d && Array.isArray(d.categories) && d.categories.length ? d.categories : null; };
 const factRead = () => (P.facts = P.facts && typeof P.facts === 'object' ? P.facts : {});
+const factIcon = c => `<img class="fimg" src="${assetSrc('assets/facts/' + c.icon + '.svg')}" alt="">`;
 const factCount = c => c.facts.filter(f => factRead()[f.id]).length;
 
 function renderFacts() {
@@ -18,7 +19,7 @@ function renderFacts() {
   const card = (c, i) => {
     const n = factCount(c), full = n === c.facts.length, feat = i === 0;
     return `<button class="pcard fcat${feat ? ' feat' : ''}" data-act="fact-cat" data-arg="${factEsc(c.id)}">
-      <span class="fico">${c.icon || '📚'}</span>
+      <span class="fico">${factIcon(c)}</span>
       <span class="grow">${feat ? '<span class="label">Polska misja</span>' : ''}<b>${factEsc(c.title)}</b><small>${full ? '✓ ' : ''}${n}/${c.facts.length} przeczytane</small></span>
       <span class="fgo">›</span></button>`;
   };
@@ -35,7 +36,7 @@ function renderFact() {
   if (first) { P.facts[f.id] = true; P.pts += 2; save(); }
   const say = i === 0 ? c.intro : (f.astrus || c.intro), last = i === n - 1;
   show(`<div class="scr fact">
-    ${bar('<button class="x" data-act="fact-list">←</button>', `<span class="label">${c.icon || ''} ${factEsc(c.title)}</span>`, `<span class="pill soft">${i + 1}/${n}</span>`)}
+    ${bar('<button class="x" data-act="fact-list">←</button>', `<span class="label">${factIcon(c)} ${factEsc(c.title)}</span>`, `<span class="pill soft">${i + 1}/${n}</span>`)}
     <div class="meter mb"><i style="width:${Math.round((i + 1) / n * 100)}%"></i></div>
     <div class="mb">${catSay(first ? 'happy' : 'idle', factEsc(say), { size: 4.4 })}</div>
     <div class="card fcard">${first ? '<span class="pill soft fnew pop">+2 ⭐ nowa!</span>' : ''}<h2>${factEsc(f.title)}</h2><p>${factEsc(f.text)}</p></div>

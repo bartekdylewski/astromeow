@@ -182,7 +182,7 @@ Zasady: na ekranie jest **jeden** pomarańczowy przycisk (następny krok), reszt
 - Dolne menu (`#nav` w `index.html`) mieści do 6 zakładek (dodaj kolejny `<button data-act="tab" data-arg="...">` i wpis w `setTab()` w `js/20-router.js`).
 
 ## Ciekawostki
-Treść ekranu Ciekawostki (kategorie: Ignis, Polacy w kosmosie, POLSA, ESA, NASA) leży w `config/ciekawostki.json`. Żeby dodać ciekawostkę, dopisz obiekt (`id` unikalny, `title`, `text`, opcjonalnie `astrus` i `source`) do `facts` wybranej kategorii; kod nie wymaga zmian. Pierwsza kategoria na liście jest wyróżniona. Ekran czyta `DATA.ciekawostki` (loader z `js/00-data.js`), a przeczytane ciekawostki zapisuje w `P.facts`.
+Treść ekranu Ciekawostki (kategorie: Ignis, Polacy w kosmosie, POLSA, ESA, NASA) leży w `config/ciekawostki.json`. Żeby dodać ciekawostkę, dopisz obiekt (`id` unikalny, `title`, `text`, opcjonalnie `astrus` i `source`) do `facts` wybranej kategorii; kod nie wymaga zmian. Ikona kategorii (`icon`) to nazwa pliku z `assets/facts/` bez `.svg`, np. `"esa"` (własne, stylizowane SVG, bez oficjalnych logotypów). Pierwsza kategoria na liście jest wyróżniona. Ekran czyta `DATA.ciekawostki` (loader z `js/00-data.js`), a przeczytane ciekawostki zapisuje w `P.facts`.
 
 ### Profile i ranking
 
