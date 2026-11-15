@@ -9,7 +9,7 @@
 
 Unikalność = cookie `vid` (losowe UUID). Wejście liczy się, gdy gra wyśle POST /api/hit.
 """
-import argparse, csv, json, mimetypes, os, posixpath, re, signal, sqlite3, sys, threading, time, uuid
+import argparse, csv, hashlib, json, mimetypes, os, posixpath, re, signal, sqlite3, sys, threading, time, uuid
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlparse
@@ -92,13 +92,24 @@ class Handler(BaseHTTPRequestHandler):
     def _json(self, obj, status=200, headers=None, head=False):
         self._send(status, json.dumps(obj).encode(), "application/json", headers, head)
 
+    def _dev_player(self):
+        """Czy cookie sesji należy do gracza z listy --dev-nick (np. "dylu" albo "dylu#8054")."""
+        nicks = self.server.dev_nicks
+        jar = SimpleCookie(self.headers.get("Cookie", ""))
+        if not nicks or "astro_session" not in jar:
+            return False
+        token_hash = hashlib.sha256(jar["astro_session"].value.encode()).hexdigest()
+        with self.server.lock:
+            row = self.server.conn.execute("SELECT name_key, tag FROM players WHERE token=?", (token_hash,)).fetchone()
+        return bool(row and row[0] and (row[0] in nicks or ("%s#%04d" % (row[0], row[1] or 0)) in nicks))
+
     def _file(self, full, head=False):
         ctype = mimetypes.guess_type(full)[0] or "application/octet-stream"
         if ctype.startswith("text/") or ctype in ("application/javascript", "application/json"):
             ctype += "; charset=utf-8"
         with open(full, "rb") as f:
             body = f.read()
-        if self.server.dev and ctype.startswith("text/html"):   # ?dev= działa tylko z --dev
+        if ctype.startswith("text/html") and (self.server.dev or self._dev_player()):   # ?dev= i ?demo=1: tylko z --dev albo dla kont z --dev-nick
             body = body.replace(b"<head>", b"<head><script>window.ALLOW_DEV=1</script>", 1)
         self._send(200, body, ctype, head=head)
 
@@ -216,6 +227,7 @@ def cmd_serve(a):
     srv.live = os.path.abspath(a.live)
     srv.verbose = a.verbose
     srv.dev = a.dev
+    srv.dev_nicks = {n.lower() for n in a.dev_nick}
     if not os.path.isfile(os.path.join(srv.root, "astromeow.html")):
         sys.exit("Brak %s/astromeow.html – uruchom najpierw: python3 build.py" % srv.root)
     signal.signal(signal.SIGTERM, lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))  # stop z run.sh
@@ -281,6 +293,7 @@ def main():
     p.add_argument("--root", default=os.path.join(HERE, "..", "dist"))
     p.add_argument("--live", default=os.path.join(HERE, "live.html"))
     p.add_argument("-v", "--verbose", action="store_true")
+    p.add_argument("--dev-nick", action="append", default=[], metavar="NICK", help="konto z tym pseudonimem (albo NICK#TAG) dostaje tryb deweloperski, można podać kilka razy")
     p.add_argument("--dev", action="store_true", help="włącz tryb deweloperski ?dev=<gra> w przeglądarce")
     add("stats", cmd_stats)
     add("export", cmd_export)
