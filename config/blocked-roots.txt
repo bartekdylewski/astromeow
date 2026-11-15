@@ -1,7 +1,7 @@
-# Rdzenie blokowane w dowolnym miejscu nicka (serwer, counter/players.py).
-# Nick jest sprowadzany do małych liter bez polskich znaków, cyfry → litery (4→a, 3→e, 1→i, 0→o…), v→w, ch→h,
-# bez spacji/_ i bez powtórzeń liter, więc "C_v3eel", "k u r w a", "chuuuj" też pasują.
-# Tylko rdzenie, które nie występują w zwykłych imionach i słowach; krótkie/niejednoznaczne słowa są w blocked-words.*.txt.
+# Roots blocked anywhere inside a nickname (server, counter/players.py).
+# The nickname is reduced to lowercase without Polish diacritics, digits → letters (4→a, 3→e, 1→i, 0→o…), v→w, ch→h,
+# without spaces/_ and without repeated letters, so "C_v3eel", "k u r w a", "chuuuj" match too.
+# Only roots that do not occur in ordinary names and words; short/ambiguous words are in blocked-words.*.txt.
 kurw
 jeb
 pierd

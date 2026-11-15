@@ -1,17 +1,17 @@
-# Źródła logo (Ciekawostki)
+# Logo sources (Facts)
 
-Logotypy to znaki towarowe/insygnia swoich właścicieli; użyte informacyjnie do oznaczenia kategorii.
+The logos are trademarks/insignia of their owners; they are used informationally to mark the categories.
 
-| Plik | Źródło | Autor | Licencja |
+| File | Source | Author | Licence |
 |---|---|---|---|
-| nasa.svg | https://commons.wikimedia.org/wiki/File:NASA_logo.svg | NASA | Public domain (znak: insignia/trademarked) |
-| esa.svg | https://commons.wikimedia.org/wiki/File:ESA_logo_simple.svg | ESA | Public domain (znak towarowy) |
-| polsa.svg | https://commons.wikimedia.org/wiki/File:Logo_POLSA.svg | POLSA / Polska Agencja Kosmiczna | Public domain |
-| ignis.png | https://en.wikipedia.org/wiki/File:Ignis_mission_patch.png (295x295) | ESA / misja Ignis | Fair use (plik niewolny, tylko en.wikipedia, nie ma go na Commons) |
-| polska.svg | oparte na https://commons.wikimedia.org/wiki/File:Flag_of_Poland.svg (flaga przycięta do koła) | domena publiczna | Public domain |
+| nasa.svg | https://commons.wikimedia.org/wiki/File:NASA_logo.svg | NASA | Public domain (mark: insignia/trademarked) |
+| esa.svg | https://commons.wikimedia.org/wiki/File:ESA_logo_simple.svg | ESA | Public domain (trademark) |
+| polsa.svg | https://commons.wikimedia.org/wiki/File:Logo_POLSA.svg | POLSA / Polish Space Agency | Public domain |
+| ignis.png | https://en.wikipedia.org/wiki/File:Ignis_mission_patch.png (295x295) | ESA / Ignis mission | Fair use (non-free file, only on en.wikipedia, not on Commons) |
+| polska.svg | based on https://commons.wikimedia.org/wiki/File:Flag_of_Poland.svg (flag cropped to a circle) | public domain | Public domain |
 
-## Zdjęcia i ilustracje na kartach
+## Photos and illustrations on the cards
 
-Każda ciekawostka w `config/ciekawostki.json` ma pole `image` z nazwą pliku, tekstem alternatywnym, autorem, linkiem do oryginału i licencją. Opcjonalny podpis objaśnia zdjęcie poglądowe. Pliki w `photos/` zmniejszono i przekonwertowano do WebP. Wersja HTML zawiera je lokalnie.
+Every fact in `config/ciekawostki.json` has an `image` field with the file name, alt text, author, link to the original and licence. An optional caption explains an illustrative photo. The files in `photos/` were downscaled and converted to WebP. The HTML build contains them locally.
 
-Materiały na licencjach Creative Commons zachowują warunki z podanych stron źródłowych. Planszę odznaki Ignis wykorzystano w celach edukacyjnych na [standardowych warunkach ESA](https://www.esa.int/terms-and-conditions/terms-and-conditions-for-images-and-videos).
+Creative Commons material keeps the terms from the linked source pages. The Ignis badge image is used for educational purposes under the [standard ESA terms](https://www.esa.int/terms-and-conditions/terms-and-conditions-for-images-and-videos).
