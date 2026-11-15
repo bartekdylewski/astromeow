@@ -93,7 +93,7 @@ function renderLesson(m, i, auto) {
       <div class="lcard mt"><div class="licon">${c.icon || '💡'}</div><h3>${c.title}</h3><p>${c.text}</p></div></div>
     <div class="grow"></div>
     <div class="foot"><button class="btn b-lav nudge" data-act="lesson" data-arg="${m.id}:${i + 1}:${auto ? 1 : 0}">${last ? (auto ? 'DO PYTAŃ 🚀' : 'GOTOWE') : 'DALEJ ›'}</button>
-      ${last ? '' : `<button class="link w100" data-act="lesson-end" data-arg="${m.id}:${auto ? 1 : 0}">pomiń</button>`}
+      <button class="link w100" data-act="lesson-end" data-arg="${m.id}:${auto ? 1 : 0}"${last ? ' style="visibility:hidden" tabindex="-1" aria-hidden="true"' : ''}>pomiń</button>
       ${sceneDots(cards.length, i)}</div>
   </div>`);
   bindSceneSwipe($('.scene-swipe'), i, cards.length, next => renderLesson(m, next, auto));
