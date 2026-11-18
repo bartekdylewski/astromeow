@@ -4,8 +4,11 @@
 
 ### Train like an astronaut with Astro the Cat
 
-A free browser game that teaches kids 7-12 how astronauts live, work and survive in space.
-Built in 24 hours for **NASA Space Apps Challenge 2026** (Stalowa Wola),<br>challenge #3: *Junior Astronaut Mission Trainer*.
+<a href="https://skylab.tail20896a.ts.net/"><img src="https://img.shields.io/badge/%E2%96%B6%20%20PLAY%20NOW-7c5cff?style=for-the-badge&labelColor=1a1438" alt="Play AstroMeow" width="320"></a>
+<br>
+No account, no install, works in browser.
+<br>
+<a href="https://bartekdylewski.github.io/astromeow/"><img src="https://img.shields.io/badge/backup%20link-GitHub%20Pages-555?style=flat-square&logo=github" alt="backup link" width="240"></a>
 
 ![Vanilla JS](https://img.shields.io/badge/vanilla-JS-f7df1e?logo=javascript&logoColor=black)
 ![Python](https://img.shields.io/badge/server-Python_stdlib-3776ab?logo=python&logoColor=white)
