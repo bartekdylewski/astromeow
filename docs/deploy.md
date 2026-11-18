@@ -1,6 +1,6 @@
 # Deploy
 
-Production runs on a homelab (`skylab`) and is published through Tailscale Funnel.
+Production runs on a homelab (`skylab`) and is published through a Cloudflare Tunnel at `astromeow.bartekdylewski.tech`.
 
 ## How it works
 
@@ -26,10 +26,11 @@ systemctl --user enable --now astromeow
 Optional secrets go in `~/.config/astromeow.env` (never commit it), for example `NASA_API_KEY=...`.
 Logs: `journalctl --user -u astromeow -f`.
 
-**Public URL** (Tailscale Funnel; enable HTTPS Certificates and Funnel in the Tailscale admin first):
-```bash
-sudo tailscale funnel --bg 8085
-```
+**Public URL** (Cloudflare Tunnel; the domain's DNS must be on Cloudflare):
+1. Zero Trust -> Networks -> Tunnels -> Create a tunnel (type Cloudflared), then run the shown
+   `sudo cloudflared service install <TOKEN>` on the homelab. The token is a secret, never commit it.
+2. In the tunnel add a published application route: `astromeow.bartekdylewski.tech` -> `http://127.0.0.1:8085`.
+   More apps = more routes on the same tunnel (no ports in the URL).
 
 ## Restore the database
 

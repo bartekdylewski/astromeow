@@ -19,7 +19,7 @@ No account, no install, works in browser.
 
 ---
 
-**Play:** https://skylab.tail20896a.ts.net/ (hosted on a homelab, may be offline)
+**Direct link:** https://astromeow.bartekdylewski.tech/ (hosted on a homelab; the button above falls back to a demo copy when it is offline)
 
 ---
 
