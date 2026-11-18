@@ -90,6 +90,10 @@ def get_timeline(conn, lock, hours=168):
     return {"points": points, "games": {g: n for g, n in games}, "ts": now}
 
 
+# Strona-backup na GitHub Pages sprawdza stąd, czy serwer żyje (pages/index.html); CORS tylko dla /healthz.
+CORS_ORIGINS = {"https://bartekdylewski.github.io"}
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "AstroMeow"
     protocol_version = "HTTP/1.1"
@@ -163,7 +167,9 @@ class Handler(BaseHTTPRequestHandler):
                 return self._file(self.server.live, head)
             return self._send(404, b"404", head=head)
         if path == "/healthz":
-            return self._send(200, b"ok", head=head)
+            origin = self.headers.get("Origin", "")
+            cors = {"Access-Control-Allow-Origin": origin, "Vary": "Origin"} if origin in CORS_ORIGINS else None
+            return self._send(200, b"ok", headers=cors, head=head)
         self._static(path, head)
 
     def do_GET(self):

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AstroMeow</title>
+<style>
+  html, body { height: 100%; margin: 0; }
+  body { background: radial-gradient(ellipse at 50% 0%, #251c52 0%, #0d0b1f 60%); color: #f3efff;
+         font-family: 'Nunito', system-ui, sans-serif; display: flex; flex-direction: column;
+         align-items: center; justify-content: center; text-align: center; padding: 1rem; }
+  .cat { font-size: 4rem; animation: bob 1.6s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(-10px); } }
+  h1 { margin: .6rem 0 .2rem; font-size: 1.6rem; color: #b9a6ff; letter-spacing: .08em; }
+  #msg { color: #8b84b8; font-size: 1.1rem; min-height: 1.6em; }
+  .bar { width: 220px; height: 6px; border-radius: 3px; background: rgba(185,166,255,.2); margin-top: 1.2rem; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 40%; background: #8ff0d0; border-radius: 3px; animation: slide 1.2s ease-in-out infinite; }
+  @keyframes slide { from { margin-left: -40%; } to { margin-left: 100%; } }
+  a { color: #8ff0d0; }
+</style>
+</head>
+<body>
+  <div class="cat">🐱</div>
+  <h1>AstroMeow</h1>
+  <div id="msg">Łączę z serwerem gry…</div>
+  <div class="bar"><i></i></div>
+  <noscript><p><a href="game.html">Uruchom wersję demo</a></p></noscript>
+<script src="config.js"></script>
+<script>
+  var LIMIT = 4000, t0 = Date.now(), msg = document.getElementById('msg');
+  function demo() {
+    msg.textContent = 'Serwer nie odpowiada. Uruchamiam wersję demo…';
+    try { sessionStorage.setItem('astro_srv_down', String(Date.now())); } catch (e) {}
+    setTimeout(function () { location.replace('game.html' + location.search + location.hash); }, 900);
+  }
+  function full() {
+    msg.textContent = 'Serwer działa, wchodzę do gry…';
+    location.replace(window.ASTRO_SERVER + '/' + location.search + location.hash);
+  }
+  var q = new URLSearchParams(location.search), down = 0;
+  try { down = +sessionStorage.getItem('astro_srv_down') || 0; } catch (e) {}
+  if (q.get('static') === '1' || (down && Date.now() - down < 5 * 60 * 1000)) {
+    location.replace('game.html' + location.search + location.hash);   // wymuszone demo albo serwer padł przed chwilą
+  } else {
+    var tick = setInterval(function () {
+      var s = Math.ceil((LIMIT - (Date.now() - t0)) / 1000);
+      if (Date.now() - t0 > 1200 && s > 0) msg.textContent = 'Czekam na serwer… (' + s + ' s)';
+    }, 250);
+    window.astroProbe(LIMIT).then(function (ok) { clearInterval(tick); ok ? full() : demo(); });
+  }
+</script>
+</body>
+</html>

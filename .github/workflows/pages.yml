@@ -22,8 +22,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - run: python3 build.py
-      - run: mkdir _site && cp dist/astromeow.html _site/index.html
+      - run: python3 pages/make_site.py   # index.html = sprawdzenie serwera, game.html = gra z banerem demo
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
