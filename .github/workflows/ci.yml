@@ -2,9 +2,11 @@ name: CI
 on:
   pull_request:
     branches: [main, develop]
+permissions:
+  contents: read
 jobs:
   test:
-    runs-on: [self-hosted, skylab]   # hosted runnery dają startup_failure na tym koncie; homelab jest darmowy
+    runs-on: ubuntu-latest   # PR-y (też z forków) nie mogą uruchamiać kodu na homelabie; skylab tylko dla deploy.yml
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
