@@ -1,0 +1,21 @@
+# secrets and keys
+.env
+*.env
+*.key
+*.pem
+*.crt
+
+# local data and runtime
+*.db
+*.db-wal
+*.db-shm
+*.pid
+*.log
+counter/data/
+
+# python / editors / OS
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,14 @@
+[Unit]
+Description=AstroMeow game server
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/astromeow
+EnvironmentFile=-%h/.config/astromeow.env
+ExecStartPre=/usr/bin/python3 %h/astromeow/build.py
+ExecStart=/usr/bin/python3 %h/astromeow/counter/server.py serve --port 8085 --db %h/astromeow/counter/data/counter.db --root %h/astromeow/dist --live %h/astromeow/counter/live.html
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target

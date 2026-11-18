@@ -18,6 +18,10 @@ Built in 24 hours for **NASA Space Apps Challenge 2026** (Stalowa Wola),<br>chal
 
 ---
 
+**Play:** https://skylab.tail20896a.ts.net/ (hosted on a homelab, may be offline)
+
+---
+
 ## See it in action
 
 <table width="100%">

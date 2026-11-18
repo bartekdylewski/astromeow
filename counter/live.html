@@ -7,11 +7,11 @@
 <style>
   :root { --bg:#0d0b1f; --lav:#b9a6ff; --mint:#8ff0d0; --txt:#f3efff; --dim:#8b84b8; }
   * { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; }
+  html, body { margin: 0; min-height: 100%; }
   body {
     background: radial-gradient(ellipse at 50% 0%, #251c52 0%, var(--bg) 60%);
     color: var(--txt); font-family: 'Nunito', system-ui, sans-serif;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    display: flex; flex-direction: column; align-items: center; text-align: center; padding: 3vh 4vw 6vh; min-height: 100vh;
   }
   h1 { margin: 0 0 .2em; font-size: clamp(1rem, 3vw, 1.6rem); font-weight: 700; color: var(--dim); letter-spacing: .12em; text-transform: uppercase; }
   #n { font-size: clamp(7rem, 32vw, 24rem); font-weight: 900; line-height: 1; color: var(--lav);
@@ -22,6 +22,15 @@
   .card b { display: block; font-size: clamp(1.6rem, 4vw, 3rem); color: var(--txt); }
   .card span { color: var(--dim); font-size: .95rem; }
   #src { margin-top: 1.5rem; color: var(--dim); font-size: 1rem; }
+  .charts { width: min(1100px, 100%); margin-top: 3rem; display: grid; gap: 1.5rem; }
+  .chart { background: rgba(255,255,255,.04); border: 1px solid rgba(185,166,255,.15); border-radius: 14px; padding: 1rem 1.2rem; text-align: left; }
+  .chart h2 { margin: 0 0 .6rem; font-size: .95rem; font-weight: 700; color: var(--dim); letter-spacing: .08em; text-transform: uppercase; }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .chart text { fill: var(--dim); font-size: 11px; font-family: inherit; }
+  .range { display: flex; gap: .4rem; margin-left: auto; }
+  .range button { background: none; border: 1px solid rgba(185,166,255,.3); color: var(--dim); border-radius: 8px; padding: .15rem .6rem; cursor: pointer; font: inherit; font-size: .8rem; }
+  .range button.on { background: var(--lav); color: #1a1438; border-color: var(--lav); }
+  .head { display: flex; align-items: center; }
   #dot { position: fixed; right: 14px; bottom: 12px; width: 10px; height: 10px; border-radius: 50%; background: #444; }
   #dot.ok { background: var(--mint); }
 </style>
@@ -31,13 +40,21 @@
   <div id="n">–</div>
   <div class="sub">unikalnych wejść w grę</div>
   <div class="row">
-    <div class="card"><b id="active">–</b><span>aktywni (5 min)</span></div>
+    <div class="card"><b id="active60">–</b><span>aktywni (1 h)</span></div>
+    <div class="card"><b id="active24">–</b><span>aktywni (24 h)</span></div>
+    <div class="card"><b id="new60">–</b><span>nowi (1 h)</span></div>
+    <div class="card"><b id="new24">–</b><span>nowi (24 h)</span></div>
     <div class="card"><b id="hits">–</b><span>wszystkie uruchomienia</span></div>
-    <div class="card"><b id="new1">–</b><span>nowi (ostatnia minuta)</span></div>
-    <div class="card"><b id="active60">–</b><span>aktywni (ostatnia godzina)</span></div>
-    <div class="card"><b id="new60">–</b><span>nowi (ostatnia godzina)</span></div>
   </div>
   <div id="src"></div>
+  <div class="charts">
+    <div class="chart"><div class="head"><h2>Gracze w czasie (łącznie)</h2>
+      <div class="range" id="range"><button data-h="24">24 h</button><button data-h="72">3 dni</button><button data-h="168" class="on">7 dni</button><button data-h="720">30 dni</button></div></div>
+      <svg id="c-total" viewBox="0 0 1000 260"></svg></div>
+    <div class="chart"><h2>Nowi gracze na godzinę</h2><svg id="c-new" viewBox="0 0 1000 200"></svg></div>
+    <div class="chart"><h2>Uruchomione gry na godzinę</h2><svg id="c-runs" viewBox="0 0 1000 200"></svg></div>
+    <div class="chart"><h2>Popularność minigier</h2><svg id="c-games" viewBox="0 0 1000 200"></svg></div>
+  </div>
   <div id="dot"></div>
 <script>
   const $ = id => document.getElementById(id);
@@ -60,14 +77,84 @@
     try {
       const s = await (await fetch('/api/stats', { cache: 'no-store' })).json();
       setNumber(s.unique);
-      $('active').textContent = s.active5; $('hits').textContent = s.hits; $('new1').textContent = s.new1;
-      $('active60').textContent = s.active60; $('new60').textContent = s.new60;
+      $('active60').textContent = s.active60; $('new60').textContent = s.new60; $('active24').textContent = s.active24; $('new24').textContent = s.new24; $('hits').textContent = s.hits;
       const parts = Object.entries(s.by_src);
       $('src').textContent = parts.length > 1 ? parts.map(([k, v]) => k + ': ' + v).join('   ·   ') : '';
       $('dot').className = 'ok';
     } catch (e) { $('dot').className = ''; }
   }
   tick(); setInterval(tick, 2000);
+  /* ---- wykresy (SVG, bez bibliotek) ---- */
+  const NS = 'http://www.w3.org/2000/svg';
+  const W = 1000, PAD = { l: 40, r: 12, t: 10, b: 24 };
+  let hours = 168;
+  function el(tag, attrs, text) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function niceMax(v) { if (v <= 5) return 5; const p = Math.pow(10, Math.floor(Math.log10(v))); return Math.ceil(v / p) * p; }
+  function fmtT(t, long) {
+    const d = new Date(t * 1000), p = n => String(n).padStart(2, '0');
+    return long || hours <= 24 ? p(d.getHours()) + ':00' : p(d.getDate()) + '.' + p(d.getMonth() + 1);
+  }
+  function axes(svg, H, max, pts) {
+    svg.replaceChildren();
+    const ih = H - PAD.t - PAD.b;
+    for (let i = 0; i <= 4; i++) {
+      const y = PAD.t + ih - ih * i / 4;
+      svg.append(el('line', { x1: PAD.l, x2: W - PAD.r, y1: y, y2: y, stroke: 'rgba(185,166,255,.12)' }));
+      svg.append(el('text', { x: PAD.l - 6, y: y + 4, 'text-anchor': 'end' }, Math.round(max * i / 4)));
+    }
+    const step = Math.max(1, Math.round(pts.length / 8));
+    pts.forEach((p, i) => { if (i % step === 0) svg.append(el('text', { x: PAD.l + (W - PAD.l - PAD.r) * (i + .5) / pts.length, y: H - 6, 'text-anchor': 'middle' }, fmtT(p.t))); });
+    return { ih, iw: W - PAD.l - PAD.r };
+  }
+  function lineChart(svg, H, pts, key, color) {
+    const max = niceMax(Math.max(...pts.map(p => p[key]), 1)), { ih, iw } = axes(svg, H, max, pts);
+    const X = i => PAD.l + iw * (i + .5) / pts.length, Y = v => PAD.t + ih - ih * v / max;
+    const line = pts.map((p, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(p[key]).toFixed(1)).join(' ');
+    svg.append(el('path', { d: line + ` L${X(pts.length - 1)} ${PAD.t + ih} L${X(0)} ${PAD.t + ih} Z`, fill: color, opacity: .15 }));
+    svg.append(el('path', { d: line, fill: 'none', stroke: color, 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
+  }
+  function barChart(svg, H, pts, key, color) {
+    const max = niceMax(Math.max(...pts.map(p => p[key]), 1)), { ih, iw } = axes(svg, H, max, pts);
+    const bw = iw / pts.length;
+    pts.forEach((p, i) => {
+      const h = ih * p[key] / max; if (!h) return;
+      const r = el('rect', { x: PAD.l + bw * i + bw * .1, y: PAD.t + ih - h, width: bw * .8, height: h, fill: color, rx: Math.min(3, bw * .3) });
+      r.append(el('title', {}, fmtT(p.t, true) + ' · ' + new Date(p.t * 1000).toLocaleDateString('pl') + ': ' + p[key]));
+      svg.append(r);
+    });
+  }
+  function gamesChart(svg, games) {
+    svg.replaceChildren();
+    const e = Object.entries(games), max = Math.max(...e.map(x => x[1]), 1), rh = 200 / Math.max(e.length, 1);
+    e.forEach(([g, n], i) => {
+      const y = i * rh + 4, w = (W - 190) * n / max;
+      svg.append(el('text', { x: 100, y: y + rh * .55, 'text-anchor': 'end', style: 'font-size:13px' }, g));
+      svg.append(el('rect', { x: 110, y, width: Math.max(w, 2), height: rh * .6, rx: 4, fill: '#ffd36e' }));
+      svg.append(el('text', { x: 118 + w, y: y + rh * .55, style: 'font-size:13px' }, n));
+    });
+  }
+  async function charts() {
+    try {
+      const t = await (await fetch('/api/timeline?hours=' + hours, { cache: 'no-store' })).json();
+      lineChart($('c-total'), 260, t.points, 'total', '#b9a6ff');
+      barChart($('c-new'), 200, t.points, 'new', '#8ff0d0');
+      barChart($('c-runs'), 200, t.points, 'runs', '#ff9ec7');
+      gamesChart($('c-games'), t.games);
+    } catch (e) {}
+  }
+  $('range').onclick = ev => {
+    const b = ev.target.closest('button'); if (!b) return;
+    hours = +b.dataset.h;
+    document.querySelectorAll('#range button').forEach(x => x.classList.toggle('on', x === b));
+    charts();
+  };
+  charts(); setInterval(charts, 30000);
+
 </script>
 </body>
 </html>

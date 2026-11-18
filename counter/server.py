@@ -62,12 +62,32 @@ def get_stats(conn, lock):
         new1 = conn.execute("SELECT COUNT(*) FROM visits WHERE first_seen >= ?", (now - 60,)).fetchone()[0]
         active60 = conn.execute("SELECT COUNT(*) FROM visits WHERE last_seen >= ?", (now - 3600,)).fetchone()[0]
         new60 = conn.execute("SELECT COUNT(*) FROM visits WHERE first_seen >= ?", (now - 3600,)).fetchone()[0]
+        active24 = conn.execute("SELECT COUNT(*) FROM visits WHERE last_seen >= ?", (now - 86400,)).fetchone()[0]
+        new24 = conn.execute("SELECT COUNT(*) FROM visits WHERE first_seen >= ?", (now - 86400,)).fetchone()[0]
         by_src = conn.execute("SELECT src, COUNT(*) FROM visits GROUP BY src ORDER BY 2 DESC").fetchall()
     return {
         "unique": unique, "hits": hits, "active5": active5, "new1": new1,
-        "active60": active60, "new60": new60,
+        "active60": active60, "new60": new60, "active24": active24, "new24": new24,
         "by_src": {(s or "(brak)"): n for s, n in by_src}, "ts": now,
     }
+
+
+def get_timeline(conn, lock, hours=168):
+    """Godzinowe kubełki: nowi gracze (visits.first_seen) i uruchomione gry (runs.started)."""
+    now = int(time.time())
+    hours = max(1, min(int(hours), 24 * 60))
+    end = now - now % 3600 + 3600           # koniec bieżącej godziny
+    start = end - hours * 3600
+    with lock:
+        before = conn.execute("SELECT COUNT(*) FROM visits WHERE first_seen < ?", (start,)).fetchone()[0]
+        new = dict(conn.execute("SELECT first_seen/3600*3600, COUNT(*) FROM visits WHERE first_seen >= ? GROUP BY 1", (start,)).fetchall())
+        runs = dict(conn.execute("SELECT CAST(started AS INTEGER)/3600*3600, COUNT(*) FROM runs WHERE started >= ? GROUP BY 1", (start,)).fetchall())
+        games = conn.execute("SELECT game, COUNT(*) FROM runs GROUP BY game ORDER BY 2 DESC").fetchall()
+    points, total = [], before
+    for t in range(start, end, 3600):
+        total += new.get(t, 0)
+        points.append({"t": t, "new": new.get(t, 0), "total": total, "runs": runs.get(t, 0)})
+    return {"points": points, "games": {g: n for g, n in games}, "ts": now}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -131,6 +151,13 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(self.server.nasa.get(), head=head)
         if path == "/api/stats":
             return self._json(get_stats(self.server.conn, self.server.lock), head=head)
+        if path == "/api/timeline":
+            q = parse_qs(urlparse(self.path).query)
+            try:
+                hours = int(q.get("hours", ["168"])[0])
+            except ValueError:
+                hours = 168
+            return self._json(get_timeline(self.server.conn, self.server.lock, hours), head=head)
         if path in ("/live", "/live.html"):
             if os.path.isfile(self.server.live):
                 return self._file(self.server.live, head)

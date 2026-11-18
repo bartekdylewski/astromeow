@@ -125,7 +125,7 @@ img, svg, canvas { -webkit-touch-callout: none; -webkit-user-drag: none; user-se
 <style>
 /* ===== ASTRUŚ: główny bohater ===== */
 .cat{display:inline-block;flex:none;position:relative;max-width:78vw;max-height:78vw}
-.cat img,.cat svg{width:100%;height:100%;display:block;object-fit:contain}
+.cat img:not(.game-icon),.cat svg{width:100%;height:100%;display:block;object-fit:contain}
 .cat.p-idle{animation:breathe 3s ease-in-out infinite}
 .cat.p-happy{animation:hop .6s ease-in-out 3}
 .cat.p-cheer{animation:hop .45s ease-in-out infinite}
@@ -552,7 +552,7 @@ function say(pool) { let l, n = 0; do { l = pick(pool); n++; } while (l === last
 <script>
 'use strict';
 /* ===================== ETAPY, POZIOMY, PYTANIA, LEKCJE =====================
-   Treść jest w config/missions.json (opis: docs/JAK-DODAC-ETAP.md). Tu tylko budujemy z niej
+   Treść jest w config/missions.json (opis: docs/ADDING-A-STAGE.md). Tu tylko budujemy z niej
    globalne TIERS / DIFFS / MISSIONS, których używa reszta gry. Liczba etapów i pytań jest dowolna. */
 let TIERS = [], DIFFS = {}, MISSIONS = [];
 const LETTERS = ['A', 'B', 'C', 'D'];

@@ -33,9 +33,11 @@ jobs:
         run: cd ~/astromeow && bash counter/counter.sh test
 
       - name: Deploy
-        # Pusty RUNNER_TRACKING_ID: bez tego runner po zakończeniu joba ubija wszystkie
-        # procesy z tą zmienną w env, czyli też serwer odpalony przez `run.sh -d`.
-        run: cd ~/astromeow && RUNNER_TRACKING_ID="" bash run.sh -d
-
-      - name: Status
-        run: cd ~/astromeow && bash run.sh status
+        # Serwer to usługa systemd użytkownika (~/.config/systemd/user/astromeow.service):
+        # startuje po restarcie maszyny i wstaje po awarii. Restart robi też build dist/.
+        run: |
+          export XDG_RUNTIME_DIR=/run/user/$(id -u)
+          systemctl --user restart astromeow
+          sleep 3
+          systemctl --user is-active astromeow
+          curl -fsS http://127.0.0.1:8085/healthz
